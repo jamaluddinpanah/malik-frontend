@@ -1,0 +1,3 @@
+import Link from "next/link"; import type { Listing } from "@/domain/listings/entities";
+export function money(value:number,currency:string){ return new Intl.NumberFormat("en-US").format(value)+" "+currency; }
+export function ListingCard({listing}:{listing:Listing}) { return <article className="card"><Link href={`/listing/${listing.slug}`}><img src={listing.images[0]?.url} alt={listing.images[0]?.alt ?? listing.title}/></Link><div className="card-body">{listing.badge&&<span className={`badge ${listing.badge}`}>{listing.badge}</span>}<Link href={`/listing/${listing.slug}`}><h3>{listing.title}</h3></Link><strong>{money(listing.price,listing.currency)}</strong><p>{listing.city} · {listing.district} · {listing.conditionLabel}</p></div></article> }

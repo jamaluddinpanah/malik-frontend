@@ -1,0 +1,1 @@
+Route validation is intentionally dependency-free. Swap the in-memory repository for a MySQL implementation using DATABASE_URL before production deployment.

@@ -1,0 +1,2 @@
+import Link from "next/link";
+export function SiteHeader() { return <><div className="topbar"><div className="shell"><span>Safe shopping starts with Malik</span><span>Help Center · English</span></div></div><header><div className="shell header"><Link className="logo" href="/"><b>m</b><span>malik<small>Afghanistan marketplace</small></span></Link><nav><Link href="/search">Search</Link><Link href="/account">My Account</Link><Link className="post" href="/post-ad">Post an Ad</Link></nav></div></header></> }
