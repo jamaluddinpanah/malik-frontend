@@ -1,0 +1,668 @@
+.scope {
+  background: #eef4f8;
+  min-height: 640px;
+  padding: 18px 0 80px;
+}
+.scope :global(.account-page) {
+  max-width: 1180px;
+  margin: auto;
+  padding: 0 20px;
+}
+.scope :global(.account-shell) {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 18px;
+}
+.scope :global(.account-sidebar),
+.scope :global(.account-content) > *,
+.scope :global(.account-stats article) {
+  background: #fff;
+  border: 1px solid #c9d3dc;
+}
+.scope :global(.account-sidebar) > div {
+  padding: 14px 16px;
+  border-bottom: 1px solid #c9d3dc;
+}
+.scope :global(.account-sidebar) > div.current {
+  background: #e2eefb;
+  color: #006ac2;
+}
+.scope :global(.account-sidebar b) {
+  display: block;
+  font-size: 12px;
+  margin: 4px 0 11px;
+}
+.scope :global(.account-sidebar a) {
+  display: block;
+  font-size: 12px;
+  padding: 7px 4px;
+}
+.scope :global(.account-stats) {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+.scope :global(.account-stats article) {
+  min-height: 136px;
+  display: flex;
+  align-items: center;
+  gap: 26px;
+  padding: 25px;
+  color: #4089d0;
+  font-size: 32px;
+}
+.scope :global(.account-stats span) {
+  color: #13273e;
+  font-size: 13px;
+}
+.scope :global(.account-stats b) {
+  margin-left: auto;
+  font-size: 34px;
+}
+.scope :global(.post-now) {
+  position: relative;
+  margin-top: 10px;
+  padding: 24px 92px;
+}
+.scope :global(.post-now > b) {
+  font-size: 17px;
+}
+.scope :global(.post-now p) {
+  margin: 7px 0 0;
+  font-size: 13px;
+}
+.scope :global(.post-now a) {
+  position: absolute;
+  right: 20px;
+  top: 37px;
+  color: #006bc5;
+  font-size: 13px;
+}
+.scope :global(.account-cards) {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 10px;
+}
+.scope :global(.account-cards article) {
+  padding: 23px;
+  min-height: 115px;
+}
+.scope :global(.account-cards p) {
+  font-size: 12px;
+  line-height: 1.4;
+}
+.scope :global(.activity) {
+  margin-top: 19px;
+}
+.scope :global(.activity h2) {
+  margin: 0;
+  padding: 17px;
+  font-size: 16px;
+  border-bottom: 1px solid #c9d3dc;
+}
+.scope :global(.activity h2 a) {
+  float: right;
+  font-size: 12px;
+  color: #006bc5;
+}
+.scope :global(.activity-row) {
+  display: grid;
+  grid-template-columns: 55px 1fr 122px 105px 40px 40px;
+  gap: 14px;
+  align-items: center;
+  padding: 12px 18px;
+  border-bottom: 1px solid #c9d3dc;
+  font-size: 12px;
+}
+.scope :global(.activity-row img) {
+  width: 50px;
+  height: 39px;
+  object-fit: cover;
+}
+.scope :global(.activity-row span) {
+  color: #39805a;
+}
+.scope :global(.activity-row button) {
+  background: #fff;
+  border: 1px solid #c9d3dc;
+  border-radius: 4px;
+  padding: 6px;
+  color: #56708d;
+  font-size: 12px;
+}
+@media (max-width: 800px) {
+  .scope :global(.account-shell) {
+    grid-template-columns: 1fr;
+  }
+  .scope :global(.account-sidebar) {
+    display: none;
+  }
+  .scope :global(.account-stats) {
+    grid-template-columns: 1fr;
+  }
+  .scope :global(.account-cards) {
+    grid-template-columns: 1fr;
+  }
+  .scope :global(.activity-row) {
+    grid-template-columns: 45px 1fr 80px;
+  }
+  .scope :global(.activity-row span),
+  .scope :global(.activity-row button) {
+    display: none;
+  }
+}
+.scope :global(.account-sidebar a.selected) {
+  background: #dceafb;
+  color: #006ac2;
+  font-weight: bold;
+  margin: 0 -16px;
+  padding-left: 42px;
+}
+.scope :global(.settings-panel) {
+  background: #fff;
+  border: 1px solid #c9d3dc;
+}
+.scope :global(.settings-panel header) {
+  height: auto;
+  min-height: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 21px;
+  border-bottom: 1px solid #c9d3dc;
+}
+.scope :global(.settings-panel h1) {
+  font-size: 18px;
+  margin: 0 0 6px;
+  text-transform: capitalize;
+}
+.scope :global(.settings-panel header p) {
+  margin: 0;
+  color: #52708e;
+  font-size: 13px;
+}
+.scope :global(.settings-panel header a) {
+  border: 1px solid #c9d3dc;
+  border-radius: 3px;
+  padding: 10px 13px;
+  font-size: 12px;
+  font-weight: bold;
+}
+.scope :global(.settings-panel form) {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  padding: 18px 20px 49px;
+}
+.scope :global(.settings-panel label) {
+  display: grid;
+  gap: 7px;
+  font-weight: bold;
+  font-size: 12px;
+}
+.scope :global(.settings-panel input),
+.scope :global(.settings-panel select),
+.scope :global(.settings-panel textarea) {
+  border: 1px solid #c3ced8;
+  border-radius: 4px;
+  padding: 10px;
+  font: inherit;
+}
+.scope :global(.settings-panel textarea) {
+  height: 85px;
+  resize: vertical;
+}
+.scope :global(.settings-panel .wide) {
+  grid-column: 1/-1;
+}
+.scope :global(.settings-panel small) {
+  color: #56718e;
+  font-weight: normal;
+}
+.scope :global(.settings-panel button) {
+  grid-column: 2;
+  justify-self: end;
+  background: #006bc5;
+  color: #fff;
+  border-radius: 4px;
+  padding: 11px 16px;
+  font-size: 12px;
+}
+@media (max-width: 800px) {
+  .scope :global(.settings-panel form) {
+    grid-template-columns: 1fr;
+  }
+  .scope :global(.settings-panel button) {
+    grid-column: 1;
+  }
+  .scope :global(.settings-panel header) {
+    display: block;
+  }
+  .scope :global(.settings-panel header a) {
+    display: inline-block;
+    margin-top: 15px;
+  }
+}
+.scope :global(.status-rows),
+.scope :global(.toggles) {
+  padding: 18px 20px 0;
+}
+.scope :global(.status-rows) > div,
+.scope :global(.toggle-row) {
+  border: 1px solid #c9d3dc;
+  margin-bottom: 10px;
+  padding: 14px 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.scope :global(.status-rows span),
+.scope :global(.toggle-row span) {
+  display: grid;
+  gap: 5px;
+  font-size: 12px;
+}
+.scope :global(.status-rows small),
+.scope :global(.toggle-row small) {
+  font-size: 12px;
+}
+.scope :global(.status-rows em) {
+  font-style: normal;
+  background: #dff3e2;
+  color: #397153;
+  border-radius: 20px;
+  padding: 5px 10px;
+  font-size: 11px;
+}
+.scope :global(.status-rows div:first-child em) {
+  background: #ffedca;
+  color: #8c5b0c;
+}
+.scope :global(.account-listing-row) {
+  border: 1px solid #c9d3dc;
+  margin-bottom: 10px;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.scope :global(.account-listing-row img) {
+  width: 58px;
+  height: 58px;
+  object-fit: cover;
+  background: #edf2f5;
+}
+.scope :global(.account-listing-row > span) {
+  display: grid;
+  gap: 5px;
+  flex: 1;
+  min-width: 0;
+}
+.scope :global(.listing-actions) {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: flex-end;
+}
+.scope :global(.listing-actions button) {
+  border: 1px solid #b8c8d5;
+  background: #fff;
+  color: #075d9e;
+  padding: 6px 9px;
+  border-radius: 3px;
+  font-size: 11px;
+}
+.scope :global(.toggle-row i) {
+  width: 43px;
+  height: 23px;
+  border-radius: 20px;
+  background: #c6cdd3;
+  position: relative;
+}
+.scope :global(.toggle-row i:after) {
+  content: "";
+  position: absolute;
+  width: 17px;
+  height: 17px;
+  background: #fff;
+  border-radius: 50%;
+  top: 3px;
+  left: 4px;
+}
+.scope :global(.toggle-row i.on) {
+  background: #2e9b54;
+}
+.scope :global(.toggle-row i.on:after) {
+  left: 22px;
+}
+.scope :global(.panel-action) {
+  padding: 7px 20px 34px;
+  text-align: right;
+}
+.scope :global(.panel-action button) {
+  background: #006bc5;
+  color: #fff;
+  border: 0;
+  border-radius: 4px;
+  padding: 11px 16px;
+  font-size: 12px;
+}
+.scope :global(.notifications) {
+  padding: 18px 20px;
+}
+.scope :global(.notifications h2) {
+  font-size: 14px;
+  border-bottom: 1px solid #c9d3dc;
+  padding-bottom: 10px;
+  margin: 16px 0 0;
+}
+.scope :global(.notifications label) {
+  display: grid;
+  grid-template-columns: 1fr 60px 60px;
+  border-bottom: 1px solid #d4dce3;
+  padding: 10px 0;
+  font-size: 12px;
+}
+.scope :global(.notifications input) {
+  justify-self: center;
+  accent-color: #006bc5;
+}
+@media (max-width: 800px) {
+  .scope :global(.notifications label) {
+    grid-template-columns: 1fr 35px 35px;
+  }
+}
+.scope :global(.account-sidebar b),
+.scope :global(.account-sidebar a),
+.scope :global(.account-stats article),
+.scope :global(.post-now > b),
+.scope :global(.account-cards article > b) {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.scope :global(.account-sidebar a svg) {
+  color: #57718b;
+  flex: 0 0 auto;
+}
+.scope :global(.account-stats article > svg) {
+  flex: 0 0 auto;
+}
+.scope :global(.activity-row span) {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.scope :global(.notifications) {
+  padding: 0 20px 22px;
+}
+.scope :global(.notification-section) {
+  margin-top: 18px;
+}
+.scope :global(.notification-section h2) {
+  font-size: 14px;
+  border-bottom: 1px solid #c9d3dc;
+  padding: 0 0 11px;
+  margin: 0;
+}
+.scope :global(.notification-head),
+.scope :global(.notifications label) {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 86px 102px;
+  align-items: center;
+  border-bottom: 1px solid #d4dce3;
+}
+.scope :global(.notification-head) {
+  min-height: 62px;
+  text-align: center;
+}
+.scope :global(.notification-head b) {
+  display: grid;
+  gap: 2px;
+  font-size: 11px;
+  color: #4f6780;
+}
+.scope :global(.notifications label) {
+  padding: 10px 0;
+  font-size: 12px;
+}
+.scope :global(.notifications label > span) {
+  padding-right: 14px;
+}
+.scope :global(.notifications input) {
+  width: 15px;
+  height: 15px;
+  justify-self: center;
+  accent-color: #006bc5;
+}
+.scope :global(.notifications-action) {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 16px;
+}
+.scope :global(.notifications-action button) {
+  background: #006bc5;
+  color: #fff;
+  border: 0;
+  border-radius: 4px;
+  padding: 11px 16px;
+  font-size: 12px;
+}
+.scope :global(.account-sidebar-slot) {
+  display: contents;
+}
+.scope :global(.account-sidebar-trigger),
+.scope :global(.account-sidebar-backdrop),
+.scope :global(.account-drawer-head) {
+  display: none;
+}
+@media (max-width: 800px) {
+  .scope {
+    padding: 14px 0 42px;
+  }
+  .scope :global(.account-page) {
+    padding: 0 14px;
+  }
+  .scope :global(.account-shell) {
+    gap: 14px;
+  }
+  .scope :global(.account-sidebar) {
+    display: flex;
+    align-items: flex-start;
+    align-self: start;
+    height: auto;
+    max-height: max-content;
+    overflow-x: auto;
+    scroll-snap-type: x proximity;
+  }
+  .scope :global(.account-sidebar) > div {
+    align-self: flex-start;
+    min-width: 190px;
+    flex: 0 0 190px;
+    scroll-snap-align: start;
+  }
+  .scope :global(.account-sidebar) > div.current {
+    min-width: 115px;
+  }
+  .scope :global(.account-stats article) {
+    min-height: 90px;
+    padding: 17px;
+    gap: 15px;
+  }
+  .scope :global(.post-now) {
+    padding: 18px;
+  }
+  .scope :global(.post-now a) {
+    position: static;
+    display: inline-block;
+    margin-top: 12px;
+  }
+  .scope :global(.settings-panel header) {
+    padding: 17px;
+  }
+  .scope :global(.settings-panel form) {
+    padding: 15px 14px 24px;
+  }
+  .scope :global(.notifications),
+  .scope :global(.status-rows),
+  .scope :global(.toggles) {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+  .scope :global(.status-rows) > div,
+  .scope :global(.toggle-row) {
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .scope :global(.account-listing-row) {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+  .scope :global(.listing-actions) {
+    width: 100%;
+    justify-content: flex-start;
+  }
+  .scope :global(.panel-action) {
+    padding: 5px 14px 24px;
+  }
+  .scope :global(.activity-row) {
+    grid-template-columns: 45px minmax(0, 1fr) 72px;
+  }
+  .scope :global(.activity-row b) {
+    line-height: 1.35;
+  }
+}
+@media (max-width: 480px) {
+  .scope :global(.account-stats article) {
+    font-size: 25px;
+  }
+  .scope :global(.account-stats b) {
+    font-size: 28px;
+  }
+  .scope :global(.settings-panel h1) {
+    font-size: 17px;
+  }
+  .scope :global(.notifications label) {
+    font-size: 11px;
+  }
+  .scope :global(.toggle-row span) {
+    min-width: 0;
+  }
+  .scope :global(.panel-action) {
+    text-align: left;
+  }
+  .scope :global(.activity h2 a) {
+    float: none;
+    display: block;
+    margin-top: 7px;
+  }
+}
+@media (max-width: 800px) {
+  .scope :global(.account-sidebar-slot) {
+    display: block;
+    align-self: start;
+  }
+  .scope :global(.account-sidebar-trigger) {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+    padding: 10px 14px;
+    border: 1px solid #b9cedf;
+    border-radius: 7px;
+    background: #fff;
+    color: #075fae;
+    font: inherit;
+    font-weight: bold;
+    box-shadow: 0 3px 10px #31567212;
+  }
+  .scope :global(.account-sidebar-backdrop) {
+    display: block;
+    position: fixed;
+    z-index: 90;
+    inset: 0;
+    border: 0;
+    background: #06132188;
+  }
+  .scope :global(.account-sidebar.account-drawer) {
+    display: none !important;
+    position: fixed;
+    z-index: 91;
+    top: 0;
+    left: 0;
+    width: min(340px, 88vw);
+    height: 100dvh;
+    max-height: none;
+    margin: 0 !important;
+    overflow-y: auto;
+    background: #fff;
+    box-shadow: 12px 0 32px #071d3255;
+  }
+  .scope :global(.account-sidebar.account-drawer.open) {
+    display: block !important;
+  }
+  .scope :global(.account-drawer-head) {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 12px 12px 16px;
+    border-bottom: 1px solid #c9d3dc;
+    background: #f5f9fc;
+  }
+  .scope :global(.account-drawer-head b) {
+    margin: 0;
+    font-size: 14px;
+  }
+  .scope :global(.account-drawer-head button) {
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    border: 1px solid #0b70c6;
+    border-radius: 50%;
+    background: #0872cb;
+    color: #fff;
+  }
+  .scope :global(.account-sidebar.account-drawer) > div {
+    min-width: 0;
+    flex: auto;
+  }
+  .scope :global(.account-sidebar.account-drawer) > div.current {
+    min-width: 0;
+  }
+}
+:global([dir="rtl"]) .scope :global(.account-stats b) {
+  margin-left: 0;
+  margin-right: auto;
+}
+:global([dir="rtl"]) .scope :global(.post-now a) {
+  right: auto;
+  left: 20px;
+}
+:global([dir="rtl"]) .scope :global(.activity h2 a) {
+  float: left;
+}
+:global([dir="rtl"]) .scope :global(.account-sidebar a.selected) {
+  padding-left: 4px;
+  padding-right: 42px;
+}
+:global([dir="rtl"]) .scope :global(.toggle-row i:after) {
+  left: auto;
+  right: 4px;
+}
+:global([dir="rtl"]) .scope :global(.toggle-row i.on:after) {
+  left: auto;
+  right: 22px;
+}
+@media (max-width: 800px) {
+  :global([dir="rtl"]) .scope :global(.account-sidebar.account-drawer) {
+    left: auto;
+    right: 0;
+    box-shadow: -12px 0 32px #071d3255;
+  }
+  :global([dir="rtl"]) .scope :global(.account-drawer-head) {
+    padding: 12px 16px 12px 12px;
+  }
+}

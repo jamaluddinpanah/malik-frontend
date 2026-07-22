@@ -1,0 +1,24 @@
+.root {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex: 0 0 auto;
+  min-width: 0;
+  white-space: nowrap;
+  line-height: 1;
+}
+
+.root > svg {
+  flex: 0 0 auto;
+}
+
+.root select {
+  width: 104px;
+  min-width: 104px;
+  min-height: 34px;
+  padding-block: 6px;
+  padding-inline: 10px 30px;
+  cursor: pointer;
+}
+
+:global([dir="rtl"]) .root select { padding-inline: 30px 10px; }

@@ -1,2 +1,21 @@
-import Link from "next/link"; import { marketplace } from "@/infrastructure/container"; import { money } from "@/presentation/components/listing-card";
-export default async function Account(){const listings=await marketplace.searchListings.execute({});return <main className="shell page"><h1>My Account</h1><div className="account-summary"><div><b>Abdulhameed Abdulhai</b><p>abdulhameed@example.com · Kabul</p></div><Link className="post" href="/post-ad">Post an Ad</Link></div><section className="account-panel"><h2>My ads</h2>{listings.slice(0,3).map(x=><div className="account-row" key={x.id}><span>{x.title}</span><b>{money(x.price,x.currency)}</b><em>Active</em></div>)}</section><section className="account-panel"><h2>Settings</h2><p>Personal information, email, phone, payment methods, security, notifications, privacy, permissions, and account deletion remain available as account settings in the target product; only listing management is currently connected to the repository.</p></section></main>}
+import { LocalizedLink } from "@/presentation/components/localized-link";
+import { getTranslations } from "next-intl/server";
+export default async function Account() {
+  const t = await getTranslations("account");
+  return (
+    <main className="shell page">
+      <section className="account-panel">
+        <h1>{t("myAccount")}</h1>
+        <p>{t("manageDescription")}</p>
+        <p>
+          <LocalizedLink className="post" href="/account/profile">
+            {t("profile")}
+          </LocalizedLink>{" "}
+          <LocalizedLink className="post" href="/account/security">
+            {t("security")}
+          </LocalizedLink>
+        </p>
+      </section>
+    </main>
+  );
+}

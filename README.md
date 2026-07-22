@@ -1,36 +1,40 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Malik frontend
 
-## Getting Started
+The Next.js frontend uses locale-prefixed routes and cookie-based Laravel Sanctum
+authentication against the sibling `malik-api` project.
 
-First, run the development server:
+## Local development
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Configure the browser-visible API origin in `.env.local`:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```dotenv
+NEXT_PUBLIC_API_URL=http://localhost:8000
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Localization
 
-## Learn More
+Supported locales are English (`en`), Dari (`fa`), and Pashto (`ps`). Every
+public, authentication, account, and admin URL is canonicalized to one of these
+prefixes, for example `/en/login`, `/fa/search`, or `/ps/admin`. Visiting an
+unprefixed URL redirects to the locale stored in `NEXT_LOCALE`; if none is set,
+English is used.
 
-To learn more about Next.js, take a look at the following resources:
+`src/i18n/config.ts` is the single locale registry. The shared typed message
+namespaces live in `messages/<locale>/common.json`. The language switcher
+preserves the current path and query string, stores only the non-sensitive
+`NEXT_LOCALE` preference cookie, and applies RTL document direction for Dari and
+Pashto. The centralized API client sends the active locale through
+`Accept-Language` on every API request.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Verification
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+npm run lint
+npx tsc --noEmit
+npm run build
+```

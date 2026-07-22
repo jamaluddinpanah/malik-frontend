@@ -9,4 +9,4 @@ export interface Listing {
   createdAt: string; categorySlug: string; categoryName: string; sellerName: string;
   sellerPhone?: string; images: ListingImage[];
 }
-export interface Category { id: number; slug: string; name: string; parentSlug?: string; listingCount: number }
+export interface Category { id: number; slug: string; name: string; parentSlug?: string; listingCount: number; icon?: string | null; default_expanded?: boolean }

@@ -1,0 +1,162 @@
+.selector,
+.dynamicForm,
+.formSection {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  padding: 18px;
+}
+.selector header {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: start;
+}
+.selector h2,
+.selector p {
+  margin: 0;
+}
+.selector header p,
+.field small,
+.sectionDescription {
+  color: var(--muted);
+  font-size: 13px;
+  margin-block-start: 5px;
+}
+.selector ul {
+  margin: 16px 0 0;
+  padding: 0;
+  list-style: none;
+  border-block-start: 1px solid var(--line);
+}
+.selector li button {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  border: 0;
+  border-block-end: 1px solid var(--line);
+  background: #fff;
+  padding: 13px 4px;
+  text-align: start;
+  font: inherit;
+  cursor: pointer;
+}
+.selector li button:hover {
+  color: var(--blue);
+}
+.selector li small {
+  display: block;
+  margin-block-start: 3px;
+  color: var(--muted);
+}
+.selector header button,
+.state button,
+.selectCurrent {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  background: #fff;
+  padding: 8px 10px;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+.state {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 24px 0;
+}
+.spin {
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.directionalIcon:global([dir="rtl"]) {
+  transform: rotate(180deg);
+}
+.selectCurrent {
+  margin-block-start: 14px;
+  background: var(--blue);
+  color: #fff;
+}
+.formSections {
+  display: grid;
+  gap: 16px;
+}
+.formSection {
+  min-inline-size: 0;
+}
+.formSection legend {
+  padding: 0 6px;
+  font-weight: 700;
+}
+.dynamicForm {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  border: 0;
+  padding: 0;
+}
+.field {
+  display: grid;
+  gap: 6px;
+}
+.field label {
+  font-weight: 700;
+}
+.field input,
+.field textarea,
+.field select {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  background: #fff;
+  padding: 10px;
+  font: inherit;
+}
+.field textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+.field p,
+.unknown {
+  grid-column: 1/-1;
+  margin: 0;
+  color: #b42318;
+  font-size: 12px;
+}
+.options {
+  display: grid;
+  gap: 7px;
+}
+.options label {
+  font-weight: normal;
+}
+.unknown {
+  border: 1px solid #efb1ad;
+  background: #fff3f2;
+  padding: 10px;
+}
+@media (max-width: 700px) {
+  .selector,
+  .dynamicForm {
+    padding: 14px;
+  }
+  .dynamicForm {
+    grid-template-columns: 1fr;
+  }
+  .selector header {
+    flex-direction: column;
+  }
+  .selector header button {
+    align-self: start;
+  }
+}

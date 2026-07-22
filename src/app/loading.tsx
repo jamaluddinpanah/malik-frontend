@@ -1,1 +1,2 @@
-export default function Loading(){return <main className="shell page"><p>Loading marketplace…</p></main>}
+import { LoadingState } from "@/components/feedback";
+export default function Loading(){return <main className="shell page"><LoadingState/></main>}

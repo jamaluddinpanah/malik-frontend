@@ -1,0 +1,832 @@
+.page {
+  background: #f4f8fb;
+  min-height: 100vh;
+  padding: 14px 0 48px;
+  color: #071d32;
+}
+.shell {
+  max-width: 1160px;
+  margin: auto;
+  position: relative;
+}
+.crumb {
+  font-size: 13px;
+  color: #63809d;
+  margin-bottom: 18px;
+}
+.top {
+  width: 823px;
+}
+.top h1 {
+  font-size: 21px;
+  margin: 0 0 13px;
+}
+.top h2 {
+  font-size: 28px;
+  margin: 0 0 14px;
+}
+.top section > p {
+  color: #597895;
+  font-size: 13px;
+}
+.seller {
+  position: absolute;
+  inset-inline-end: 0;
+  top: 44px;
+  width: 340px;
+  background: #fff;
+  border: 1px solid #cbd6de;
+  border-radius: 9px;
+  padding: 20px;
+  height: max-content;
+}
+.seller > b,
+.seller small {
+  display: block;
+}
+.seller > b {
+  font-size: 16px;
+}
+.seller small {
+  color: #597895;
+  font-size: 12px;
+  margin: 7px 0 18px;
+}
+.seller button,
+.seller > a {
+  width: 100%;
+  height: 44px;
+  border: 1px solid #006bc4;
+  background: #086cc0;
+  color: #fff;
+  margin-top: 8px;
+  display: grid;
+  place-items: center;
+}
+.seller button + a {
+  background: #fff;
+  color: #006bc4;
+}
+.seller p {
+  background: #e7f6e8;
+  color: #1672a4;
+  padding: 12px;
+  font-size: 12px;
+  line-height: 1.4;
+}
+.vehicleGrid {
+  width: 760px;
+}
+.estateGrid {
+  display: grid;
+  grid-template-columns: 485px 320px;
+  gap: 18px;
+  width: 823px;
+}
+.gallery {
+  background: #fff;
+  border: 1px solid #ccd6dd;
+  border-radius: 9px;
+  overflow: hidden;
+}
+.gallery > img {
+  width: 100%;
+  height: 428px;
+  object-fit: cover;
+  display: block;
+}
+.gallery > div {
+  padding: 8px;
+  display: flex;
+  gap: 8px;
+}
+.gallery > div img {
+  width: 64px;
+  height: 55px;
+  border: 1px solid #c8d4dd;
+  object-fit: cover;
+}
+.info,
+.featureBox,
+.description,
+.location {
+  width: 760px;
+  background: #fff;
+  border: 1px solid #cbd6de;
+  border-radius: 9px;
+  margin-top: 16px;
+  overflow: hidden;
+}
+.estateGrid .info {
+  width: auto;
+  margin-top: 0;
+  border-radius: 0;
+}
+.info h2,
+.featureBox > h2,
+.description h2,
+.location h2,
+.similar h2 {
+  font-size: 17px;
+  margin: 0;
+  padding: 18px;
+  border-bottom: 1px solid #cbd6de;
+}
+.info p {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin: 0;
+  padding: 9px 18px;
+  border-bottom: 1px solid #e0e6eb;
+  font-size: 13px;
+}
+.info span {
+  color: #5b7692;
+}
+.featureBox > div {
+  padding: 18px;
+  border-bottom: 1px solid #cbd6de;
+}
+.featureBox > div > b {
+  color: #006bc4;
+  font-size: 14px;
+}
+.features {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 13px;
+  margin-top: 15px;
+  font-size: 12px;
+}
+.features span {
+  color: #58728e;
+}
+.features b {
+  font-size: 10px;
+  background: #dff2e1;
+  color: #198243;
+  border-radius: 12px;
+  padding: 2px 5px;
+  margin-inline-end: 6px;
+}
+.description p {
+  padding: 18px;
+  margin: 0;
+  line-height: 1.55;
+}
+.location {
+  padding-bottom: 18px;
+}
+.location > p,
+.location > a {
+  display: block;
+  margin: 10px 20px;
+  color: #5b7692;
+  font-size: 13px;
+}
+.location > a {
+  color: #006bc4;
+  font-weight: bold;
+}
+.map {
+  height: 260px;
+  margin: 12px 20px 0;
+  background: linear-gradient(135deg, #d7ecdd, #f5efd8 55%, #c6d9ed);
+  display: grid;
+  place-content: center;
+  text-align: center;
+  font-size: 27px;
+  font-weight: bold;
+  color: #4b5870;
+}
+.map small {
+  font-size: 12px;
+  font-weight: normal;
+}
+.similar {
+  width: 760px;
+  margin-top: 34px;
+}
+.similar > div {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+.similar a {
+  background: #fff;
+  border: 1px solid #cbd6de;
+  border-radius: 7px;
+  overflow: hidden;
+  font-size: 12px;
+}
+.similar img {
+  width: 100%;
+  height: 132px;
+  object-fit: cover;
+}
+.similar b,
+.similar p,
+.similar small {
+  display: block;
+  margin: 8px 9px;
+}
+.similar p {
+  height: 34px;
+  overflow: hidden;
+}
+.similar small {
+  color: #597895;
+}
+@media (max-width: 900px) {
+  .shell {
+    padding: 0 16px;
+  }
+  .top {
+    width: 100%;
+  }
+  .seller {
+    position: static;
+    width: 100%;
+    margin-top: 18px;
+  }
+  .vehicleGrid,
+  .estateGrid {
+    width: 100%;
+    grid-template-columns: 1fr;
+  }
+  .estateGrid .info {
+    width: 100%;
+    margin-top: 16px;
+  }
+  .info,
+  .featureBox,
+  .description,
+  .location,
+  .similar {
+    width: 100%;
+  }
+  .gallery > img {
+    height: 300px;
+  }
+  .features {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .similar > div {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.inspection {
+  width: 760px;
+  background: #fff;
+  border: 1px solid #cbd6de;
+  border-radius: 9px;
+  margin-top: 16px;
+  overflow: hidden;
+}
+.inspection h2 {
+  font-size: 17px;
+  margin: 0;
+  padding: 18px;
+  border-bottom: 1px solid #cbd6de;
+}
+.inspectionBody {
+  min-height: 485px;
+  background: #fffdf0;
+  border: 1px solid #f0d990;
+  margin: 18px;
+  padding: 38px 50px;
+  position: relative;
+  font-size: 12px;
+}
+.legend {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #788391;
+  font-weight: 600;
+}
+.legendOriginal,
+.legendLocal,
+.legendPainted,
+.legendChanged {
+  display: inline-block;
+  width: 17px;
+  height: 17px;
+  background: #aaa;
+  vertical-align: middle;
+}
+.legendLocal {
+  background: #ff9141;
+}
+.legendPainted {
+  background: #4288ce;
+}
+.legendChanged {
+  background: #ff5940;
+}
+.car {
+  position: absolute;
+  left: 66px;
+  top: 100px;
+  width: 255px;
+  height: 340px;
+  border-radius: 94px 94px 56px 56px;
+  background: #d1d1d1;
+  border: 7px solid #e7e7e7;
+  box-shadow: inset 0 0 0 8px #c5c5c5;
+}
+.car:before {
+  content: "";
+  position: absolute;
+  left: 46px;
+  right: 46px;
+  top: 81px;
+  height: 106px;
+  background: #fff;
+  border-radius: 42px 42px 10px 10px;
+  border-bottom: 8px solid #c6c6c6;
+  z-index: 1;
+}
+.car:after {
+  content: "";
+  position: absolute;
+  left: 45px;
+  right: 45px;
+  bottom: 45px;
+  height: 76px;
+  background: #fff;
+  border-radius: 10px 10px 30px 30px;
+  z-index: 1;
+}
+.car i {
+  position: absolute;
+  display: block;
+  font-style: normal;
+  box-sizing: border-box;
+}
+.hood {
+  top: 0;
+  left: 48px;
+  right: 48px;
+  height: 108px;
+  background: #4288ce;
+  border: 7px solid #e8e8e8;
+  border-radius: 34px 34px 9px 9px;
+  color: #fff;
+  text-align: center;
+  padding-top: 43px;
+  font-weight: bold;
+  font-size: 14px;
+  z-index: 2;
+}
+.windshield {
+  left: 48px;
+  right: 48px;
+  top: 112px;
+  height: 26px;
+  background: #d2d2d2;
+  border-radius: 2px;
+  z-index: 2;
+}
+.roof {
+  left: 48px;
+  right: 48px;
+  top: 146px;
+  height: 65px;
+  background: #c7c7c7;
+  z-index: 2;
+}
+.rearGlass {
+  left: 48px;
+  right: 48px;
+  top: 211px;
+  height: 28px;
+  background: #d3d3d3;
+  z-index: 2;
+}
+.bumperTop,
+.bumperBottom {
+  left: 50px;
+  right: 50px;
+  height: 25px;
+  background: #ccc;
+  border: 6px solid #e7e7e7;
+  border-radius: 6px;
+  z-index: 3;
+}
+.bumperTop {
+  top: -17px;
+}
+.bumperBottom {
+  bottom: -17px;
+}
+.bumperTop:before,
+.bumperTop:after,
+.bumperBottom:before,
+.bumperBottom:after {
+  content: "";
+  position: absolute;
+  top: 5px;
+  width: 22px;
+  height: 9px;
+  background: #fff;
+  border-radius: 8px;
+}
+.bumperTop:before,
+.bumperBottom:before {
+  left: 17px;
+}
+.bumperTop:after,
+.bumperBottom:after {
+  right: 17px;
+}
+.doorLeft,
+.doorRight {
+  top: 108px;
+  width: 58px;
+  height: 188px;
+  background: #d1d1d1;
+  border: 7px solid #ececec;
+  color: #fff;
+  font-weight: bold;
+  text-align: center;
+  padding-top: 25px;
+  z-index: 2;
+}
+.doorLeft {
+  left: -69px;
+  border-radius: 35px 3px 3px 35px;
+  transform: skewY(-13deg);
+}
+.doorRight {
+  right: -69px;
+  border-radius: 3px 35px 35px 3px;
+  transform: skewY(13deg);
+}
+.wheelA,
+.wheelB,
+.wheelC,
+.wheelD {
+  width: 52px;
+  height: 52px;
+  background: #d8d8d8;
+  border-radius: 50%;
+  border: 5px solid #f6f6f6;
+  z-index: 4;
+}
+.wheelA {
+  left: -30px;
+  top: 56px;
+}
+.wheelB {
+  right: -30px;
+  top: 56px;
+}
+.wheelC {
+  left: -30px;
+  bottom: 35px;
+}
+.wheelD {
+  right: -30px;
+  bottom: 35px;
+}
+.paintList {
+  position: absolute;
+  left: 458px;
+  top: 104px;
+  line-height: 2.05;
+  color: #0a1b2e;
+}
+.paintList > b {
+  color: #1f5184;
+  font-size: 13px;
+}
+.paintList > b span {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background: #4288ce;
+  margin-right: 5px;
+}
+.paintList ul {
+  margin: 3px 0;
+  padding-left: 18px;
+}
+.paintList li {
+  padding-left: 1px;
+}
+@media (max-width: 900px) {
+  .inspection {
+    width: 100%;
+  }
+  .inspectionBody {
+    min-height: 570px;
+    padding: 28px;
+  }
+  .car {
+    left: 50%;
+    top: 95px;
+    transform: translateX(-50%);
+  }
+  .paintList {
+    left: 50%;
+    top: 455px;
+    transform: translateX(-50%);
+    width: 220px;
+  }
+  .legend {
+    gap: 6px;
+    font-size: 11px;
+  }
+  .legendOriginal,
+  .legendLocal,
+  .legendPainted,
+  .legendChanged {
+    width: 13px;
+    height: 13px;
+  }
+}
+
+.inspection {
+  width: 100%;
+  border-radius: 0;
+  margin-top: 16px;
+}
+.inspection h2 {
+  font-size: 15px;
+  font-weight: bold;
+  padding: 8px 10px;
+  background: linear-gradient(#fff, #f1f1f1);
+}
+.inspectionInner {
+  padding: 15px;
+}
+.inspectionLabel {
+  display: block;
+  color: #0088eb;
+  font-size: 13px;
+  margin: 0 0 6px;
+}
+.inspectionBody {
+  height: 488px;
+  min-height: 0;
+  margin: 0;
+  padding: 39px 50px;
+  background: #fffdf0;
+}
+.diagram {
+  position: absolute;
+  left: 44px;
+  top: 78px;
+  width: 330px;
+  height: 440px;
+}
+.diagram svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.paintColumns {
+  position: absolute;
+  left: 458px;
+  right: 45px;
+  top: 44px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 72px;
+  color: #111;
+  font-size: 13px;
+  line-height: 2;
+}
+.paintColumns b {
+  display: block;
+  font-size: 13px;
+}
+.paintColumns ul {
+  position: static;
+  margin: 4px 0;
+  padding-left: 18px;
+  line-height: 2;
+}
+.paintColumns li {
+  padding: 0;
+}
+.localMark,
+.paintMark {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-right: 5px;
+}
+.localMark {
+  background: #ff9141;
+}
+.paintMark {
+  background: #4288ce;
+}
+@media (max-width: 900px) {
+  .inspection {
+    width: 100%;
+  }
+  .inspectionBody {
+    height: auto;
+    min-height: 750px;
+    padding: 28px;
+  }
+  .diagram {
+    left: 50%;
+    top: 95px;
+    transform: translateX(-50%);
+  }
+  .paintColumns {
+    left: 50%;
+    right: auto;
+    top: 540px;
+    transform: translateX(-50%);
+    width: min(420px, 85%);
+    gap: 20px;
+  }
+  .inspectionLabel {
+    margin-bottom: 12px;
+  }
+}
+
+.diagram {
+  width: 356px;
+  height: 409px;
+}
+.diagram:before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: url("/assets/vehicle/inspection-top-view.png") center/contain
+    no-repeat;
+  z-index: 2;
+}
+.diagram svg {
+  display: none;
+}
+@media (max-width: 900px) {
+  .diagram {
+    width: 356px;
+    height: 409px;
+  }
+}
+
+@media (max-width: 700px) {
+  .page {
+    padding: 12px 0 32px;
+  }
+  .shell {
+    padding: 0 14px;
+  }
+  .crumb {
+    margin-bottom: 12px;
+  }
+  .top h1 {
+    font-size: 19px;
+    line-height: 1.35;
+  }
+  .top h2 {
+    font-size: 24px;
+  }
+  .top section > p {
+    line-height: 1.5;
+  }
+  .seller {
+    padding: 16px;
+    margin-top: 14px;
+  }
+  .seller button {
+    height: 42px;
+  }
+  .vehicleGrid,
+  .estateGrid {
+    margin-top: 16px;
+  }
+  .estateGrid {
+    gap: 12px;
+  }
+  .gallery > img {
+    height: 260px;
+  }
+  .gallery > div {
+    overflow-x: auto;
+  }
+  .gallery > div img {
+    flex: 0 0 58px;
+    width: 58px;
+    height: 49px;
+  }
+  .info,
+  .featureBox,
+  .description,
+  .location {
+    margin-top: 12px;
+  }
+  .info h2,
+  .featureBox > h2,
+  .description h2,
+  .location h2,
+  .similar h2 {
+    padding: 14px;
+    font-size: 16px;
+  }
+  .info p {
+    padding: 9px 13px;
+    grid-template-columns: minmax(105px, 0.8fr) 1.2fr;
+    gap: 8px;
+  }
+  .features {
+    grid-template-columns: 1fr;
+    gap: 9px;
+  }
+  .featureBox > div {
+    padding: 14px;
+  }
+  .description p {
+    padding: 14px;
+  }
+  .location > p,
+  .location > a {
+    margin-left: 14px;
+    margin-right: 14px;
+  }
+  .map {
+    height: 190px;
+    margin: 10px 14px 0;
+    font-size: 23px;
+  }
+  .similar {
+    margin-top: 26px;
+  }
+  .similar > div {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+  .similar img {
+    height: 112px;
+  }
+  .similar b,
+  .similar p,
+  .similar small {
+    margin: 7px;
+  }
+  .inspection {
+    margin-top: 12px;
+  }
+  .inspectionInner {
+    padding: 10px;
+  }
+  .inspectionBody {
+    min-height: 665px;
+    padding: 16px;
+  }
+  .legend {
+    flex-wrap: wrap;
+    gap: 7px;
+  }
+  .diagram {
+    top: 100px;
+    width: 300px;
+    height: 345px;
+  }
+  .paintColumns {
+    top: 465px;
+    grid-template-columns: 1fr;
+    gap: 4px;
+    width: 250px;
+    font-size: 12px;
+  }
+  .paintColumns ul {
+    margin: 0;
+  }
+  .inspection h2 {
+    padding: 11px 12px;
+  }
+  .inspectionLabel {
+    font-size: 12px;
+  }
+}
+@media (max-width: 390px) {
+  .gallery > img {
+    height: 225px;
+  }
+  .diagram {
+    width: 280px;
+    height: 322px;
+  }
+  .inspectionBody {
+    min-height: 635px;
+  }
+  .paintColumns {
+    top: 435px;
+  }
+  .info p {
+    font-size: 12px;
+  }
+  .similar img {
+    height: 96px;
+  }
+}
