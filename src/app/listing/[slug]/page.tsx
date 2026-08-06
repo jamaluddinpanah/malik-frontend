@@ -1,16 +1,37 @@
 /* eslint-disable @next/next/no-img-element */
 import { getLocale, getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
-import type { AppLocale } from "@/i18n/config";
+import type { Metadata } from "next";
+import type { AppLocale } from "@/shared/i18n/config";
 import {
   formatCurrency,
   formatDate,
   formatDateTime,
   formatNumber,
-} from "@/lib/formatting/locale";
-import { marketplace } from "@/infrastructure/container";
-import { LocalizedLink as Link } from "@/presentation/components/localized-link";
+} from "@/shared/lib/formatting/locale";
+import { marketplace } from "@/features/listings/container";
+import { LocalizedLink as Link } from "@/shared/ui/localized-link";
 import styles from "./listing.module.css";
+import { ListingGallery } from "./listing-gallery";
+import { FavoriteButton } from "@/features/listings/favorite-button";
+import { ListingContactControls } from "@/features/listings/listing-contact-controls";
+import { MessageSellerButton } from "@/features/messaging/message-seller-button";
+import { ListingViewTracker } from "@/features/listings/listing-view-tracker";
+import { JobApplicationForm } from "@/features/jobs/job-applications-and-team-management";
+import { jsonLd } from "@/shared/lib/json-ld";
+import { VehicleBodyConditionMap } from "@/features/catalog/vehicle-body-condition-map";
+import { ListingMap } from "@/features/listings/listing-map";
+import { RichText } from "@/shared/ui";
+import { richTextToPlainText } from "@/shared/lib/rich-text";
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  const listing = await marketplace.getListing.execute(slug);
+  if (!listing) return { title: "Listing not found" };
+  const locale = await getLocale();
+  const description = richTextToPlainText(listing.description).slice(0, 160);
+  return { title: listing.title, description, alternates: { canonical: `/${locale}/listing/${listing.slug}`, languages: { en: `/en/listing/${listing.slug}`, fa: `/fa/listing/${listing.slug}`, ps: `/ps/listing/${listing.slug}` } }, openGraph: { title: listing.title, description, images: listing.images[0]?.url ? [listing.images[0].url] : undefined } };
+}
 
 export default async function ListingPage({
   params,
@@ -46,9 +67,17 @@ export default async function ListingPage({
       </span>,
     ],
   ];
-  const mainImage = listing.images[0]?.url;
+  const isJob = listing.categorySlug.toLowerCase().includes("job");
+  const vehicleCondition = listing.attributes?.find(
+    (attribute) => attribute.type === "vehicle-condition-map",
+  );
+  for (const attribute of listing.attributes ?? []) {
+    if (attribute.type === "text")
+      details.push([attribute.label, <bdi key={attribute.label}>{attribute.value}</bdi>]);
+  }
   return (
     <main className={styles.page}>
+      <ListingViewTracker listingId={listing.id} />
       <div className={styles.shell}>
         <nav className={styles.crumb} aria-label={t("breadcrumbs")}>
           <Link href="/">{t("home")}</Link>　 {category}　 {t("listing")}
@@ -57,6 +86,7 @@ export default async function ListingPage({
           <section>
             <h1 dir="auto">{listing.title}</h1>
             <h2>{formatCurrency(listing.price, listing.currency, locale)}</h2>
+            <FavoriteButton listingId={listing.id} initial={listing.isFavorited} />
             <p dir="auto">
               <bdi>{listing.city}</bdi> / <bdi>{listing.district}</bdi>　{" "}
               {listedAt}　{" "}
@@ -68,47 +98,37 @@ export default async function ListingPage({
             <small>
               <bdi>{listing.city}</bdi> / {listedAt}
             </small>
-            <button type="button">{t("messageSeller")}</button>
-            {listing.sellerPhone ? (
-              <a href={`tel:${listing.sellerPhone}`}>{t("showPhone")}</a>
-            ) : null}
+             <MessageSellerButton listingId={listing.id} ownerUserId={listing.ownerUserId} />
+             <ListingContactControls listingId={listing.id} ownerUserId={listing.ownerUserId} phoneVisible={Boolean(listing.phoneVisible)} email={listing.contactEmail} />
             <p>{t("contactNotice")}</p>
           </aside>
         </div>
         <div className={styles.vehicleGrid}>
-          <section className={styles.gallery}>
-            <img
-              src={mainImage}
-              alt={listing.images[0]?.alt ?? listing.title}
-            />
-            {listing.images.length > 1 ? (
-              <div>
-                {listing.images.map((image) => (
-                  <img
-                    src={image.url}
-                    alt={image.alt || listing.title}
-                    key={image.url}
-                  />
-                ))}
-              </div>
+           <ListingGallery images={listing.images} title={listing.title} emptyLabel={t("noImage")} />
+           <InfoTable title={t("details")} rows={details} />
+            {listing.rootType === "vehicle" ? (
+              <VehicleBodyConditionMap
+                value={vehicleCondition?.value ?? null}
+                readOnly
+              />
             ) : null}
-          </section>
-          <InfoTable title={t("details")} rows={details} />
-          <section className={styles.description}>
+            <section className={styles.description}>
             <h2>{t("description")}</h2>
-            <p dir="auto">{listing.description}</p>
-          </section>
+            <RichText html={listing.description} className={styles.descriptionBody} />
+           </section>
+            {isJob ? <JobApplicationForm listingId={listing.id} ownerUserId={listing.ownerUserId} /> : null}
           <section className={styles.location}>
             <h2>{t("location")}</h2>
             <p dir="auto">
               <bdi>{listing.city}</bdi> / <bdi>{listing.district}</bdi>
             </p>
             <div className={styles.map}>
-              {t("map")}
-              <small>{t("approximateLocation")}</small>
+              <ListingMap location={listing.location} />
             </div>
+            <small className={styles.approximate}>{t("approximateLocation")}</small>
           </section>
         </div>
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd({ "@context": "https://schema.org", "@type": "Product", name: listing.title, description: richTextToPlainText(listing.description), image: listing.images.map((image) => image.url), offers: { "@type": "Offer", price: listing.price, priceCurrency: listing.currency, availability: "https://schema.org/InStock" } }) }} />
         {similar.length ? (
           <section className={styles.similar}>
             <h2>{t("similar")}</h2>

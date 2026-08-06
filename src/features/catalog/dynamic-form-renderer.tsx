@@ -8,6 +8,7 @@ import type {
   SchemaSection,
 } from "./category-types";
 import { LocationSelector } from "./location-selector";
+import { VehicleBodyConditionMap } from "./vehicle-body-condition-map";
 import styles from "./catalog-forms.module.css";
 
 const supported = new Set([
@@ -28,6 +29,7 @@ const supported = new Set([
   "time",
   "range",
   "location",
+  "vehicle-condition-map",
 ]);
 
 function visible(
@@ -224,6 +226,13 @@ function DynamicField({
       <LocationSelector
         value={typeof value === "number" ? value : undefined}
         onChange={(area) => set(area.id)}
+      />
+    );
+  else if (field.input_type === "vehicle-condition-map")
+    control = (
+      <VehicleBodyConditionMap
+        value={value && typeof value === "object" && !Array.isArray(value) ? value : null}
+        onChange={set}
       />
     );
   else if (field.input_type === "select")

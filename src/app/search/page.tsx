@@ -1,28 +1,44 @@
 import { getTranslations } from "next-intl/server";
-import { marketplace } from "@/infrastructure/container";
-import { CategorySidebar } from "@/presentation/components/category-sidebar";
-import { ListingRow } from "@/presentation/components/listing-row";
+import type { Metadata } from "next";
+import { marketplace } from "@/features/listings/container";
+import { CategorySidebar } from "@/features/catalog/category-sidebar";
+import { ListingRow } from "@/features/listings/listing-row";
+import { LocalizedLink as Link } from "@/shared/ui/localized-link";
 
 type Props = { searchParams: Promise<Record<string, string | undefined>> };
+
+export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
+  const params = await searchParams;
+  const query = params.q || params.category;
+  return { title: query ? `Search: ${query}` : "Listings", description: query ? `Browse Malik listings for ${query}.` : "Browse published Malik listings.", robots: { index: false, follow: true } };
+}
 
 export default async function SearchPage({ searchParams }: Props) {
   const p = await searchParams;
   const t = await getTranslations("search");
-  const [listings, categories] = await Promise.all([
-    marketplace.searchListings.execute({
+  const categories = await marketplace.listCategories.execute();
+  const selectedCategory = categories.find((category) => category.slug === p.category);
+  const dynamicFilters = selectedCategory ? await marketplace.listCategoryFilters.execute(selectedCategory.id) : [];
+  const attributes = Object.fromEntries(Object.entries(p).filter(([key, value]) => key.startsWith("attributes[") && value).map(([key, value]) => [key.slice(11, -1), value as string]));
+  const page = await marketplace.searchListingsPage.execute({
       q: p.q,
       category: p.category,
       city: p.city,
-      featured: p.featured === "true",
+      minPrice: p.min_price ? Number(p.min_price) : undefined,
+      maxPrice: p.max_price ? Number(p.max_price) : undefined,
+      attributes,
+      featured: p.featured === "true" ? true : undefined,
+      page: p.page ? Number(p.page) : 1,
+      perPage: 20,
       sort: p.sort as
         | "newest"
+        | "oldest"
         | "price_asc"
         | "price_desc"
         | "popular"
         | undefined,
-    }),
-    marketplace.listCategories.execute(),
-  ]);
+    });
+  const listings = page.items;
   const heading = p.q
     ? t("resultsFor", { query: p.q })
     : p.category
@@ -39,15 +55,38 @@ export default async function SearchPage({ searchParams }: Props) {
         <section className="search-results">
           <div className="results-head">
             <h1 dir="auto">{heading}</h1>
-            <label>
-              <span className="visually-hidden">{t("sort")}</span>
-              <select defaultValue={p.sort ?? "default"}>
+            <form method="get">
+              {p.q ? <input type="hidden" name="q" value={p.q} /> : null}
+              {p.category ? <input type="hidden" name="category" value={p.category} /> : null}
+              {p.min_price ? <input type="hidden" name="min_price" value={p.min_price} /> : null}
+              {p.max_price ? <input type="hidden" name="max_price" value={p.max_price} /> : null}
+              {Object.entries(attributes).map(([code, value]) => <input key={code} type="hidden" name={`attributes[${code}]`} value={value} />)}
+              {p.featured ? <input type="hidden" name="featured" value={p.featured} /> : null}
+              <input type="hidden" name="page" value="1" />
+              <label>
+                <span className="visually-hidden">{t("sort")}</span>
+                <select name="sort" defaultValue={p.sort ?? "newest"}>
                 <option value="default">{t("defaultSort")}</option>
                 <option value="price_asc">{t("priceAscending")}</option>
+                <option value="price_desc">{t("priceDescending")}</option>
                 <option value="newest">{t("newest")}</option>
-              </select>
-            </label>
+                <option value="oldest">{t("oldest")}</option>
+                <option value="most_viewed">{t("mostViewed")}</option>
+                <option value="most_popular">{t("mostPopular")}</option>
+                </select>
+                <button type="submit">{t("applyFilters")}</button>
+              </label>
+            </form>
           </div>
+          <form className="search-filter-form" method="get">
+            <input name="q" defaultValue={p.q} placeholder={t("searchPlaceholder")} />
+            {p.category ? <input type="hidden" name="category" value={p.category} /> : null}
+            <input name="min_price" inputMode="numeric" defaultValue={p.min_price} placeholder={t("minPrice")} />
+            <input name="max_price" inputMode="numeric" defaultValue={p.max_price} placeholder={t("maxPrice")} />
+            {dynamicFilters.map((field) => field.options?.length ? <select key={field.code} name={`attributes[${field.code}]`} defaultValue={p[`attributes[${field.code}]`] ?? ""}><option value="">{field.label ?? field.code}</option>{field.options.map((option) => <option key={option.slug} value={option.slug}>{option.label ?? option.value}</option>)}</select> : <input key={field.code} name={`attributes[${field.code}]`} defaultValue={p[`attributes[${field.code}]`]} placeholder={field.label ?? field.code} />)}
+            <button type="submit">{t("applyFilters")}</button>
+          </form>
+          {p.q || p.category || p.min_price || p.max_price ? <div className="filter-chips">{[p.q || null, p.category || null, p.min_price ? `>= ${p.min_price}` : null, p.max_price ? `<= ${p.max_price}` : null].filter(Boolean).map((chip) => <span key={chip}>{chip}</span>)}</div> : null}
           {listings.length ? (
             <div className="row-list">
               {listings.map((listing) => (
@@ -61,13 +100,7 @@ export default async function SearchPage({ searchParams }: Props) {
             </div>
           )}
           <nav className="pagination" aria-label={t("pagination")}>
-            <b aria-current="page" className="selected">
-              1
-            </b>
-            <b>2</b>
-            <b>3</b>
-            <b>4</b>
-            <b>20</b>
+            {Array.from({ length: page.lastPage }, (_, index) => index + 1).slice(Math.max(0, page.currentPage - 3), page.currentPage + 2).map((number) => <Link key={number} href={`?${new URLSearchParams({ ...p, page: String(number) } as Record<string, string>).toString()}`} aria-current={number === page.currentPage ? "page" : undefined} className={number === page.currentPage ? "selected" : ""}>{number}</Link>)}
           </nav>
         </section>
       </div>

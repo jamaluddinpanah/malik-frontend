@@ -54,5 +54,5 @@ export type CategoryFormSchema = {
 };
 export type DynamicFormValues = Record<
   string,
-  string | number | boolean | string[] | null
+  string | number | boolean | string[] | Record<string, string> | null
 >;

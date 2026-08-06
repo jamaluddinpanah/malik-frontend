@@ -3,10 +3,10 @@
 import { ChevronDown, ChevronRight, Menu } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
-import { apiClient, type ApiResponse } from "@/lib/api";
-import { routes } from "@/lib/routes";
-import { LocalizedLink } from "@/presentation/components/localized-link";
-import styles from "@/presentation/components/site-header.module.css";
+import { apiClient, type ApiResponse } from "@/shared/lib/api";
+import { routes } from "@/shared/lib/routes";
+import { LocalizedLink } from "@/shared/ui/localized-link";
+import styles from "@/shared/ui/site-header.module.css";
 
 type PublicCategory = { id: number; slug: string; name: string | null; children: PublicCategory[] };
 

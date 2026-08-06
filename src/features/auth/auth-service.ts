@@ -1,5 +1,5 @@
-import type { AuthUser, ChangePasswordInput, LoginInput, ProfileUpdateInput, RegisterInput, ResetPasswordInput } from "@/domain/auth/entities";
-import { SanctumAuthRepository } from "@/infrastructure/api/sanctum-auth-repository";
+import type { AuthUser, ChangePasswordInput, LoginInput, ProfileUpdateInput, RegisterInput, ResetPasswordInput } from "@/features/auth/entities";
+import { SanctumAuthRepository } from "@/features/auth/sanctum-auth-repository";
 
 /** Typed frontend boundary for Laravel Sanctum authentication operations. */
 export class AuthService {

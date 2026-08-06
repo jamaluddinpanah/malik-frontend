@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { ProtectedRoute } from "@/presentation/auth/protected-route";
+import { ProtectedRoute } from "@/features/auth/protected-route";
 
 export const metadata: Metadata = { robots: { index: false, follow: false } };
 

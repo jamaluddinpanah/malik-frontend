@@ -1,0 +1,6 @@
+import type { CategoryRepository, CategoryFilter, ListingFilters, ListingPage, ListingRepository } from "@/features/listings/repositories";
+export class SearchListings { constructor(private readonly listings: ListingRepository) {} execute(filters: ListingFilters) { return this.listings.search(filters); } }
+export class SearchListingsPage { constructor(private readonly listings: ListingRepository) {} execute(filters: ListingFilters): Promise<ListingPage> { return this.listings.searchPage ? this.listings.searchPage(filters) : this.listings.search(filters).then((items) => ({ items, currentPage: 1, lastPage: 1, total: items.length, perPage: items.length })); } }
+export class GetListing { constructor(private readonly listings: ListingRepository) {} async execute(slug: string) { const listing = await this.listings.findBySlug(slug); if (listing) await this.listings.incrementViews(slug); return listing; } }
+export class ListCategories { constructor(private readonly categories: CategoryRepository) {} execute() { return this.categories.list(); } }
+export class ListCategoryFilters { constructor(private readonly categories: CategoryRepository) {} execute(categoryId: number): Promise<CategoryFilter[]> { return this.categories.filters ? this.categories.filters(categoryId) : Promise.resolve([]); } }

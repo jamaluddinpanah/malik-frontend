@@ -1,2 +1,5 @@
-import { ProfileSettingsForm } from "@/presentation/auth/account-settings-forms";
-export default function ProfilePage() { return <ProfileSettingsForm/>; }
+import { redirect } from "next/navigation";
+
+export default function ProfilePage() {
+  redirect("/my-account/account-information");
+}

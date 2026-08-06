@@ -1,1 +1,1 @@
-export { default } from "../../unauthorized/page";
+export { default, metadata } from "../../unauthorized/page";

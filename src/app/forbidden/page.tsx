@@ -1,5 +1,8 @@
-import { LocalizedLink as Link } from "@/presentation/components/localized-link";
+import { LocalizedLink as Link } from "@/shared/ui/localized-link";
 import { getTranslations } from "next-intl/server";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = { robots: { index: false, follow: false } };
 
 export default async function ForbiddenPage() {
   const t = await getTranslations("forbidden");

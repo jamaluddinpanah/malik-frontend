@@ -1,6 +1,5 @@
-import { marketplace } from "@/infrastructure/container";
-import { AccountDashboard } from "@/presentation/components/account-dashboard";
+import { AccountDashboard } from "@/features/account/account-dashboard";
 
-export default async function MyAccountPage() {
-  return <AccountDashboard listings={await marketplace.searchListings.execute({})} />;
+export default function MyAccountPage() {
+  return <AccountDashboard />;
 }

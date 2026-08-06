@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
-import { apiClient } from "@/lib/api";
+import { apiClient } from "@/shared/lib/api";
 
 export type Currency = {
   id: number;
@@ -23,12 +23,24 @@ export function CurrencySelector({
   const t = useTranslations("categoryForms");
   const [currencies, setCurrencies] = useState<Currency[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const resolved = useRef<number | undefined>(undefined);
   useEffect(() => {
     void apiClient
       .request<{ data: Currency[] }>("/api/v1/currencies")
       .then((response) => setCurrencies(response.data))
       .catch(() => setError(t("currencyError")));
   }, [t]);
+  useEffect(() => {
+    if (!value) {
+      resolved.current = undefined;
+      return;
+    }
+    const current = currencies.find((item) => item.id === value);
+    if (current && resolved.current !== current.id) {
+      resolved.current = current.id;
+      onChange(current);
+    }
+  }, [currencies, onChange, value]);
   if (error) return <p role="alert">{error}</p>;
   return (
     <select

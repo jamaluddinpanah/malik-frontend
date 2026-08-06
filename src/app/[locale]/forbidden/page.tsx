@@ -1,1 +1,1 @@
-export { default } from "../../forbidden/page";
+export { default, metadata } from "../../forbidden/page";

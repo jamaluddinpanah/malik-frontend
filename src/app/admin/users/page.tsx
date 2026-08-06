@@ -1,4 +1,4 @@
-import { AdminUsers } from "@/presentation/components/admin-authorization";
+import { AdminUsers } from "@/features/admin/admin-authorization";
 export default function AdminUsersPage() {
   return <AdminUsers />;
 }

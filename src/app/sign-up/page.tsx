@@ -1,6 +1,9 @@
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { defaultLocale, isAppLocale } from "@/i18n/config";
+import type { Metadata } from "next";
+import { defaultLocale, isAppLocale } from "@/shared/i18n/config";
+
+export const metadata: Metadata = { robots: { index: false, follow: false } };
 
 export default async function SignUp({
   searchParams,

@@ -1,2 +1,2 @@
-import { AdminReferenceData } from "@/presentation/components/admin-reference-data";
+import { AdminReferenceData } from "@/features/admin/admin-reference-data";
 export default function AdminCurrenciesPage() { return <AdminReferenceData section="currencies"/>; }

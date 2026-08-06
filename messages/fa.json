@@ -26,6 +26,7 @@
   },
   "feedback": {
     "loading": "در حال بارگذاری…",
+    "saving": "در حال ذخیره…",
     "emptyTitle": "هنوز چیزی اینجا نیست",
     "emptyDescription": "در حال حاضر محتوایی برای نمایش وجود ندارد.",
     "errorTitle": "مشکلی رخ داد",
@@ -98,7 +99,32 @@
     "selectLocation": "انتخاب موقعیت",
     "locationError": "موقعیت‌ها بارگذاری نشدند.",
     "selectCurrency": "انتخاب ارز",
-    "currencyError": "ارزها بارگذاری نشدند."
+    "currencyError": "ارزها بارگذاری نشدند.",
+    "vehicleCondition": {
+      "legend": "راهنمای وضعیت بدنه",
+      "conditions": { "original": "اصلی", "locally_painted": "رنگ محلی", "painted": "رنگ شده", "changed": "تغییر شده" },
+      "parts": { "front_bumper": "سپر جلو", "hood": "کاپوت", "roof": "سقف", "front_left_door": "دروازه چپ جلو", "rear_left_door": "دروازه چپ عقب", "front_right_door": "دروازه راست جلو", "rear_right_door": "دروازه راست عقب", "trunk": "صندوق", "rear_bumper": "سپر عقب" },
+      "partState": "{part}: {condition}. برای تغییر فعال کنید.",
+      "summary": "بخش‌های تغییر یافته",
+      "partSummary": "{part}: {condition}",
+      "none": "همه بخش‌ها اصلی هستند.",
+      "reset": "بازنشانی به اصلی"
+    }
+  },
+  "maps": {
+    "title": "موقعیت آگهی",
+    "editorHint": "موقعیت آگهی را روی نقشه مشخص کنید. نشانی دقیق شما فقط برای مدیریت این آگهی استفاده می‌شود.",
+    "searchPlaceholder": "جستجوی نشانی یا مکان",
+    "search": "جستجو",
+    "searchError": "این نشانی پیدا نشد. موقعیت را دستی وارد کنید.",
+    "address": "نشانی",
+    "administrativeArea": "ناحیه اداری",
+    "latitude": "عرض جغرافیایی",
+    "longitude": "طول جغرافیایی",
+    "mapLabel": "نقشه آگهی",
+    "loading": "نقشه در حال بارگذاری است...",
+    "unavailable": "خدمت نقشه در دسترس نیست. هنوز می‌توانید نشانی و جزئیات موقعیت را وارد کنید.",
+    "noPublicLocation": "فروشنده موقعیت تقریبی را روی نقشه به اشتراک نگذاشته است."
   },
   "categories": {
     "title": "دسته‌بندی‌ها",
@@ -131,16 +157,49 @@
     "sort": "ترتیب آگهی‌ها",
     "defaultSort": "پیش‌فرض",
     "priceAscending": "قیمت از کم به زیاد",
+    "priceDescending": "قیمت از زیاد به کم",
     "newest": "جدیدترین",
+    "oldest": "قدیمی‌ترین",
+    "mostViewed": "پربازدیدترین",
+    "mostPopular": "محبوب‌ترین",
+    "searchPlaceholder": "جستجوی آگهی‌ها",
+    "minPrice": "حداقل قیمت",
+    "maxPrice": "حداکثر قیمت",
+    "applyFilters": "اعمال فیلترها",
     "emptyTitle": "آگهی پیدا نشد",
     "emptyDescription": "جستجوی گسترده‌تر یا دسته‌بندی دیگری را امتحان کنید.",
     "pagination": "صفحه‌های نتایج جستجو"
   },
   "listing": {
     "listing": "آگهی",
+    "save": "ذخیره",
+    "saved": "ذخیره شد",
+    "favoriteError": "دوباره تلاش کنید",
+    "savingFavorite": "در حال ذخیره…",
+    "phoneLoginRequired": "برای دیدن شماره تلفن وارد شوید.",
+    "contactRateLimited": "لطفاً قبل از تلاش دوباره صبر کنید.",
+    "emailSeller": "ایمیل به فروشنده",
+    "whatsapp": "واتساپ",
+    "login": "ورود",
+    "noImage": "تصویری موجود نیست",
     "home": "خانه",
     "breadcrumbs": "مسیر صفحه",
     "views": "{count} بازدید",
+      "messagesTitle": "پیام‌ها",
+    "messagesLoading": "پیام‌ها در حال بارگذاری‌اند…",
+    "messagesLoadError": "پیام‌ها بارگذاری نشدند.",
+    "messageSendError": "پیام ارسال نشد.",
+    "noConversations": "هنوز گفتگویی وجود ندارد.",
+    "selectConversation": "یک گفتگو را انتخاب کنید",
+    "messagePlaceholder": "پیام بنویسید…",
+    "sendMessage": "ارسال",
+    "unmute": "رفع بی‌صدا",
+    "mute": "بی‌صدا",
+    "leaveConversation": "ترک گفتگو",
+    "blockUser": "مسدود کردن",
+    "unblockUser": "رفع مسدودی",
+    "reportConversation": "گزارش",
+    "replyTo": "پاسخ به #{id}",
     "listingNumber": "شماره آگهی",
     "listingDate": "تاریخ آگهی",
     "category": "دسته‌بندی",
@@ -149,6 +208,12 @@
     "details": "جزئیات آگهی",
     "description": "توضیحات",
     "messageSeller": "پیام به فروشنده",
+    "messageError": "گفتگو آغاز نشد. دوباره تلاش کنید.",
+    "messageBlocked": "به دلیل مسدود بودن یکی از کاربران، نمی‌توانید پیام بفرستید.",
+    "startingMessage": "گفتگو در حال شروع است…",
+    "openConversation": "باز کردن گفتگو",
+    "loginToMessage": "برای پیام وارد شوید",
+    "openMessages": "باز کردن پیام‌ها",
     "showPhone": "نمایش شماره تلفن",
     "contactNotice": "با پیام‌های مالک یا شماره نمایش‌داده‌شده مستقیم با فروشنده تماس بگیرید.",
     "map": "نقشه",
@@ -218,24 +283,54 @@
     "breadcrumbs": "مسیر دسته‌بندی",
     "schemaError": "فرم دسته‌بندی بارگذاری نشد.",
     "forbidden": "اجازه ایجاد آگهی را ندارید.",
+    "unauthorized": "نشست شما منقضی شده است. لطفاً دوباره وارد شوید.",
+    "conflict": "این آگهی پیش از ارسال تغییر کرده است. صفحه را تازه کرده و دوباره تلاش کنید.",
+    "validationError": "لطفاً فیلدهای مشخص‌شده را اصلاح و دوباره تلاش کنید.",
+    "serverError": "ملک در حال حاضر نتوانست آگهی شما را ارسال کند. دوباره تلاش کنید.",
+    "networkError": "ارتباط با ملک برقرار نشد. اتصال خود را بررسی و دوباره تلاش کنید.",
     "submitting": "در حال ارسال…",
     "listingId": "شناسه آگهی: {id}",
     "priceType": "نوع قیمت",
+    "salaryType": "نوع معاش",
+    "fixedSalary": "معاش ثابت",
+    "salaryRange": "بازه معاش",
+    "notDisclosed": "اعلام نشده",
+    "salary": "معاش",
+    "minimumSalary": "حداقل معاش",
+    "maximumSalary": "حداکثر معاش",
+    "payPeriod": "دوره پرداخت",
+    "hourly": "ساعتی",
+    "daily": "روزانه",
+    "weekly": "هفتگی",
+    "monthly": "ماهانه",
+    "yearly": "سالانه",
     "fixed": "قیمت ثابت",
     "negotiable": "قابل مذاکره",
     "contact": "برای قیمت تماس بگیرید",
     "currency": "واحد پول",
     "requiredNote": "همه فیلدها الزامی‌اند.",
     "listingTitle": "عنوان آگهی",
-    "price": "قیمت (افغانی)",
+    "localizedTitle": "عنوان ({language})",
+    "localizedDescription": "توضیحات ({language})",
+    "languages": { "en": "انگلیسی", "fa": "دری", "ps": "پښتو" },
+    "price": "قیمت",
     "city": "شهر",
     "district": "ناحیه",
     "listingDescription": "توضیحات",
+    "phoneVisible": "شماره تلفن من به کاربران واردشده نشان داده شود",
+    "urgentListing": "این آگهی به عنوان فوری علامت‌گذاری شود",
+    "historyTitle": "تاریخچه آگهی",
+    "loadingHistory": "تاریخچه در حال بارگذاری است...",
+    "historyLoadError": "تاریخچه آگهی بارگذاری نشد.",
+    "retryHistory": "تلاش دوباره",
+    "showMoreHistory": "نمایش تاریخچه بیشتر",
+    "showLessHistory": "نمایش تاریخچه کمتر",
     "media": "تصاویر",
     "removeMedia": "حذف تصویر",
     "draft": {"saving": "پیش‌نویس ذخیره می‌شود…", "saved": "پیش‌نویس ذخیره شد", "failed": "ذخیره پیش‌نویس انجام نشد"},
     "submit": "ارسال آگهی",
     "success": "آگهی شما برای بررسی فرستاده شد.",
+    "resubmitted": "آگهی به‌روزشده شما برای بازبینی ارسال شد.",
     "error": "همه فیلدهای الزامی را درست تکمیل کنید.",
     "paths": {
       "realEstate": "مسکونی > برای فروش > آپارتمان",
@@ -274,10 +369,37 @@
     "searchDescription": "جستجوها را ذخیره کنید تا زود به نتایج جدید برگردید.",
     "recentActivity": "فعالیت اخیر",
     "viewAll": "نمایش همه",
-    "loading": "در حال بارگذاری…",
+     "views": "{count} بازدید",
+      "messagesTitle": "پیام‌ها",
+      "searchMessages": "جستجو بر اساس شخص یا آگهی",
+      "noMatchingConversations": "گفتگویی مطابق پیدا نشد.",
+      "loadingOlderMessages": "پیام‌های قدیمی‌تر در حال بارگذاری است…",
+      "loadOlderMessages": "بارگذاری پیام‌های قدیمی‌تر",
+     "messagesLoading": "پیام‌ها در حال بارگذاری‌اند…",
+     "messagesLoadError": "پیام‌ها بارگذاری نشدند.",
+     "messageSendError": "پیام ارسال نشد.",
+     "noConversations": "هنوز گفتگویی وجود ندارد.",
+     "selectConversation": "یک گفتگو را انتخاب کنید",
+     "messagePlaceholder": "پیام بنویسید…",
+     "sendMessage": "ارسال",
+     "unmute": "رفع بی‌صدا",
+     "mute": "بی‌صدا",
+     "leaveConversation": "ترک گفتگو",
+     "blockUser": "مسدود کردن",
+     "unblockUser": "رفع مسدودی",
+     "reportConversation": "گزارش",
+     "replyTo": "پاسخ به #{id}",
+     "yourMessage": "شما",
+     "loading": "در حال بارگذاری…",
+    "saving": "در حال ذخیره…",
     "loadError": "آگهی‌های شما بارگذاری نشدند.",
     "actionError": "انجام عملیات روی آگهی ممکن نشد.",
-    "actions": {"pause": "توقف", "resume": "ادامه", "sold": "فروخته شد", "archive": "بایگانی", "restore": "بازیابی"},
+    "actions": {"pause": "توقف", "resume": "ادامه", "sold": "فروخته شد", "archive": "بایگانی", "restore": "بازیابی", "edit": "ویرایش", "delete": "حذف"},
+    "deleteListingTitle": "آگهی حذف شود؟",
+    "confirmDelete": "\"{listing}\" برای همیشه حذف شود؟ این عمل قابل بازگشت نیست.",
+    "cancel": "لغو",
+    "deleting": "در حال حذف...",
+    "removeFavorite": "حذف از علاقه‌مندی‌ها",
     "sections": {
       "overview": "نمای کلی",
       "listingManagement": "مدیریت آگهی‌ها",
@@ -307,8 +429,14 @@
       "signedInDevices": "دستگاه‌های واردشده",
       "appSettings": "تنظیمات برنامه",
       "notificationSettings": "تنظیمات اعلان‌ها",
+      "notifications": "اعلان‌ها",
       "readReceipts": "رسید خواندن پیام",
-      "messagePermission": "اجازه پیام الکترونیکی"
+       "messagePermission": "اجازه پیام الکترونیکی",
+       "team": "مدیریت تیم",
+       "jobApplications": "درخواست‌های وظیفه",
+        "applicationProfile": "پروفایل درخواست",
+        "myApplications": "درخواست‌های من",
+       "applicantManagement": "متقاضیان"
     }
   },
   "account": {
@@ -348,5 +476,35 @@
     "resetLinkSent": "اگر این ایمیل وجود داشته باشد، پیوند بازنشانی فرستاده شده است.",
     "backToSignIn": "بازگشت به ورود",
     "pleaseWait": "لطفاً صبر کنید…"
+    ,"accountInformation": "اطلاعات حساب"
+    ,"accountInformationDescription": "جزئیات شخصی، راه‌های تماس و دسترسی حساب خود را مدیریت کنید."
+    ,"chooseAccountSetting": "برای ادامه، یک تنظیم را از منوی حساب انتخاب کنید."
+    ,"emailAddress": "نشانی ایمیل"
+    ,"mobilePhone": "شماره تلفن همراه"
+    ,"countryCode": "کد کشور"
+    ,"emailDescription": "از ایمیلی استفاده کنید که برای اعلان‌ها و تأیید حساب به آن دسترسی دارید."
+    ,"phoneDescription": "از شماره‌ای استفاده کنید که پیام‌های تأیید حساب را دریافت می‌کند."
+    ,"contactUpdated": "اطلاعات تماس به‌روز شد."
+    ,"save": "ذخیره تغییرات"
+    ,"saved": "تنظیمات ذخیره شد."
+    ,"deleteAccount": "حذف حساب"
+    ,"deleteDescription": "حذف حساب همیشگی است. برای تأیید رمز خود را وارد کنید."
+    ,"deleteConfirm": "حساب مالک برای همیشه حذف شود؟ این کار بازگردانده نمی‌شود."
+    ,"passwordChange": "تغییر رمز عبور"
+    ,"twoFactor": "تأیید دومرحله‌ای"
+    ,"twoFactorDescription": "هنگام ورود یک مرحله تأیید اضافی بخواهید."
+    ,"enableTwoFactor": "فعال‌سازی تأیید دومرحله‌ای"
+    ,"recoveryEmail": "ایمیل بازیابی"
+    ,"recoveryDescription": "برای بازیابی دسترسی حساب، یک ایمیل اضافه کنید."
+    ,"accountVerification": "تأیید ایمیل"
+    ,"verificationDescription": "ایمیل اصلی و بازیابی خود را تأیید کنید."
+    ,"recoveryVerificationDescription": "پس از افزودن ایمیل بازیابی، پیوند تأیید ارسال کنید."
+    ,"signedInDevices": "دستگاه‌های واردشده"
+    ,"devicesDescription": "دستگاه‌های واردشده به حساب را بررسی و دسترسی ناشناس را لغو کنید."
+    ,"revoke": "لغو دسترسی"
+    ,"revokeAll": "لغو همه دستگاه‌های دیگر"
+    ,"currentDevice": "دستگاه فعلی"
+    ,"unknownDevice": "دستگاه ناشناس"
+    ,"loading": "در حال بارگذاری…"
   }
 }

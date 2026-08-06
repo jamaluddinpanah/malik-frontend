@@ -3,7 +3,7 @@ import {
   defaultLocale,
   isAppLocale,
   localeCookieName,
-} from "./src/i18n/config";
+} from "./src/shared/i18n/config";
 
 function preferredLocale(request: NextRequest) {
   const saved = request.cookies.get(localeCookieName)?.value;

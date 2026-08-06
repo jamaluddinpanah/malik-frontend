@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
-import { apiClient } from "@/lib/api";
+import { apiClient } from "@/shared/lib/api";
 
 export type LocationOption = {
   id: number;

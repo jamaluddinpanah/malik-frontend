@@ -1,0 +1,29 @@
+.map { border: 1px solid var(--line); border-radius: 8px; padding: 14px; min-inline-size: 0; }
+.map legend { padding-inline: 5px; font-weight: 700; }
+.key { display: flex; flex-wrap: wrap; gap: 8px; margin-block-end: 12px; }
+.keyItem { border-radius: 999px; padding: 4px 8px; font-size: 12px; color: #172033; }
+.vehicle { margin: auto; width: min(100%, 360px); }
+.car { display: block; width: 100%; height: auto; }
+.backdrop { fill: #fffdf0; }
+.bumperTab { fill: #d8d8d8; }
+.sideBase { fill: #dedede; stroke: #e5e5e5; stroke-width: 8; stroke-linejoin: round; }
+.wheelMount { fill: #d0d0d0; stroke: #e2e2e2; stroke-width: 7; }
+.tyre { fill: #ddd; stroke: #fffdf0; stroke-width: 7; }
+.glass { fill: #fff; stroke: #e8e8e8; stroke-width: 8; stroke-linejoin: round; }
+.engine { fill: #d0d0d0; stroke: #c8c8c8; stroke-width: 5; }
+.panel { stroke: #e7e7e7; stroke-width: 6; stroke-linejoin: round; transition: fill .15s ease, stroke .15s ease; }
+.doorCutout { fill: #fff; stroke: #eee; stroke-width: 5; stroke-linejoin: round; pointer-events: none; }
+.lights { fill: #fff; pointer-events: none; }
+.conditionMark { fill: #fff; font: 700 20px system-ui, sans-serif; text-anchor: middle; dominant-baseline: middle; pointer-events: none; }
+.interactive { cursor: pointer; }
+.interactive:hover .panel { stroke: #006bc4; stroke-width: 5; }
+.interactive:focus-visible { outline: none; }
+.interactive:focus-visible .panel { stroke: #006bc4; stroke-width: 6; }
+.original { background: #a3a3a3; fill: #cecece; }
+.locally_painted { background: #fb9250; fill: #fb9250; }
+.painted { background: #5e81c7; fill: #5e81c7; }
+.changed { background: #f26543; fill: #f26543; }
+.summary { margin-block-start: 12px; font-size: 13px; }
+.summary p, .summary ul { margin: 5px 0 0; padding-inline-start: 20px; }
+.reset { margin-block-start: 12px; border: 1px solid var(--line); border-radius: 5px; background: #fff; padding: 7px 10px; font: inherit; font-weight: 700; cursor: pointer; }
+.reset:disabled { cursor: not-allowed; opacity: .55; }

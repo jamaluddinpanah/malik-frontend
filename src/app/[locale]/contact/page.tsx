@@ -1,1 +1,1 @@
-export { default } from "../../contact/page";
+export { default, generateMetadata } from "../../contact/page";

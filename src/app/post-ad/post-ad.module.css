@@ -46,15 +46,33 @@
 .scope :global(.posting-form){margin-top:27px;padding-top:22px;border-top:1px solid #d3dce4;display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
 .scope :global(.posting-form h2),.scope :global(.posting-form)>p{grid-column:1/-1;margin:0}
 .scope :global(.form-note){color:#12815d!important;font-weight:bold}
-.scope :global(.posting-form label){display:grid;gap:6px;font-weight:bold;font-size:13px}
-.scope :global(.posting-form input),.scope :global(.posting-form textarea){padding:10px;border:1px solid #c7d1db;border-radius:3px;font:inherit}
+.scope :global(.posting-form label){display:grid;gap:6px;font-weight:bold;font-size:13px;text-align:start}
+.scope :global(.posting-form .rich-text-field){display:grid;gap:6px;font-weight:bold;font-size:13px;text-align:start}
+.scope :global(.posting-form .wide){grid-column:1/-1}
+.scope :global(.posting-options){display:flex;flex-wrap:wrap;gap:10px}
+.scope :global(.posting-form .phone-visibility){display:flex;align-items:center;gap:9px;padding:10px 12px;border:1px solid #cbd5dc;border-radius:6px;background:#fff;color:#284a70;font-weight:600;min-height:42px}
+.scope :global(.posting-form .phone-visibility input){width:18px;height:18px;margin:0;accent-color:#1688de;flex:0 0 auto}
+.scope :global(.posting-form input),.scope :global(.posting-form select),.scope :global(.posting-form textarea){width:100%;min-height:42px;padding:10px;border:1px solid #c7d1db;border-radius:5px;background:#fff;color:#17334e;font:inherit}
+.scope :global(.posting-form select){appearance:auto;cursor:pointer}
+.scope :global(.posting-form input:focus),.scope :global(.posting-form select:focus),.scope :global(.posting-form textarea:focus){border-color:#1688de;outline:2px solid #1688de26}
 .scope :global(.posting-form textarea){height:90px}
-.scope :global(.posting-form button){width:max-content;background:#2e91e3;color:#fff;border-radius:3px}
+.scope :global(.listing-timeline){display:grid;gap:10px;border:1px solid #cbd5dc;border-radius:4px;padding:15px;background:#f8fbfd}
+.scope :global(.listing-timeline h3){margin:0;font-size:15px}
+.scope :global(.listing-timeline article){display:grid;gap:3px;border-inline-start:3px solid #2e91e3;padding:8px 10px;background:#fff}
+.scope :global(.listing-timeline small){color:#60768a}
+.scope :global(.listing-history-actions){display:flex;gap:8px;flex-wrap:wrap}.scope :global(.listing-history-actions button),.scope :global(.listing-timeline p button){border:1px solid #a9c9e3;border-radius:4px;background:#fff;color:#086bc2;padding:6px 9px;font:inherit;font-size:12px;font-weight:700}
+.scope :global(.media-upload){min-width:0;overflow:hidden}
+.scope :global(.media-preview){display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:12px;width:100%;max-width:100%;margin-top:10px;overflow:hidden}
+.scope :global(.media-preview figure){min-width:0;max-width:100%;margin:0;border:1px solid #cbd5dc;border-radius:4px;overflow:hidden;background:#f8fbfd}
+.scope :global(.media-preview img){display:block;width:100%;max-width:100%;height:120px;object-fit:cover}
+.scope :global(.media-preview button){width:100%;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;border-radius:0;background:#fff!important;color:#075fae!important;font-size:12px}
+.scope :global(.posting-form button){width:max-content;align-self:start;background:#2e91e3;color:#fff;border-radius:3px}
+.scope :global(.posting-form .submit-listing){justify-self:start;margin-top:4px}
 @media(max-width:700px){.scope :global(.posting-main){padding-top:28px}
 .scope :global(.category-picker){padding:18px}
 .scope :global(.posting-categories){grid-template-columns:repeat(2,1fr);gap:10px}
 .scope :global(.step-columns){grid-template-columns:1fr}
 .scope :global(.step-columns>div),.scope :global(.step-columns aside){min-height:auto}
 .scope :global(.selection-path){align-items:flex-start;gap:12px;flex-direction:column}
-.scope :global(.posting-form){grid-template-columns:1fr}
+ .scope :global(.posting-form){grid-template-columns:1fr}.scope :global(.posting-options){display:grid;grid-template-columns:1fr}
 }

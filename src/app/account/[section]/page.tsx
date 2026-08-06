@@ -1,6 +1,6 @@
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { defaultLocale, isAppLocale } from "@/i18n/config";
+import { defaultLocale, isAppLocale } from "@/shared/i18n/config";
 
 export default async function AccountSection({
   params,

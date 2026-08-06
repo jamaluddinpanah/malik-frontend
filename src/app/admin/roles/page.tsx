@@ -1,4 +1,4 @@
-import { AdminRoles } from "@/presentation/components/admin-authorization";
+import { AdminRoles } from "@/features/admin/admin-authorization";
 export default function AdminRolesPage() {
   return <AdminRoles />;
 }

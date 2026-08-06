@@ -15,7 +15,7 @@
   margin-bottom: 18px;
 }
 .top {
-  width: 823px;
+  width: 760px;
 }
 .top h1 {
   font-size: 21px;
@@ -95,6 +95,9 @@
   object-fit: cover;
   display: block;
 }
+.imageEmpty { height: 428px; display: grid; place-items: center; color: #63809d; background: #eef4f8; }
+.gallery button { border: 0; padding: 0; background: transparent; cursor: pointer; }
+.gallery .thumbSelected { outline: 3px solid #086bc0; outline-offset: -3px; }
 .gallery > div {
   padding: 8px;
   display: flex;
@@ -169,7 +172,8 @@
   padding: 2px 5px;
   margin-inline-end: 6px;
 }
-.description p {
+.description p,
+.descriptionBody {
   padding: 18px;
   margin: 0;
   line-height: 1.55;
@@ -191,17 +195,13 @@
 .map {
   height: 260px;
   margin: 12px 20px 0;
-  background: linear-gradient(135deg, #d7ecdd, #f5efd8 55%, #c6d9ed);
-  display: grid;
-  place-content: center;
-  text-align: center;
-  font-size: 27px;
-  font-weight: bold;
-  color: #4b5870;
+  overflow: hidden;
 }
-.map small {
+.approximate {
+  display: block;
+  margin: 8px 20px 0;
+  color: #5b7692;
   font-size: 12px;
-  font-weight: normal;
 }
 .similar {
   width: 760px;
@@ -745,7 +745,8 @@
   .featureBox > div {
     padding: 14px;
   }
-  .description p {
+  .description p,
+  .descriptionBody {
     padding: 14px;
   }
   .location > p,

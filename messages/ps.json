@@ -26,6 +26,7 @@
   },
   "feedback": {
     "loading": "لوډېږي…",
+    "saving": "خوندي کېږي…",
     "emptyTitle": "لا تر اوسه څه نشته",
     "emptyDescription": "اوسمهال د ښودلو لپاره هېڅ محتوا نشته.",
     "errorTitle": "ستونزه رامنځته شوه",
@@ -98,7 +99,32 @@
     "selectLocation": "ځای وټاکئ",
     "locationError": "ځایونه لوډ نه شول.",
     "selectCurrency": "کرنسي وټاکئ",
-    "currencyError": "کرنسۍ لوډ نه شوې."
+    "currencyError": "کرنسۍ لوډ نه شوې.",
+    "vehicleCondition": {
+      "legend": "د بدنې حالت لارښود",
+      "conditions": { "original": "اصلي", "locally_painted": "ځایي رنګ", "painted": "رنګ شوی", "changed": "بدل شوی" },
+      "parts": { "front_bumper": "مخکینی بمپر", "hood": "کاپوټ", "roof": "چت", "front_left_door": "مخکینۍ کیڼه دروازه", "rear_left_door": "شاتنۍ کیڼه دروازه", "front_right_door": "مخکینۍ ښۍ دروازه", "rear_right_door": "شاتنۍ ښۍ دروازه", "trunk": "شا صندوق", "rear_bumper": "شا بمپر" },
+      "partState": "{part}: {condition}. د بدلون لپاره یې فعال کړئ.",
+      "summary": "بدل شوي برخې",
+      "partSummary": "{part}: {condition}",
+      "none": "ټولې برخې اصلي دي.",
+      "reset": "اصلي حالت ته بیا وګرځوئ"
+    }
+  },
+  "maps": {
+    "title": "د اعلان ځای",
+    "editorHint": "د اعلان ځای په نقشه وټاکئ. ستاسې کره پته یوازې د دې اعلان د مدیریت لپاره کارول کېږي.",
+    "searchPlaceholder": "پته یا ځای ولټوئ",
+    "search": "لټون",
+    "searchError": "دا پته ونه موندل شوه. ځای په لاس دننه کړئ.",
+    "address": "پته",
+    "administrativeArea": "اداري سیمه",
+    "latitude": "عرض البلد",
+    "longitude": "طول البلد",
+    "mapLabel": "د اعلان نقشه",
+    "loading": "نقشه لوډېږي...",
+    "unavailable": "د نقشې خدمت نشته. بیا هم پته او د ځای جزیات دننه کولی شئ.",
+    "noPublicLocation": "پلورونکي د نقشې اټکلی ځای نه دی شریک کړی."
   },
   "categories": {
     "title": "کټګورۍ",
@@ -131,16 +157,49 @@
     "sort": "اعلانونه ترتیب کړئ",
     "defaultSort": "اصلي ترتیب",
     "priceAscending": "له ټیټې بیې تر لوړې",
+    "priceDescending": "له لوړې بیې تر ټیټې",
     "newest": "نوي",
+    "oldest": "زاړه",
+    "mostViewed": "تر ټولو لیدل شوي",
+    "mostPopular": "تر ټولو مشهور",
+    "searchPlaceholder": "اعلانونه ولټوئ",
+    "minPrice": "لږ تر لږه بیه",
+    "maxPrice": "تر ټولو لوړه بیه",
+    "applyFilters": "فلټرونه پلي کړئ",
     "emptyTitle": "اعلان ونه موندل شو",
     "emptyDescription": "پراخ لټون یا بله کټګوري وازمویئ.",
     "pagination": "د لټون پایلو پاڼې"
   },
   "listing": {
     "listing": "اعلان",
+    "save": "خوندي کول",
+    "saved": "خوندي شو",
+    "favoriteError": "بیا هڅه وکړئ",
+    "savingFavorite": "خوندي کېږي…",
+    "phoneLoginRequired": "د ټیلیفون شمېرې لیدلو لپاره ننوزئ.",
+    "contactRateLimited": "مهرباني وکړئ د بیا هڅې مخکې انتظار وکړئ.",
+    "emailSeller": "پلورونکي ته برېښنالیک",
+    "whatsapp": "واټساپ",
+    "login": "ننوتل",
+    "noImage": "انځور نشته",
     "home": "کور",
     "breadcrumbs": "د پاڼې لار",
     "views": "{count} کتنې",
+      "messagesTitle": "پیغامونه",
+    "messagesLoading": "پیغامونه لوډېږي…",
+    "messagesLoadError": "پیغامونه لوډ نه شول.",
+    "messageSendError": "پیغام ونه لېږل شو.",
+    "noConversations": "تر اوسه خبرې نشته.",
+    "selectConversation": "یوه خبره وټاکئ",
+    "messagePlaceholder": "پیغام ولیکئ…",
+    "sendMessage": "لېږل",
+    "unmute": "غږ فعالول",
+    "mute": "غلی کول",
+    "leaveConversation": "خبره پرېښودل",
+    "blockUser": "بندول",
+    "unblockUser": "له بندیزه ایستل",
+    "reportConversation": "راپور ورکول",
+    "replyTo": "د #{id} ځواب",
     "listingNumber": "د اعلان شمېره",
     "listingDate": "د اعلان نېټه",
     "category": "کټګوري",
@@ -149,6 +208,12 @@
     "details": "د اعلان جزیات",
     "description": "تشریح",
     "messageSeller": "پلورونکي ته پیغام",
+    "messageError": "خبره پیل نه شوه. بیا هڅه وکړئ.",
+    "messageBlocked": "تاسو دې پلورونکي ته پیغام نه شئ لېږلی، ځکه یو کاروونکي بل بند کړی دی.",
+    "startingMessage": "خبرې اترې پیلېږي…",
+    "openConversation": "خبرې اترې پرانیزئ",
+    "loginToMessage": "د پیغام لپاره ننوزئ",
+    "openMessages": "پیغامونه پرانیزئ",
     "showPhone": "د ټیلیفون شمېره وښایئ",
     "contactNotice": "د مالک پیغامونو یا ښودل شوې شمېرې له لارې له پلورونکي سره مستقیمه اړیکه ونیسئ.",
     "map": "نقشه",
@@ -218,24 +283,54 @@
     "breadcrumbs": "د کټګورۍ لار",
     "schemaError": "د کټګورۍ فورمه نه شوه پورته کېدای.",
     "forbidden": "تاسو د اعلان جوړولو اجازه نه لرئ.",
+    "unauthorized": "ستاسې ناسته پای ته رسېدلې. بیا ننوزئ.",
+    "conflict": "دا اعلان له سپارلو مخکې بدل شوی. پاڼه تازه او بیا هڅه وکړئ.",
+    "validationError": "مشخص شوي ځایونه سم او بیا هڅه وکړئ.",
+    "serverError": "ملک اوس ستاسې اعلان نه شي سپارلی. بیا هڅه وکړئ.",
+    "networkError": "له ملک سره اړیکه ونه نیول شوه. خپله اړیکه وګورئ او بیا هڅه وکړئ.",
     "submitting": "لېږل کېږي…",
     "listingId": "د اعلان پېژند: {id}",
     "priceType": "د بیې ډول",
+    "salaryType": "د معاش ډول",
+    "fixedSalary": "ثابت معاش",
+    "salaryRange": "د معاش کچه",
+    "notDisclosed": "نه افشا کېږي",
+    "salary": "معاش",
+    "minimumSalary": "لږ تر لږه معاش",
+    "maximumSalary": "تر ټولو لوړ معاش",
+    "payPeriod": "د معاش موده",
+    "hourly": "په ساعت",
+    "daily": "ورځنی",
+    "weekly": "اونیز",
+    "monthly": "میاشتنی",
+    "yearly": "کلنی",
     "fixed": "ثابته بیه",
     "negotiable": "د خبرو وړ",
     "contact": "د بیې لپاره اړیکه ونیسئ",
     "currency": "اسعار",
     "requiredNote": "ټول ډګرونه اړین دي.",
     "listingTitle": "د اعلان سرلیک",
-    "price": "بیه (افغانۍ)",
+    "localizedTitle": "سرلیک ({language})",
+    "localizedDescription": "تشریح ({language})",
+    "languages": { "en": "انګلیسي", "fa": "دري", "ps": "پښتو" },
+    "price": "بیه",
     "city": "ښار",
     "district": "ولسوالي",
     "listingDescription": "تشریح",
+    "phoneVisible": "زما د ټیلیفون شمېره دې ننوتلو کاروونکو ته وښودل شي",
+    "urgentListing": "دا اعلان د بیړني په توګه نښه شي",
+    "historyTitle": "د اعلان تاریخچه",
+    "loadingHistory": "تاریخچه لوډېږي...",
+    "historyLoadError": "د اعلان تاریخچه لوډ نه شوه.",
+    "retryHistory": "بیا هڅه",
+    "showMoreHistory": "نور تاریخچه وښایئ",
+    "showLessHistory": "لږ تاریخچه وښایئ",
     "media": "انځورونه",
     "removeMedia": "انځور لرې کول",
     "draft": {"saving": "مسوده خوندي کېږي…", "saved": "مسوده خوندي شوه", "failed": "مسوده خوندي نه شوه"},
     "submit": "اعلان واستوئ",
     "success": "ستاسو اعلان د کتنې لپاره واستول شو.",
+    "resubmitted": "ستاسې نوی شوی اعلان د کتنې لپاره واستول شو.",
     "error": "ټول اړین ډګرونه سم بشپړ کړئ.",
     "paths": {
       "realEstate": "استوګنیز > د خرڅلاو لپاره > اپارتمان",
@@ -274,10 +369,37 @@
     "searchDescription": "لټونونه خوندي کړئ څو ژر نوو پایلو ته ورشئ.",
     "recentActivity": "وروستی فعالیت",
     "viewAll": "ټول وګورئ",
-    "loading": "لوډېږي…",
+     "views": "{count} کتنې",
+      "messagesTitle": "پیغامونه",
+      "searchMessages": "د شخص یا اعلان له مخې لټون",
+      "noMatchingConversations": "د سمون وړ خبرې نشته.",
+      "loadingOlderMessages": "زاړه پیغامونه لوډ کېږي…",
+      "loadOlderMessages": "زاړه پیغامونه لوډ کړئ",
+     "messagesLoading": "پیغامونه لوډېږي…",
+     "messagesLoadError": "پیغامونه لوډ نه شول.",
+     "messageSendError": "پیغام ونه لېږل شو.",
+     "noConversations": "تر اوسه خبرې نشته.",
+     "selectConversation": "یوه خبره وټاکئ",
+     "messagePlaceholder": "پیغام ولیکئ…",
+     "sendMessage": "لېږل",
+     "unmute": "غږ فعالول",
+     "mute": "غلی کول",
+     "leaveConversation": "خبره پرېښودل",
+     "blockUser": "بندول",
+     "unblockUser": "له بندیزه ایستل",
+     "reportConversation": "راپور ورکول",
+     "replyTo": "د #{id} ځواب",
+     "yourMessage": "تاسو",
+     "loading": "لوډېږي…",
+    "saving": "خوندي کېږي…",
     "loadError": "ستاسې اعلانونه لوډ نه شول.",
     "actionError": "د اعلان عملیات بشپړ نه شول.",
-    "actions": {"pause": "درول", "resume": "بیا پیلول", "sold": "پلورل شوی نښه کول", "archive": "آرشیف", "restore": "بیا راګرځول"},
+    "actions": {"pause": "درول", "resume": "بیا پیلول", "sold": "پلورل شوی نښه کول", "archive": "آرشیف", "restore": "بیا راګرځول", "edit": "سمول", "delete": "حذفول"},
+    "deleteListingTitle": "اعلان حذف شي؟",
+    "confirmDelete": "\"{listing}\" د تل لپاره حذف شي؟ دا عمل بېرته نه راګرځي.",
+    "cancel": "لغوه",
+    "deleting": "حذفېږي...",
+    "removeFavorite": "له خوښو څخه لرې کول",
     "sections": {
       "overview": "عمومي کتنه",
       "listingManagement": "د اعلانونو اداره",
@@ -307,8 +429,14 @@
       "signedInDevices": "ننوتلي وسایل",
       "appSettings": "د اپلېکېشن تنظیمات",
       "notificationSettings": "د خبرتیا تنظیمات",
+      "notifications": "خبرتیاوې",
       "readReceipts": "د پیغام لوستلو رسید",
-      "messagePermission": "د برېښنايي پیغام اجازه"
+       "messagePermission": "د برېښنايي پیغام اجازه",
+       "team": "د ټیم اداره",
+       "jobApplications": "د دندې غوښتنلیکونه",
+        "applicationProfile": "د غوښتنلیک پروفایل",
+        "myApplications": "زما غوښتنلیکونه",
+       "applicantManagement": "غوښتونکي"
     }
   },
   "account": {
@@ -348,5 +476,35 @@
     "resetLinkSent": "که دا برېښنالیک شتون ولري، د بیا تنظیمولو لینک واستول شو.",
     "backToSignIn": "بیا ننوتلو ته ستنېدل",
     "pleaseWait": "مهرباني وکړئ انتظار وکړئ…"
+    ,"accountInformation": "د حساب معلومات"
+    ,"accountInformationDescription": "خپل شخصي معلومات، د اړیکې لارې او حساب ته لاسرسی اداره کړئ."
+    ,"chooseAccountSetting": "د دوام لپاره د حساب له غورنۍ یو تنظیم وټاکئ."
+    ,"emailAddress": "برېښنالیک پته"
+    ,"mobilePhone": "د موبایل شمېره"
+    ,"countryCode": "د هېواد کوډ"
+    ,"emailDescription": "د حساب خبرتیاوو او تایید لپاره د لاسرسي وړ برېښنالیک وکاروئ."
+    ,"phoneDescription": "هغه موبایل شمېره وکاروئ چې د حساب تایید پیغامونه ترلاسه کوي."
+    ,"contactUpdated": "د اړیکې معلومات نوي شول."
+    ,"save": "بدلونونه خوندي کړئ"
+    ,"saved": "تنظیمات خوندي شول."
+    ,"deleteAccount": "حساب ړنګول"
+    ,"deleteDescription": "د حساب ړنګول تلپاتې دي. د تایید لپاره خپل پټنوم دننه کړئ."
+    ,"deleteConfirm": "د مالک حساب د تل لپاره ړنګ شي؟ دا بېرته نه راګرځي."
+    ,"passwordChange": "د پټنوم بدلول"
+    ,"twoFactor": "دوه پړاوه تایید"
+    ,"twoFactorDescription": "د ننوتلو پر مهال د تایید اضافي پړاو وغواړئ."
+    ,"enableTwoFactor": "دوه پړاوه تایید فعال کړئ"
+    ,"recoveryEmail": "د بېرته ترلاسه کولو برېښنالیک"
+    ,"recoveryDescription": "د حساب لاسرسي بېرته ترلاسه کولو لپاره برېښنالیک زیات کړئ."
+    ,"accountVerification": "د برېښنالیک تایید"
+    ,"verificationDescription": "خپل اصلي او د بېرته ترلاسه کولو برېښنالیک تایید کړئ."
+    ,"recoveryVerificationDescription": "د بېرته ترلاسه کولو برېښنالیک تر زیاتولو وروسته د تایید لینک واستوئ."
+    ,"signedInDevices": "ننوتلي وسایل"
+    ,"devicesDescription": "خپل حساب ته ننوتلي وسایل وګورئ او نابلده لاسرسی لغوه کړئ."
+    ,"revoke": "لاسرسی لغوه کړئ"
+    ,"revokeAll": "نور ټول وسایل لغوه کړئ"
+    ,"currentDevice": "اوسنی وسیله"
+    ,"unknownDevice": "ناپېژندل شوې وسیله"
+    ,"loading": "لوډېږي…"
   }
 }

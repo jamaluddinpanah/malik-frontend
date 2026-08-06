@@ -1,2 +1,4 @@
-import { AuthCard } from "@/presentation/components/auth-card";
+import type { Metadata } from "next";
+import { AuthCard } from "@/features/auth/auth-card";
+export const metadata: Metadata = { robots: { index: false, follow: false } };
 export default function RegisterPage(){ return <AuthCard signup/>; }

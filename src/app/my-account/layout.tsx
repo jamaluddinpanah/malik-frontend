@@ -1,6 +1,6 @@
 "use client";
 
-import { ProtectedRoute } from "@/presentation/auth/protected-route";
+import { ProtectedRoute } from "@/features/auth/protected-route";
 
 export default function MyAccountLayout({
   children,

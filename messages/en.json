@@ -26,6 +26,7 @@
   },
   "feedback": {
     "loading": "Loading…",
+    "saving": "Saving…",
     "emptyTitle": "Nothing here yet",
     "emptyDescription": "There is no content to show right now.",
     "errorTitle": "Something went wrong",
@@ -98,7 +99,32 @@
     "selectLocation": "Select location",
     "locationError": "Locations could not be loaded.",
     "selectCurrency": "Select currency",
-    "currencyError": "Currencies could not be loaded."
+    "currencyError": "Currencies could not be loaded.",
+    "vehicleCondition": {
+      "legend": "Body condition key",
+      "conditions": { "original": "Original", "locally_painted": "Locally Painted", "painted": "Painted", "changed": "Changed" },
+      "parts": { "front_bumper": "Front bumper", "hood": "Hood", "roof": "Roof", "front_left_door": "Front left door", "rear_left_door": "Rear left door", "front_right_door": "Front right door", "rear_right_door": "Rear right door", "trunk": "Trunk", "rear_bumper": "Rear bumper" },
+      "partState": "{part}: {condition}. Activate to change.",
+      "summary": "Changed parts",
+      "partSummary": "{part}: {condition}",
+      "none": "All parts are original.",
+      "reset": "Reset to original"
+    }
+  },
+  "maps": {
+    "title": "Listing location",
+    "editorHint": "Pin the listing location. Your exact address is only used to manage this listing.",
+    "searchPlaceholder": "Search for an address or place",
+    "search": "Search",
+    "searchError": "We could not find that address. Enter the location manually.",
+    "address": "Address",
+    "administrativeArea": "Administrative area",
+    "latitude": "Latitude",
+    "longitude": "Longitude",
+    "mapLabel": "Listing map",
+    "loading": "Loading map...",
+    "unavailable": "Map service is unavailable. You can still enter the address and location details.",
+    "noPublicLocation": "The seller has not shared an approximate map location."
   },
   "categories": {
     "title": "Categories",
@@ -131,16 +157,49 @@
     "sort": "Sort listings",
     "defaultSort": "Default",
     "priceAscending": "Price low to high",
+    "priceDescending": "Price high to low",
     "newest": "Newest",
+    "oldest": "Oldest",
+    "mostViewed": "Most viewed",
+    "mostPopular": "Most popular",
+    "searchPlaceholder": "Search listings",
+    "minPrice": "Minimum price",
+    "maxPrice": "Maximum price",
+    "applyFilters": "Apply filters",
     "emptyTitle": "No listings found",
     "emptyDescription": "Try a broader search or another category.",
     "pagination": "Search result pages"
   },
   "listing": {
     "listing": "Listing",
+    "save": "Save",
+    "saved": "Saved",
+    "favoriteError": "Try again",
+    "savingFavorite": "Saving…",
+    "phoneLoginRequired": "Please sign in to reveal the phone number.",
+    "contactRateLimited": "Please wait before trying again.",
+    "emailSeller": "Email seller",
+    "whatsapp": "WhatsApp",
+    "login": "Sign in",
+    "noImage": "No image available",
     "home": "Home",
     "breadcrumbs": "Breadcrumb",
     "views": "{count} views",
+      "messagesTitle": "Messages",
+    "messagesLoading": "Loading messages...",
+    "messagesLoadError": "Messages could not be loaded.",
+    "messageSendError": "Message could not be sent.",
+    "noConversations": "No conversations yet.",
+    "selectConversation": "Select a conversation",
+    "messagePlaceholder": "Write a message...",
+    "sendMessage": "Send",
+    "unmute": "Unmute",
+    "mute": "Mute",
+    "leaveConversation": "Leave",
+    "blockUser": "Block",
+    "unblockUser": "Unblock",
+    "reportConversation": "Report",
+    "replyTo": "Replying to #{id}",
     "listingNumber": "Listing number",
     "listingDate": "Listing date",
     "category": "Category",
@@ -149,6 +208,12 @@
     "details": "Listing details",
     "description": "Description",
     "messageSeller": "Message seller",
+    "messageError": "Could not start the conversation. Try again.",
+    "messageBlocked": "You cannot message this seller because one of you has blocked the other.",
+    "startingMessage": "Starting conversation…",
+    "openConversation": "Open conversation",
+    "loginToMessage": "Sign in to message",
+    "openMessages": "Open messages",
     "showPhone": "Show phone number",
     "contactNotice": "Use Malik messages or the displayed phone number to contact the seller directly.",
     "map": "Map",
@@ -218,24 +283,54 @@
     "breadcrumbs": "Category breadcrumb",
     "schemaError": "The category form could not be loaded.",
     "forbidden": "You do not have permission to create listings.",
+    "unauthorized": "Your session has expired. Please sign in again.",
+    "conflict": "This listing changed before it could be submitted. Refresh and try again.",
+    "validationError": "Please correct the highlighted fields and try again.",
+    "serverError": "Malik could not submit your listing right now. Please try again.",
+    "networkError": "Malik could not be reached. Check your connection and try again.",
     "submitting": "Submitting…",
     "listingId": "Listing ID: {id}",
     "priceType": "Price type",
+    "salaryType": "Salary type",
+    "fixedSalary": "Fixed salary",
+    "salaryRange": "Salary range",
+    "notDisclosed": "Not disclosed",
+    "salary": "Salary",
+    "minimumSalary": "Minimum salary",
+    "maximumSalary": "Maximum salary",
+    "payPeriod": "Pay period",
+    "hourly": "Hourly",
+    "daily": "Daily",
+    "weekly": "Weekly",
+    "monthly": "Monthly",
+    "yearly": "Yearly",
     "fixed": "Fixed price",
     "negotiable": "Negotiable",
     "contact": "Contact for price",
     "currency": "Currency",
     "requiredNote": "All fields are required.",
     "listingTitle": "Listing title",
-    "price": "Price (AFN)",
+    "localizedTitle": "Title ({language})",
+    "localizedDescription": "Description ({language})",
+    "languages": { "en": "English", "fa": "Dari", "ps": "Pashto" },
+    "price": "Price",
     "city": "City",
     "district": "District",
     "listingDescription": "Description",
+    "phoneVisible": "Show my phone number to logged-in users",
+    "urgentListing": "Mark this listing as urgent",
+    "historyTitle": "Listing history",
+    "loadingHistory": "Loading history...",
+    "historyLoadError": "Listing history could not be loaded.",
+    "retryHistory": "Try again",
+    "showMoreHistory": "Show more history",
+    "showLessHistory": "Show less history",
     "media": "Photos",
     "removeMedia": "Remove photo",
     "draft": {"saving": "Saving draft…", "saved": "Draft saved", "failed": "Draft could not be saved"},
     "submit": "Submit listing",
     "success": "Your ad has been submitted for review.",
+    "resubmitted": "Your updated listing has been sent for review.",
     "error": "Please complete all required fields correctly.",
     "paths": {
       "realEstate": "Residential > For sale > Apartment",
@@ -274,10 +369,37 @@
     "searchDescription": "Save searches so you can quickly return to new results.",
     "recentActivity": "Recent activity",
     "viewAll": "View all",
-    "loading": "Loading…",
+     "views": "{count} views",
+      "messagesTitle": "Messages",
+      "searchMessages": "Search by person or listing",
+      "noMatchingConversations": "No matching conversations.",
+      "loadingOlderMessages": "Loading older messages...",
+      "loadOlderMessages": "Load older messages",
+     "messagesLoading": "Loading messages...",
+     "messagesLoadError": "Messages could not be loaded.",
+     "messageSendError": "Message could not be sent.",
+     "noConversations": "No conversations yet.",
+     "selectConversation": "Select a conversation",
+     "messagePlaceholder": "Write a message...",
+     "sendMessage": "Send",
+     "unmute": "Unmute",
+     "mute": "Mute",
+     "leaveConversation": "Leave",
+     "blockUser": "Block",
+     "unblockUser": "Unblock",
+     "reportConversation": "Report",
+     "replyTo": "Replying to #{id}",
+     "yourMessage": "You",
+     "loading": "Loading…",
+    "saving": "Saving…",
     "loadError": "Your listings could not be loaded.",
     "actionError": "That listing action could not be completed.",
-    "actions": {"pause": "Pause", "resume": "Resume", "sold": "Mark sold", "archive": "Archive", "restore": "Restore"},
+    "actions": {"pause": "Pause", "resume": "Resume", "sold": "Mark sold", "archive": "Archive", "restore": "Restore", "edit": "Edit", "delete": "Delete"},
+     "deleteListingTitle": "Delete listing?",
+     "confirmDelete": "Permanently delete \"{listing}\"? This action cannot be undone.",
+     "cancel": "Cancel",
+     "deleting": "Deleting...",
+    "removeFavorite": "Remove from favorites",
     "sections": {
       "overview": "Overview",
       "listingManagement": "Listing management",
@@ -307,8 +429,14 @@
       "signedInDevices": "Signed-in devices",
       "appSettings": "App settings",
       "notificationSettings": "Notification settings",
+      "notifications": "Notifications",
       "readReceipts": "Message read receipts",
-      "messagePermission": "Electronic message permission"
+       "messagePermission": "Electronic message permission",
+       "team": "Team management",
+       "jobApplications": "Job applications",
+        "applicationProfile": "Application profile",
+        "myApplications": "My applications",
+       "applicantManagement": "Applicants"
     }
   },
   "account": {
@@ -348,5 +476,35 @@
     "resetLinkSent": "If that email exists, a reset link has been sent.",
     "backToSignIn": "Back to sign in",
     "pleaseWait": "Please wait…"
+    ,"accountInformation": "Account information"
+    ,"accountInformationDescription": "Manage your personal details, contact methods, and account access."
+    ,"chooseAccountSetting": "Choose a setting from the account menu to continue."
+    ,"emailAddress": "Email address"
+    ,"mobilePhone": "Mobile phone number"
+    ,"countryCode": "Country code"
+    ,"emailDescription": "Use an email address you can access for account notices and verification."
+    ,"phoneDescription": "Use a mobile number that can receive account verification messages."
+    ,"contactUpdated": "Contact details updated."
+    ,"save": "Save changes"
+    ,"saved": "Settings saved."
+    ,"deleteAccount": "Delete account"
+    ,"deleteDescription": "Deleting your account is permanent. Enter your password to confirm."
+    ,"deleteConfirm": "Delete your Malik account permanently? This cannot be undone."
+    ,"passwordChange": "Change password"
+    ,"twoFactor": "Two-factor authentication"
+    ,"twoFactorDescription": "Require an additional verification step when signing in."
+    ,"enableTwoFactor": "Enable two-factor authentication"
+    ,"recoveryEmail": "Recovery email"
+    ,"recoveryDescription": "Add an email address to help recover access to your account."
+    ,"accountVerification": "Email verification"
+    ,"verificationDescription": "Verify your primary and recovery email addresses."
+    ,"recoveryVerificationDescription": "Send a verification link to your recovery email after adding it."
+    ,"signedInDevices": "Signed-in devices"
+    ,"devicesDescription": "Review devices signed in to your account and revoke access you do not recognize."
+    ,"revoke": "Revoke"
+    ,"revokeAll": "Revoke all other devices"
+    ,"currentDevice": "Current device"
+    ,"unknownDevice": "Unknown device"
+    ,"loading": "Loading…"
   }
 }

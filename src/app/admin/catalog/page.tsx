@@ -1,4 +1,4 @@
-import { AdminCatalog } from "@/presentation/components/admin-catalog";
+import { AdminCatalog } from "@/features/admin/admin-catalog";
 
 export default function AdminCatalogPage() {
   return <AdminCatalog />;

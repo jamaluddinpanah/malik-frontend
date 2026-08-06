@@ -8,16 +8,18 @@ import {
 } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
-import { apiClient, type ApiResponse } from "@/lib/api";
-import { routes } from "@/lib/routes";
+import { apiClient, type ApiResponse } from "@/shared/lib/api";
+import { routes } from "@/shared/lib/routes";
 import type { ApiCategory, CategoryPath } from "./category-types";
 import styles from "./catalog-forms.module.css";
 
 type State = "loading" | "ready" | "error";
 export function CategorySelector({
   onSelect,
+  allowCategory = () => true,
 }: {
   onSelect: (category: ApiCategory, path: CategoryPath) => void;
+  allowCategory?: (category: ApiCategory) => boolean;
 }) {
   const [path, setPath] = useState<CategoryPath>([]);
   const [items, setItems] = useState<ApiCategory[]>([]);
@@ -32,13 +34,13 @@ export function CategorySelector({
     return apiClient
       .request<ApiResponse<ApiCategory[]>>(endpoint, { signal })
       .then((response) => {
-        setItems(response.data);
+        setItems(response.data.filter(allowCategory));
         setState("ready");
       })
       .catch(() => {
         if (!signal?.aborted) setState("error");
       });
-  }, []);
+  }, [allowCategory]);
   useEffect(() => {
     const controller = new AbortController();
     const requestId = window.setTimeout(
@@ -64,7 +66,7 @@ export function CategorySelector({
       );
       if (response.data.length) {
         setPath(nextPath);
-        setItems(response.data);
+        setItems(response.data.filter(allowCategory));
         setState("ready");
       } else {
         setPath(nextPath);
