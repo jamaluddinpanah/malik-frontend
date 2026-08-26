@@ -7,6 +7,7 @@ import { LanguageSwitcher } from "./language-switcher";
 import styles from "./site-footer.module.css";
 import { FooterCategoryLinks } from "@/features/catalog/footer-category-links";
 import { ManagedNavigationLinks } from "@/features/content/managed-navigation-links";
+import { LocalizedLink } from "./localized-link";
 
 function LanguageSelector() {
   return <LanguageSwitcher className={styles.language} />;
@@ -68,7 +69,7 @@ export function SiteFooter() {
             </div>
           </div>
           <p className={styles.disclaimer}>{t("listingDisclaimer")}</p>
-          <p className={styles.postingCopyright}>{t("postingCopyright")}</p>
+          <p className={styles.postingCopyright}>{t("postingCopyright")} · {t("developedBy")}</p>
         </div>
       </footer>
     );
@@ -104,12 +105,15 @@ export function SiteFooter() {
           </div>
         </div>
         <div className={styles.bottom}>
-          <span className={styles.copyright}>
-            <i className={styles.footerBrand}>
-              M<small>•</small>
-            </i>
-            <Copyright size={14} aria-hidden="true" />{" "}
-            <span>{t("copyright")}</span>
+          <span className={styles.bottomMeta}>
+            <span className={styles.copyright}>
+              <i className={styles.footerBrand}>
+                M<small>•</small>
+              </i>
+              <Copyright size={14} aria-hidden="true" />{" "}
+              <span>{t("copyright")}</span>
+            </span>
+            <LocalizedLink className={styles.developedBy} href="/malik-technologies">{t("developedBy")}</LocalizedLink>
           </span>
           <span><ManagedNavigationLinks location="footer_legal" prefix={<ShieldCheck size={14} aria-hidden="true" />} /></span>
         </div>
