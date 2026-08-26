@@ -1,7 +1,7 @@
 "use client";
 
 import { importLibrary, setOptions } from "@googlemaps/js-api-loader";
-import { useEffect, useRef, useState } from "react";
+import { type ReactNode, useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import styles from "./listing-map.module.css";
 
@@ -13,6 +13,7 @@ type MapSurfaceProps = {
   preferGoogle?: boolean;
   onCoordinatesChange?: (coordinates: MapCoordinates) => void;
   onProviderChange?: (provider: "mapbox" | "google" | null) => void;
+  overlay?: ReactNode;
 };
 
 const defaultCenter: MapCoordinates = { latitude: 34.5553, longitude: 69.2075 };
@@ -27,6 +28,14 @@ export async function loadGoogleGeocoding(key: string) {
   return importLibrary("geocoding");
 }
 
+export async function loadGooglePlaces(key: string) {
+  if (!configuredGoogleKey) {
+    setOptions({ key, v: "weekly" });
+    configuredGoogleKey = key;
+  }
+  return importLibrary("places");
+}
+
 async function loadGoogleMaps(key: string) {
   if (!configuredGoogleKey) {
     setOptions({ key, v: "weekly" });
@@ -35,20 +44,30 @@ async function loadGoogleMaps(key: string) {
   return importLibrary("maps");
 }
 
-export function ListingMapSurface({ coordinates, interactive = false, preferGoogle = false, onCoordinatesChange, onProviderChange }: MapSurfaceProps) {
+async function loadGoogleMarkers(key: string) {
+  if (!configuredGoogleKey) {
+    setOptions({ key, v: "weekly" });
+    configuredGoogleKey = key;
+  }
+  return importLibrary("marker");
+}
+
+export function ListingMapSurface({ coordinates, interactive = false, preferGoogle = false, onCoordinatesChange, onProviderChange, overlay }: MapSurfaceProps) {
   const t = useTranslations("maps");
   const element = useRef<HTMLDivElement>(null);
   const [provider, setProvider] = useState<"mapbox" | "google" | null>(null);
-  const requested = process.env.NEXT_PUBLIC_MAP_PROVIDER?.toLowerCase();
   const mapboxToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
   const googleKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY;
-  const preferred = preferGoogle || requested === "google" ? "google" : "mapbox";
+  // A configured Google key makes Google Maps the primary provider throughout
+  // the site. Mapbox is retained solely as a graceful fallback for failed
+  // Google loads (or when no Google key has been configured).
+  const preferred = googleKey || preferGoogle ? "google" : "mapbox";
 
   useEffect(() => {
     if (!element.current) return;
     let disposed = false;
     let mapboxMap: { remove: () => void } | undefined;
-    let googleMarker: google.maps.Marker | undefined;
+    let googleMarker: google.maps.marker.AdvancedMarkerElement | undefined;
     const center = coordinates ?? defaultCenter;
     const setActive = (next: "mapbox" | "google" | null) => {
       if (!disposed) {
@@ -60,14 +79,27 @@ export function ListingMapSurface({ coordinates, interactive = false, preferGoog
 
     async function loadGoogle() {
       if (!googleKey || !element.current) throw new Error("Google Maps is not configured.");
-      await loadGoogleMaps(googleKey);
+      const [, { AdvancedMarkerElement }] = await Promise.all([loadGoogleMaps(googleKey), loadGoogleMarkers(googleKey)]);
       if (disposed || !element.current) return;
       const point = { lat: center.latitude, lng: center.longitude };
-      const map = new google.maps.Map(element.current, { center: point, zoom: coordinates ? 13 : 6, gestureHandling: "cooperative", mapTypeControl: false, streetViewControl: false });
-      googleMarker = new google.maps.Marker({ map, position: coordinates ? point : undefined, draggable: interactive });
+      const map = new google.maps.Map(element.current, {
+        center: point,
+        zoom: coordinates ? 13 : 6,
+        gestureHandling: "cooperative",
+        mapId: process.env.NEXT_PUBLIC_GOOGLE_MAP_ID || "DEMO_MAP_ID",
+        mapTypeControl: false,
+        streetViewControl: false,
+      });
+      googleMarker = new AdvancedMarkerElement({ map, position: coordinates ? point : undefined, gmpDraggable: interactive });
       if (interactive) {
         map.addListener("click", (event: google.maps.MapMouseEvent) => event.latLng && emit(event.latLng.lat(), event.latLng.lng()));
-        googleMarker.addListener("dragend", (event: google.maps.MapMouseEvent) => event.latLng && emit(event.latLng.lat(), event.latLng.lng()));
+        googleMarker.addListener("dragend", () => {
+          const position = googleMarker?.position;
+          if (!position) return;
+          const latitude = typeof position.lat === "function" ? position.lat() : position.lat;
+          const longitude = typeof position.lng === "function" ? position.lng() : position.lng;
+          emit(latitude, longitude);
+        });
       }
       setActive("google");
     }
@@ -92,13 +124,19 @@ export function ListingMapSurface({ coordinates, interactive = false, preferGoog
     const primary = preferred === "google" ? loadGoogle : loadMapbox;
     const fallback = preferred === "google" ? loadMapbox : loadGoogle;
     void primary().catch(() => fallback().catch(() => setActive(null)));
-    return () => { disposed = true; googleMarker?.setMap(null); mapboxMap?.remove(); };
+    return () => { disposed = true; if (googleMarker) googleMarker.map = null; mapboxMap?.remove(); };
   // Maps are recreated only when the configured provider or selected point changes.
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [coordinates?.latitude, coordinates?.longitude, googleKey, mapboxToken, preferred]);
 
   if (!mapboxToken && !googleKey) return <div className={styles.fallback}>{t("unavailable")}</div>;
-  return <div className={styles.map} ref={element} aria-label={t("mapLabel")} role="application">{provider === null ? <span className={styles.fallback}>{t("loading")}</span> : null}</div>;
+  return (
+    <div className={styles.mapWrapper}>
+      <div className={styles.map} ref={element} aria-label={t("mapLabel")} role="application" />
+      {provider === null ? <div className={styles.loading}>{t("loading")}</div> : null}
+      {overlay}
+    </div>
+  );
 }
 
 export function ListingMap({ location }: { location: unknown }) {

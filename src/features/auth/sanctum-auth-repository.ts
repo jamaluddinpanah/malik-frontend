@@ -27,6 +27,7 @@ export class SanctumAuthRepository implements AuthRepository {
           password: input.password,
           password_confirmation: input.passwordConfirmation,
           account_type: input.accountType,
+          agreement: input.agreementAccepted,
           phone_country_code: input.phoneCountryCode,
           phone: input.phone,
           profile: input.profile,

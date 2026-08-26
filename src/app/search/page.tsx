@@ -55,17 +55,15 @@ export default async function SearchPage({ searchParams }: Props) {
         <section className="search-results">
           <div className="results-head">
             <h1 dir="auto">{heading}</h1>
-            <form method="get">
-              {p.q ? <input type="hidden" name="q" value={p.q} /> : null}
-              {p.category ? <input type="hidden" name="category" value={p.category} /> : null}
-              {p.min_price ? <input type="hidden" name="min_price" value={p.min_price} /> : null}
-              {p.max_price ? <input type="hidden" name="max_price" value={p.max_price} /> : null}
-              {Object.entries(attributes).map(([code, value]) => <input key={code} type="hidden" name={`attributes[${code}]`} value={value} />)}
-              {p.featured ? <input type="hidden" name="featured" value={p.featured} /> : null}
-              <input type="hidden" name="page" value="1" />
-              <label>
-                <span className="visually-hidden">{t("sort")}</span>
-                <select name="sort" defaultValue={p.sort ?? "newest"}>
+          </div>
+          <form className="search-filter-form" method="get">
+            <input name="q" defaultValue={p.q} placeholder={t("searchPlaceholder")} />
+            {p.category ? <input type="hidden" name="category" value={p.category} /> : null}
+            <input name="min_price" inputMode="numeric" defaultValue={p.min_price} placeholder={t("minPrice")} />
+            <input name="max_price" inputMode="numeric" defaultValue={p.max_price} placeholder={t("maxPrice")} />
+            <label className="listing-filter-sort">
+              <span>{t("sort")}</span>
+              <select name="sort" defaultValue={p.sort ?? "newest"}>
                 <option value="default">{t("defaultSort")}</option>
                 <option value="price_asc">{t("priceAscending")}</option>
                 <option value="price_desc">{t("priceDescending")}</option>
@@ -73,16 +71,8 @@ export default async function SearchPage({ searchParams }: Props) {
                 <option value="oldest">{t("oldest")}</option>
                 <option value="most_viewed">{t("mostViewed")}</option>
                 <option value="most_popular">{t("mostPopular")}</option>
-                </select>
-                <button type="submit">{t("applyFilters")}</button>
-              </label>
-            </form>
-          </div>
-          <form className="search-filter-form" method="get">
-            <input name="q" defaultValue={p.q} placeholder={t("searchPlaceholder")} />
-            {p.category ? <input type="hidden" name="category" value={p.category} /> : null}
-            <input name="min_price" inputMode="numeric" defaultValue={p.min_price} placeholder={t("minPrice")} />
-            <input name="max_price" inputMode="numeric" defaultValue={p.max_price} placeholder={t("maxPrice")} />
+              </select>
+            </label>
             {dynamicFilters.map((field) => field.options?.length ? <select key={field.code} name={`attributes[${field.code}]`} defaultValue={p[`attributes[${field.code}]`] ?? ""}><option value="">{field.label ?? field.code}</option>{field.options.map((option) => <option key={option.slug} value={option.slug}>{option.label ?? option.value}</option>)}</select> : <input key={field.code} name={`attributes[${field.code}]`} defaultValue={p[`attributes[${field.code}]`]} placeholder={field.label ?? field.code} />)}
             <button type="submit">{t("applyFilters")}</button>
           </form>

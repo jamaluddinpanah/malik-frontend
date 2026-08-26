@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import { useLocale, useTranslations } from "next-intl";
 import { LocalizedLink as Link } from "@/shared/ui/localized-link";
-import type { Listing } from "@/features/listings/entities";
+import { listingLocation, type Listing } from "@/features/listings/entities";
 import { formatCurrency } from "@/shared/lib/formatting/locale";
 import { FavoriteButton } from "./favorite-button";
 export function money(value: number, currency: string, locale = "en") {
@@ -10,7 +10,7 @@ export function money(value: number, currency: string, locale = "en") {
 export function ListingCard({ listing }: { listing: Listing }) {
   const locale = useLocale();
   const t = useTranslations("listing");
-  const metadata = [listing.city, listing.district, listing.conditionLabel].filter(
+  const metadata = [listingLocation(listing), listing.conditionLabel].filter(
     (value) => value && value !== "-",
   );
   return (

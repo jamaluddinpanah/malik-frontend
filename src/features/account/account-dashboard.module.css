@@ -7,7 +7,7 @@
 .scope :global(.messages-list){border-inline-end:1px solid #c9d3dc;background:#f7fafc}
 .scope :global(.messages-search){display:block;width:calc(100% - 28px);margin:0 14px 12px;padding:10px 11px;border:1px solid #c9d3dc;border-radius:5px;background:#fff;color:#17334e;font:inherit;font-size:12px}.scope :global(.messages-search:focus){border-color:#0875c9;outline:2px solid #cce7f8}
 .scope :global(.messages-list h1){margin:0;padding:20px;font-size:22px}.scope :global(.messages-list button){display:grid;width:100%;gap:5px;padding:14px 18px;border:0;border-top:1px solid #e2e8ee;background:transparent;text-align:start;color:#17334e}.scope :global(.messages-list button.selected){background:#dceeff}.scope :global(.messages-list small){color:#668096}
-.scope :global(.messages-thread){display:grid;grid-template-rows:auto minmax(0,1fr) auto;height:100%;min-width:0;min-height:0;overflow:hidden}.scope :global(.messages-thread header){display:flex;justify-content:space-between;gap:16px;padding:18px;border-bottom:1px solid #c9d3dc}.scope :global(.messages-thread header h2){margin:0 0 5px}.scope :global(.messages-thread header button){margin-inline-start:6px}.scope :global(.messages-body){display:flex;flex-direction:column;gap:10px;min-height:0;padding:18px;overflow:auto;background:#f7fafc}.scope :global(.messages-body article){align-self:flex-start;max-width:75%;padding:10px 13px;border-radius:10px;background:#fff;border:1px solid #d7e0e8;cursor:pointer}.scope :global(.messages-body article small){display:block;color:#70869a;font-size:11px}.scope :global(.messages-body article p){margin:5px 0 0;white-space:pre-wrap}.scope :global(.messages-thread form){display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;padding:14px;border-top:1px solid #c9d3dc}.scope :global(.messages-thread textarea){grid-column:1;min-height:48px;resize:vertical;padding:10px;border:1px solid #c9d3dc;border-radius:5px;font:inherit}.scope :global(.messages-thread form>button:first-child){grid-column:1 / -1;background:#edf5fb;color:#0875c9;border:0;border-radius:5px;padding:8px;text-align:start}.scope :global(.messages-thread form>button[type=submit]){grid-column:2;grid-row:1;background:#0875c9;color:#fff;border:0;border-radius:5px;padding:0 18px}.scope :global(.messages-empty){display:grid;place-items:center;color:#668096}
+.scope :global(.messages-thread){display:grid;grid-template-rows:auto minmax(0,1fr) auto;height:100%;min-width:0;min-height:0;overflow:hidden}.scope :global(.messages-thread header){display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;padding:18px;border-bottom:1px solid #c9d3dc}.scope :global(.messages-thread header>div:first-child){min-width:0}.scope :global(.messages-thread header>div:last-child){display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;width:min(100%,340px)}.scope :global(.messages-thread header>div:last-child button){min-width:0!important;margin:0!important;padding:8px 10px!important;font-size:12px!important;white-space:nowrap}.scope :global(.messages-thread header h2){margin:0 0 5px}.scope :global(.messages-thread header button){margin:0}.scope :global(.messages-body){display:flex;flex-direction:column;gap:10px;min-height:0;padding:18px;overflow:auto;background:#f7fafc}.scope :global(.messages-body article){align-self:flex-start;max-width:75%;padding:10px 13px;border-radius:10px;background:#fff;border:1px solid #d7e0e8;cursor:pointer}.scope :global(.messages-body article small){display:block;color:#70869a;font-size:11px}.scope :global(.messages-body article p){margin:5px 0 0;white-space:pre-wrap}.scope :global(.messages-thread form){display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;padding:14px;border-top:1px solid #c9d3dc}.scope :global(.messages-thread textarea){grid-column:1;min-height:48px;resize:vertical;padding:10px;border:1px solid #c9d3dc;border-radius:5px;font:inherit}.scope :global(.messages-thread form>button:first-child){grid-column:1 / -1;background:#edf5fb;color:#0875c9;border:0;border-radius:5px;padding:8px;text-align:start}.scope :global(.messages-thread form>button[type=submit]){grid-column:2;grid-row:1;background:#0875c9;color:#fff;border:0;border-radius:5px;padding:0 18px}.scope :global(.messages-empty){display:grid;place-items:center;color:#668096}
 @media(max-width:700px){.scope :global(.messages-portal){grid-template-columns:1fr;grid-template-rows:230px minmax(0,1fr);height:calc(100vh - 180px);max-height:none}.scope :global(.messages-list){max-height:none;border-inline-end:0;border-bottom:1px solid #c9d3dc}.scope :global(.messages-thread){min-height:0}.scope :global(.messages-thread header){align-items:flex-start;flex-direction:column}.scope :global(.messages-body article){max-width:90%}}
 .scope :global(.messages-body article.own){align-self:flex-end;background:#dceeff;border-color:#8fc4ee}.scope :global(.messages-body article.other){align-self:flex-start}
 .scope :global(.messages-loading-older){align-self:center;margin:0;color:#668096;font-size:12px}
@@ -628,9 +628,9 @@
 .scope :global(.notification-preference small) { color: #668096; font-size: 12px; }
 .scope :global(.notification-preference input) { width: 17px; height: 17px; flex: 0 0 auto; }
 .scope :global(.notification-list) { display: grid; gap: 9px; padding: 20px 26px 26px; }
-.scope :global(.notification-item) { position: relative; display: flex; align-items: flex-start; gap: 12px; width: 100%; padding: 15px; border: 1px solid #e1e8ee; border-radius: 7px; background: #fff; color: #172331 !important; text-align: start; cursor: pointer; }
+.scope :global(.notifications-panel .notification-item) { position: relative; display: flex; align-items: flex-start; gap: 12px; width: 100%; padding: 15px; border: 1px solid #e1e8ee; border-radius: 7px; background: #fff; color: #172331 !important; text-align: start; cursor: pointer; }
 .scope :global(.notification-item b), .scope :global(.notification-item small), .scope :global(.notification-item time) { color: #172331 !important; }
-.scope :global(.notification-item:hover) { border-color: #a9cbe5; background: #fafdff; }
+.scope :global(.notifications-panel .notification-item:hover) { border-color: #a9cbe5; background: #fafdff; }
 .scope :global(.notification-item.unread) { border-color: #b9d9ef; background: #eaf5fd; color: #172331 !important; }
 .scope :global(.notification-icon) { display: grid; place-items: center; width: 32px; height: 32px; flex: 0 0 auto; border-radius: 50%; background: #e4f2fc; color: #0875c9; }
 .scope :global(.notification-copy) { display: grid; gap: 4px; min-width: 0; }
@@ -862,3 +862,23 @@
     padding: 12px 16px 12px 12px;
   }
 }
+
+/* Full-width notification feed with cursor pagination */
+.scope :global(.notifications-panel){width:100%;max-width:none;box-sizing:border-box}
+.scope :global(.notifications-panel .notification-list){width:100%;box-sizing:border-box}
+.scope :global(.notification-pagination){display:flex;justify-content:center;gap:9px;padding:0 26px 26px}
+.scope :global(.notification-pagination button){min-width:108px;padding:10px 16px;border:1px solid #b9d3e5;border-radius:6px;background:#fff;color:#0875c9;font:inherit;font-size:12px;font-weight:700;cursor:pointer}
+.scope :global(.notification-pagination button:last-child){border-color:#0875c9;background:#0875c9;color:#fff}
+.scope :global(.notification-pagination button:disabled){opacity:.6;cursor:wait}
+@media(max-width:700px){.scope :global(.notification-pagination){padding:0 14px 20px}.scope :global(.notification-pagination button){flex:1}}
+
+/* Notification cards fill the normal account content panel. */
+.scope :global(.account-content){min-width:0}
+.scope :global(.notifications-panel){width:100%;max-width:none}
+.scope :global(.notifications-panel .notification-list){width:100%;box-sizing:border-box;padding-inline:26px}
+.scope :global(.notifications-panel .notification-item){width:100%;box-sizing:border-box}
+@media(max-width:700px){.scope :global(.notifications-panel .notification-list){padding-inline:14px}}
+
+/* Override the generic settings-form button grid rules for notification cards. */
+.scope :global(.notifications-panel .notification-list > .notification-item){grid-column:auto;justify-self:stretch;width:100%;min-width:0;box-sizing:border-box}
+.scope :global(.notifications-panel .notification-pagination button){grid-column:auto;justify-self:auto}

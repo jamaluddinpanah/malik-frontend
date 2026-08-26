@@ -21,6 +21,7 @@ import { JobApplicationForm } from "@/features/jobs/job-applications-and-team-ma
 import { jsonLd } from "@/shared/lib/json-ld";
 import { VehicleBodyConditionMap } from "@/features/catalog/vehicle-body-condition-map";
 import { ListingMap } from "@/features/listings/listing-map";
+import { listingLocation } from "@/features/listings/entities";
 import { RichText } from "@/shared/ui";
 import { richTextToPlainText } from "@/shared/lib/rich-text";
 
@@ -55,18 +56,20 @@ export default async function ListingPage({
   const category = t.has(`categories.${listing.categorySlug}`)
     ? t(`categories.${listing.categorySlug}`)
     : listing.categoryName;
+  const locationDisplay = listingLocation(listing);
   const details: [string, React.ReactNode][] = [
     [t("listingNumber"), formatNumber(listing.id, locale)],
     [t("listingDate"), formatDate(listing.createdAt, locale)],
     [t("category"), category],
-    [t("condition"), <bdi key="condition">{listing.conditionLabel}</bdi>],
-    [
-      t("location"),
-      <span dir="auto" key="location">
-        <bdi>{listing.city}</bdi> / <bdi>{listing.district}</bdi>
-      </span>,
-    ],
   ];
+  if (listing.conditionLabel.trim())
+    details.push([t("condition"), <bdi key="condition">{listing.conditionLabel}</bdi>]);
+  details.push([
+    t("location"),
+    <span dir="auto" key="location">
+      <bdi>{locationDisplay}</bdi>
+    </span>,
+  ]);
   const isJob = listing.categorySlug.toLowerCase().includes("job");
   const vehicleCondition = listing.attributes?.find(
     (attribute) => attribute.type === "vehicle-condition-map",
@@ -88,7 +91,7 @@ export default async function ListingPage({
             <h2>{formatCurrency(listing.price, listing.currency, locale)}</h2>
             <FavoriteButton listingId={listing.id} initial={listing.isFavorited} />
             <p dir="auto">
-              <bdi>{listing.city}</bdi> / <bdi>{listing.district}</bdi>　{" "}
+              <bdi>{locationDisplay}</bdi>　{" "}
               {listedAt}　{" "}
               {t("views", { count: formatNumber(listing.viewCount, locale) })}
             </p>
@@ -96,7 +99,7 @@ export default async function ListingPage({
           <aside className={styles.seller}>
             <b dir="auto">{listing.sellerName}</b>
             <small>
-              <bdi>{listing.city}</bdi> / {listedAt}
+              <bdi>{locationDisplay}</bdi> / {listedAt}
             </small>
              <MessageSellerButton listingId={listing.id} ownerUserId={listing.ownerUserId} />
              <ListingContactControls listingId={listing.id} ownerUserId={listing.ownerUserId} phoneVisible={Boolean(listing.phoneVisible)} email={listing.contactEmail} />
@@ -120,7 +123,7 @@ export default async function ListingPage({
           <section className={styles.location}>
             <h2>{t("location")}</h2>
             <p dir="auto">
-              <bdi>{listing.city}</bdi> / <bdi>{listing.district}</bdi>
+              <bdi>{locationDisplay}</bdi>
             </p>
             <div className={styles.map}>
               <ListingMap location={listing.location} />
@@ -139,7 +142,7 @@ export default async function ListingPage({
                   <b>{formatCurrency(item.price, item.currency, locale)}</b>
                   <p dir="auto">{item.title}</p>
                   <small dir="auto">
-                    <bdi>{item.city}</bdi> / <bdi>{item.district}</bdi>
+                    <bdi>{listingLocation(item)}</bdi>
                   </small>
                 </Link>
               ))}

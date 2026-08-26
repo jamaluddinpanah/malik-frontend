@@ -50,6 +50,11 @@ function mapListing(raw: RawListing): Listing {
   const category = record(raw.category);
   const owner = record(raw.owner);
   const media = list(raw.media);
+  const administrativeArea = record(raw.administrative_area);
+  const areaHierarchy = list(administrativeArea.hierarchy)
+    .map((area) => ({ id: Number(area.id) || undefined, type: typeof area.type === "string" ? area.type : undefined, name: typeof area.name === "string" ? area.name : "" }))
+    .filter((area) => area.name);
+  const selectedAreaName = areaHierarchy.at(-1)?.name ?? (typeof administrativeArea.name === "string" ? administrativeArea.name : "");
   const attributes = list(raw.values).map((item) => {
     const attribute = record(item.attribute);
     const value = item.string_value ?? item.text_value ?? item.integer_value ?? item.decimal_value ?? item.boolean_value ?? item.date_value ?? item.datetime_value ?? item.json_value;
@@ -78,7 +83,7 @@ function mapListing(raw: RawListing): Listing {
     rootType: String(raw.root_type ?? ""),
     price: Number(raw.price ?? 0),
     currency: String(record(raw.currency).code ?? raw.currency_code ?? "AFN"),
-    city: String(raw.city ?? record(raw.administrative_area).name ?? ""),
+    city: String(raw.city ?? selectedAreaName),
     district: String(raw.district ?? ""),
     conditionLabel: String(raw.condition ?? ""),
     isFeatured: Boolean(raw.is_featured),
@@ -113,7 +118,10 @@ function mapListing(raw: RawListing): Listing {
       const location = record(raw.location);
       const latitude = Number(location.latitude ?? location.lat);
       const longitude = Number(location.longitude ?? location.lng);
-      return Number.isFinite(latitude) && Number.isFinite(longitude) ? { latitude, longitude, administrative_area: typeof location.administrative_area === "string" ? location.administrative_area : undefined } : undefined;
+      const hierarchy = areaHierarchy.length ? areaHierarchy : undefined;
+      return Number.isFinite(latitude) && Number.isFinite(longitude)
+        ? { latitude, longitude, administrative_area: selectedAreaName || undefined, hierarchy }
+        : hierarchy ? { administrative_area: selectedAreaName || undefined, hierarchy } : undefined;
     })(),
   };
 }

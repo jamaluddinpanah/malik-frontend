@@ -9,6 +9,7 @@ import { routes } from "@/shared/lib/routes";
 import { useAuth } from "@/features/auth/auth-provider";
 import { ConfirmationDialog, Toast } from "@/shared/ui";
 import { LocalizedLink as Link } from "@/shared/ui/localized-link";
+import { leaveRealtime, realtime } from "@/shared/lib/realtime/echo";
 
 type Conversation = { id: number; listing_title?: string; listing_slug?: string; other_user?: { id: number; name: string }; unread_count: number; muted: boolean };
 type Message = { id: number; sender_id: number; body?: string | null; created_at: string; reply_to_id?: number | null };
@@ -75,8 +76,10 @@ export function MessagesPortal() {
     } catch { setError(t("messagesLoadError")); } finally { setLoadingOlder(false); }
   }
 
-  useEffect(() => { const timer = window.setTimeout(() => void loadConversations(), 0); const poll = window.setInterval(() => void loadConversations(), 5000); return () => { window.clearTimeout(timer); window.clearInterval(poll); }; }, [searchParams]);
-  useEffect(() => { if (!selected) return; const timer = window.setTimeout(() => void loadMessages(selected.id), 0); const poll = window.setInterval(() => void loadMessages(selected.id, false), 5000); return () => { window.clearTimeout(timer); window.clearInterval(poll); }; }, [selected?.id]);
+  useEffect(() => { const timer = window.setTimeout(() => void loadConversations(), 0); return () => window.clearTimeout(timer); }, [searchParams]);
+  useEffect(() => { if (!selected) return; const timer = window.setTimeout(() => void loadMessages(selected.id), 0); return () => window.clearTimeout(timer); }, [selected?.id]);
+  useEffect(() => { const refresh = () => void loadConversations(); window.addEventListener("malik:message", refresh); window.addEventListener("malik:notification", refresh); return () => { window.removeEventListener("malik:message", refresh); window.removeEventListener("malik:notification", refresh); }; }, [searchParams]);
+  useEffect(() => { if (!selected) return; const channel = `conversation.${selected.id}`; realtime()?.private(channel).listen(".message.created", ({ message }: { message: Message }) => { pendingBottomScroll.current = selected.id; setMessages((current) => [...new Map([...current, message].map((item) => [item.id, item])).values()]); if (message.sender_id !== user?.id) { void apiClient.csrfCookie().then(() => apiClient.request(routes.api.conversationRead(selected.id), { method: "POST" })); setConversations((items) => items.map((item) => item.id === selected.id ? { ...item, unread_count: 0 } : item)); } }); return () => leaveRealtime(channel); }, [selected?.id, user?.id]);
   useEffect(() => { if (selected && pendingBottomScroll.current === selected.id) { messagesBody.current?.scrollTo({ top: messagesBody.current.scrollHeight }); pendingBottomScroll.current = null; } }, [messages, selected]);
 
   async function send(event: React.FormEvent) {
@@ -85,7 +88,7 @@ export function MessagesPortal() {
     const form = new FormData();
     form.set("body", body.trim());
     if (reply) form.set("reply_to_id", String(reply.id));
-    try { await apiClient.csrfCookie(); await apiClient.request(routes.api.conversationMessages(selected.id), { method: "POST", body: form }); setBody(""); setReply(null); await loadMessages(selected.id); } catch { setError(t("messageSendError")); }
+    try { await apiClient.csrfCookie(); const response = await apiClient.request<{ data: Message }>(routes.api.conversationMessages(selected.id), { method: "POST", body: form }); pendingBottomScroll.current = selected.id; setMessages((current) => [...new Map([...current, response.data].map((message) => [message.id, message])).values()]); setBody(""); setReply(null); } catch { setError(t("messageSendError")); }
   }
 
   async function executeAction(path: string, body?: Record<string, string>) { if (!selected) return; await apiClient.csrfCookie(); await apiClient.request(path, { method: "POST", body }); await loadConversations(); }

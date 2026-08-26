@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import { LocalizedLink as Link } from "@/shared/ui/localized-link";
 import { Clock3, Eye, MapPin } from "lucide-react";
-import type { Listing } from "@/features/listings/entities";
+import { listingLocation, type Listing } from "@/features/listings/entities";
 import { money } from "./listing-card";
 import { useLocale, useTranslations } from "next-intl";
 import { formatDate, formatNumber } from "@/shared/lib/formatting/locale";
@@ -23,8 +23,7 @@ export function ListingRow({ listing }: { listing: Listing }) {
         <strong>{money(listing.price, listing.currency, locale)}</strong>
         <p dir="auto">{richTextToPlainText(listing.description)}</p>
         <small>
-          <MapPin size={12} /> <bdi>{listing.city}</bdi> /{" "}
-          <bdi>{listing.district}</bdi>　 <Clock3 size={12} />{" "}
+          <MapPin size={12} /> <bdi>{listingLocation(listing)}</bdi>　 <Clock3 size={12} />{" "}
           {formatDate(listing.createdAt, locale)}　 <Eye size={12} />{" "}
           {t("views", { count: formatNumber(listing.viewCount, locale) })}
         </small>

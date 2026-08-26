@@ -15,6 +15,10 @@ export interface Listing {
   badges: ListingBadge[]; isFeatured: boolean; status: ListingStatus; viewCount: number;
   createdAt: string; categorySlug: string; categoryName: string; sellerName: string; ownerUserId?: number;
   sellerPhone?: string; contactName?: string; contactEmail?: string; phoneVisible?: boolean; images: ListingImage[]; favoriteCount?: number; isFavorited?: boolean; attributes?: ListingAttribute[];
-  location?: { latitude?: number; longitude?: number; lat?: number; lng?: number; administrative_area?: string };
+  location?: { latitude?: number; longitude?: number; lat?: number; lng?: number; administrative_area?: string; hierarchy?: Array<{ id?: number; type?: string; name: string }> };
+}
+export function listingLocation(listing: Listing): string {
+  const hierarchy = listing.location?.hierarchy?.map((area) => area.name).filter(Boolean) ?? [];
+  return hierarchy.length ? hierarchy.join(" / ") : [listing.city, listing.district].filter(Boolean).join(" / ");
 }
 export interface Category { id: number; slug: string; name: string; parentSlug?: string; listingCount: number; icon?: string | null; default_expanded?: boolean }

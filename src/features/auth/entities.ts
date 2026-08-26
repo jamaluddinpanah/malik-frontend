@@ -38,6 +38,7 @@ export type RegisterInput = {
   password: string;
   passwordConfirmation: string;
   accountType: Exclude<AccountType, "superadmin">;
+  agreementAccepted: boolean;
   profile?: Record<string, string>;
 };
 

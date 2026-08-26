@@ -228,7 +228,7 @@ export function CategorySidebar({ categories }: { categories: Category[] }) {
             </button>
           </div>
         </div>
-        <Link className="all-cats" href={activeRootSlug ? `/search?category=${activeRootSlug}` : "/search"} onClick={closeDrawer}>
+        <Link className="all-cats" href="/search" onClick={closeDrawer}>
           <PlusSquare size={17} /> {t("all")}{" "}
           <small>{formatNumber(total, locale)}</small>
         </Link>

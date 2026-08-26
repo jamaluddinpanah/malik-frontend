@@ -2,8 +2,10 @@
 
 import { LocalizedLink as Link } from "@/shared/ui/localized-link";
 import { Info, QrCode } from "lucide-react";
+import phoneMetadata from "libphonenumber-js/metadata.min.json";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
+import ReactSelect, { components, type InputProps, type OptionProps, type SingleValue, type SingleValueProps } from "react-select";
 import { authErrors, useAuth } from "@/features/auth/auth-provider";
 import {
   dashboardPath,
@@ -16,6 +18,31 @@ import styles from "./auth-card.module.css";
 
 const publicAccountTypes = ["individual", "business", "organization"] as const;
 type PublicAccountType = (typeof publicAccountTypes)[number];
+type CountryOption = { value: string; country: string; label: string };
+
+const countryName = new Intl.DisplayNames(["en"], { type: "region" });
+const countryOptions: CountryOption[] = Object.entries(phoneMetadata.countries)
+  .map(([country, metadata]) => {
+    const dialCode = `+${metadata[0]}`;
+    return { value: dialCode, country, label: `${countryName.of(country)} (${dialCode})` };
+  })
+  .sort((left, right) => left.label.localeCompare(right.label));
+
+function countryFlag(country: string) {
+  return String.fromCodePoint(...[...country].map((letter) => 127397 + letter.charCodeAt(0)));
+}
+
+function CountryOptionLabel(props: OptionProps<CountryOption, false>) {
+  return <components.Option {...props}><span className={styles.countryOption}><span aria-hidden="true">{countryFlag(props.data.country)}</span>{props.label}</span></components.Option>;
+}
+
+function CountrySingleValue(props: SingleValueProps<CountryOption, false>) {
+  return <components.SingleValue {...props}><span className={styles.countryOption}><span aria-hidden="true">{countryFlag(props.data.country)}</span>{props.data.value}</span></components.SingleValue>;
+}
+
+function CountrySelectInput(props: InputProps<CountryOption, false>) {
+  return <components.Input {...props} autoComplete="new-password" />;
+}
 
 function isPublicAccountType(value: string): value is PublicAccountType {
   return publicAccountTypes.includes(value as PublicAccountType);
@@ -31,8 +58,11 @@ export function AuthCard({ signup = false }: { signup?: boolean }) {
   const [generalError, setGeneralError] = useState<string | null>(null);
   const [accountType, setAccountType] =
     useState<PublicAccountType>("individual");
+  const [phoneCountryCode, setPhoneCountryCode] = useState("+93");
+  const [countrySelectReady, setCountrySelectReady] = useState(false);
   const next = searchParams.get("next");
   const safeNext = safeInternalRedirect(next);
+  useEffect(() => setCountrySelectReady(true), []);
   useEffect(() => {
     if (signup && !isLoading && user)
       router.replace(
@@ -56,6 +86,10 @@ export function AuthCard({ signup = false }: { signup?: boolean }) {
       });
       return;
     }
+    if (signup && form.get("agreement") !== "on") {
+      setFieldErrors({ agreement: [t("agreementRequired")] });
+      return;
+    }
     if (signup && form.get("password") !== form.get("password_confirmation")) {
       setFieldErrors({ password_confirmation: [t("passwordMismatch")] });
       return;
@@ -73,6 +107,7 @@ export function AuthCard({ signup = false }: { signup?: boolean }) {
               form.get("password_confirmation") ?? "",
             ),
             accountType,
+            agreementAccepted: form.get("agreement") === "on",
             profile:
               accountType === "individual"
                 ? {
@@ -141,7 +176,7 @@ export function AuthCard({ signup = false }: { signup?: boolean }) {
         <span>{signup ? t("registerDescription") : t("loginDescription")}</span>
       </div>
       <section className={styles.card}>
-        <form onSubmit={submit}>
+        <form onSubmit={submit} autoComplete="off">
           <h1>{title}</h1>
           {generalError && (
             <p className={styles.formError} role="alert">
@@ -208,14 +243,48 @@ export function AuthCard({ signup = false }: { signup?: boolean }) {
                   {input("organization_type")}
                 </label>
               ) : null}
-              <label>
-                {t("phoneCountryCode")}
-                {input("phone_country_code", { placeholder: "+93" })}
-              </label>
-              <label>
-                {t("phone")}
-                {input("phone", { type: "tel" })}
-              </label>
+              <div className={styles.phoneField}>
+                <label className={styles.phoneLabel} htmlFor="phone">{t("phone")}</label>
+                <div className={styles.phoneControl}>
+                  {countrySelectReady ? (
+                    <ReactSelect<CountryOption, false>
+                      aria-label={t("phoneCountryCode")}
+                      className={styles.countrySelect}
+                      classNamePrefix="country-select"
+                      components={{ Input: CountrySelectInput, Option: CountryOptionLabel, SingleValue: CountrySingleValue }}
+                      isSearchable
+                      name="phone_country_code"
+                      noOptionsMessage={() => t("noCountryFound")}
+                      options={countryOptions}
+                      placeholder={t("searchCountryCode")}
+                      value={countryOptions.find((option) => option.value === phoneCountryCode) ?? null}
+                      onChange={(option: SingleValue<CountryOption>) => setPhoneCountryCode(option?.value ?? "+93")}
+                    />
+                  ) : (
+                    <div className={styles.countrySelectFallback} aria-label={t("phoneCountryCode")}>
+                      <span aria-hidden="true">🇦🇫</span><b>+93</b>
+                      <input name="phone_country_code" type="hidden" value="+93" />
+                    </div>
+                  )}
+                  {input("phone", {
+                    "aria-label": t("phone"),
+                    type: "tel",
+                    inputMode: "numeric",
+                    autoComplete: "new-password",
+                    pattern: "[1-9][0-9]*",
+                    placeholder: "700 000 000",
+                    onInput: (event) => {
+                      event.currentTarget.value = event.currentTarget.value.replace(/\D/g, "").replace(/^0+/, "");
+                    },
+                  })}
+                </div>
+                {errorFor("phone_country_code") && (
+                  <small className={styles.fieldError} role="alert">{errorFor("phone_country_code")}</small>
+                )}
+                {errorFor("phone") && (
+                  <small className={styles.fieldError} role="alert">{errorFor("phone")}</small>
+                )}
+              </div>
             </>
           )}
           <label>
@@ -255,9 +324,12 @@ export function AuthCard({ signup = false }: { signup?: boolean }) {
             </label>
           )}
           <label className={styles.check}>
-            <input name="remember" type="checkbox" />{" "}
+            <input name={signup ? "agreement" : "remember"} type="checkbox" required={signup} aria-invalid={signup && Boolean(errorFor("agreement"))} />{" "}
             {signup ? t("agreement") : t("keepSignedIn")}
           </label>
+          {signup && errorFor("agreement") && (
+            <small className={styles.fieldError} role="alert">{errorFor("agreement")}</small>
+          )}
           <button disabled={isAuthenticating || isLoading}>
             {isAuthenticating
               ? t("loading")

@@ -11,7 +11,7 @@ export function RichTextEditor({ value, onChange, placeholder, dir, disabled }: 
   const host = useRef<HTMLDivElement>(null);
   const editor = useRef<import("quill").default | null>(null);
   const lastEditorValue = useRef(value);
-  const initial = useRef({ value, placeholder, dir, disabled });
+  const latest = useRef({ value, placeholder, dir, disabled });
   const emitChange = useEffectEvent((html: string) => onChange(html));
 
   useEffect(() => {
@@ -20,7 +20,7 @@ export function RichTextEditor({ value, onChange, placeholder, dir, disabled }: 
     const toolbarNode = toolbar.current;
     void import("quill").then(({ default: Quill }) => {
       if (!active || !hostNode || !toolbarNode) return;
-      const initialProps = initial.current;
+      const initialProps = latest.current;
       const instance = new Quill(hostNode, {
         theme: "snow",
         placeholder: initialProps.placeholder ?? "",
@@ -30,6 +30,8 @@ export function RichTextEditor({ value, onChange, placeholder, dir, disabled }: 
       instance.clipboard.dangerouslyPasteHTML(initialProps.value, "silent");
       lastEditorValue.current = instance.root.innerHTML;
       instance.root.setAttribute("dir", initialProps.dir ?? "auto");
+      instance.root.setAttribute("lang", initialProps.dir === "rtl" ? "fa" : "en");
+      instance.root.setAttribute("spellcheck", initialProps.dir === "rtl" ? "false" : "true");
       instance.enable(!Boolean(initialProps.disabled));
       instance.on("text-change", () => {
         const html = instance.root.innerHTML;
@@ -51,15 +53,18 @@ export function RichTextEditor({ value, onChange, placeholder, dir, disabled }: 
   }, []);
 
   useEffect(() => {
+    latest.current = { value, placeholder, dir, disabled };
     const instance = editor.current;
     if (instance && !instance.hasFocus() && value !== lastEditorValue.current) {
       instance.clipboard.dangerouslyPasteHTML(value, "silent");
       lastEditorValue.current = instance.root.innerHTML;
     }
-  }, [value]);
-  useEffect(() => { editor.current?.enable(!disabled); }, [disabled]);
-  useEffect(() => { editor.current?.root.setAttribute("dir", dir ?? "auto"); }, [dir]);
-  useEffect(() => { editor.current?.root.setAttribute("data-placeholder", placeholder ?? ""); }, [placeholder]);
+    instance?.enable(!Boolean(disabled));
+    instance?.root.setAttribute("dir", dir ?? "auto");
+    instance?.root.setAttribute("lang", dir === "rtl" ? "fa" : "en");
+    instance?.root.setAttribute("spellcheck", dir === "rtl" ? "false" : "true");
+    instance?.root.setAttribute("data-placeholder", placeholder ?? "");
+  }, [value, placeholder, dir, disabled]);
 
   return <div className={styles.editor} dir={dir ?? "auto"}>
     <div ref={toolbar} className="ql-toolbar ql-snow">

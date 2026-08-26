@@ -193,7 +193,7 @@
   font-weight: bold;
 }
 .map {
-  height: 260px;
+  height: 520px;
   margin: 12px 20px 0;
   overflow: hidden;
 }
@@ -755,7 +755,7 @@
     margin-right: 14px;
   }
   .map {
-    height: 190px;
+    height: 380px;
     margin: 10px 14px 0;
     font-size: 23px;
   }

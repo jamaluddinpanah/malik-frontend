@@ -97,7 +97,13 @@ export default function PostAd() {
   const [historyLoading, setHistoryLoading] = useState(false);
   const [historyError, setHistoryError] = useState("");
   const [location, setLocation] = useState<ListingLocationValue>(emptyLocation);
+  const locationRef = useRef(location);
   const previousListingId = useRef(searchParams.get("listing"));
+
+  const updateLocation = useCallback((next: ListingLocationValue) => {
+    locationRef.current = next;
+    setLocation(next);
+  }, []);
 
   function requestMessage(error: unknown): string {
     if (!(error instanceof ApiError)) return t("error");
@@ -145,7 +151,7 @@ export default function PostAd() {
     setHistoryPages([]);
     setHistoryExpanded(false);
     setHistoryError("");
-    setLocation(emptyLocation());
+    updateLocation(emptyLocation());
   }
 
   async function selectCategory(next: ApiCategory, nextPath: CategoryPath, persist = true): Promise<CategoryFormSchema | null> {
@@ -172,7 +178,7 @@ export default function PostAd() {
     setHistoryPages([]);
     setHistoryExpanded(false);
     setHistoryError("");
-    setLocation(emptyLocation());
+    updateLocation(emptyLocation());
     setErrors({});
     setMessage("");
     setLoading(true);
@@ -256,7 +262,7 @@ export default function PostAd() {
         setPhoneVisible(Boolean(existing.is_phone_visible));
         setUrgent(Boolean(existing.is_urgent));
         setCurrencyId(existing.currency_id == null ? undefined : Number(existing.currency_id));
-        setLocation({ address: existing.address ?? "", administrativeAreaId: existing.administrative_area_id == null ? null : Number(existing.administrative_area_id), latitude: existing.latitude == null ? null : Number(existing.latitude), longitude: existing.longitude == null ? null : Number(existing.longitude) });
+        updateLocation({ address: existing.address ?? "", administrativeAreaId: existing.administrative_area_id == null ? null : Number(existing.administrative_area_id), latitude: existing.latitude == null ? null : Number(existing.latitude), longitude: existing.longitude == null ? null : Number(existing.longitude) });
         setDraftId(existing.id);
         setDraftStatus("saved");
         void loadHistory(existing.id);
@@ -331,6 +337,7 @@ export default function PostAd() {
     setDraftStatus("saving");
     try {
       await apiClient.csrfCookie();
+      const currentLocation = locationRef.current;
       const body = {
         category_id: category.id,
         language_code: locale,
@@ -343,10 +350,10 @@ export default function PostAd() {
         salary_period: isJobCategory ? salaryPeriod : null,
         is_phone_visible: phoneVisible,
         is_urgent: urgent,
-        address: location.address.trim() || null,
-        administrative_area_id: location.administrativeAreaId,
-        latitude: location.latitude,
-        longitude: location.longitude,
+        address: currentLocation.address.trim() || null,
+        administrative_area_id: currentLocation.administrativeAreaId,
+        latitude: currentLocation.latitude,
+        longitude: currentLocation.longitude,
         attributes: values,
       };
       const response = draftId
@@ -360,7 +367,7 @@ export default function PostAd() {
       setDraftStatus("failed");
       throw error;
     }
-  }, [category, currency, currencyId, draftId, hydrating, isJobCategory, locale, location, maximumPrice, minimumPrice, phoneVisible, price, priceType, salaryPeriod, translations, urgent, values]);
+  }, [category, currency, currencyId, draftId, hydrating, isJobCategory, locale, maximumPrice, minimumPrice, phoneVisible, price, priceType, salaryPeriod, translations, urgent, values]);
 
   useEffect(() => {
     if (searchParams.get("listing")) return;
@@ -559,7 +566,7 @@ export default function PostAd() {
                         </label>
                       </div>
                       <div className="wide">
-                        <ListingLocationPicker value={location} onChange={setLocation} />
+                        <ListingLocationPicker value={location} onChange={updateLocation} />
                       </div>
                       <div className="wide">
                         <DynamicFormRenderer
