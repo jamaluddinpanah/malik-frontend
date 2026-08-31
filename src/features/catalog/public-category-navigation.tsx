@@ -11,7 +11,7 @@ import styles from "@/shared/ui/site-header.module.css";
 type PublicCategory = { id: number; slug: string; name: string | null; children: PublicCategory[] };
 
 function CategoryItems({ categories, depth = 0, onNavigate }: { categories: PublicCategory[]; depth?: number; onNavigate?: () => void }) {
-  return <ul className={depth === 0 ? styles.categoryList : styles.categoryChildren}>{categories.map((category) => <li key={category.id}><LocalizedLink href={`/search?category=${encodeURIComponent(category.slug)}`} onClick={onNavigate}>{category.name ?? category.slug}</LocalizedLink>{category.children.length ? <CategoryItems categories={category.children} depth={depth + 1} onNavigate={onNavigate}/> : null}</li>)}</ul>;
+  return <ul className={depth === 0 ? styles.categoryList : styles.categoryChildren}>{categories.map((category) => <li key={category.id}><LocalizedLink href={`/search?category=${encodeURIComponent(category.slug)}`} onClick={onNavigate}>{category.name ?? category.slug}</LocalizedLink></li>)}</ul>;
 }
 
 /** Public API-backed category menu. It remains useful even when the API is unavailable. */
