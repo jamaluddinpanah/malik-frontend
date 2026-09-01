@@ -62,6 +62,7 @@ header {
   align-items: center;
   justify-content: space-between;
 }
+.logoImage { width:54px; height:54px; object-fit:contain; flex:0 0 auto; border-radius:9px; }
 .logo {
   display: flex;
   align-items: center;

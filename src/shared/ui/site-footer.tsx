@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { CircleHelp, Copyright, ShieldCheck } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -107,9 +108,7 @@ export function SiteFooter() {
         <div className={styles.bottom}>
           <span className={styles.bottomMeta}>
             <span className={styles.copyright}>
-              <i className={styles.footerBrand}>
-                M<small>•</small>
-              </i>
+              <Image className={styles.footerBrand} src="/malik-logo.png" alt="Malik" width={28} height={28} />
               <Copyright size={14} aria-hidden="true" />{" "}
               <span>{t("copyright")}</span>
             </span>

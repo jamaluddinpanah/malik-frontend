@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { LocalizedLink as Link } from "./localized-link";
 import {
   ChevronDown,
@@ -27,9 +28,7 @@ function Brand() {
   const t = useTranslations("navigation");
   return (
     <Link href="/" className="logo">
-      <b>
-        M<span>•</span>
-      </b>
+      <Image className="logoImage" src="/malik-logo.png" alt={t("brandName")} width={54} height={54} priority />
       <strong>
         {t("brandName")}<small>{t("tagline")}</small>
       </strong>
