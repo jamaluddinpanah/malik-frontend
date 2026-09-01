@@ -1,4 +1,5 @@
 "use client";
+/* eslint-disable react-hooks/exhaustive-deps -- Report reload is intentionally keyed to filter state. */
 
 import { useEffect, useState } from "react";
 import { apiClient, ApiError } from "@/shared/lib/api";

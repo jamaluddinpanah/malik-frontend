@@ -1,4 +1,5 @@
 "use client";
+/* eslint-disable @next/next/no-img-element -- Listing media may use user-provided hosts that cannot be statically allowlisted. */
 
 import { useEffect, useEffectEvent, useState } from "react";
 import { ClipboardList, Eye } from "lucide-react";

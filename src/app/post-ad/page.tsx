@@ -1,4 +1,6 @@
 "use client";
+/* eslint-disable react-hooks/exhaustive-deps -- Draft hydration intentionally runs only when the requested listing changes. */
+/* eslint-disable @next/next/no-img-element -- Listing media may use user-provided hosts that cannot be statically allowlisted. */
 
 import { useCallback, useEffect, useEffectEvent, useRef, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
@@ -218,7 +220,7 @@ export default function PostAd() {
       if (cursor) setHistoryExpanded(true);
       else setHistoryPages([]);
     } catch (error) {
-      setHistoryError(error instanceof ApiError ? requestMessageEvent(error) : t("historyLoadError"));
+      setHistoryError(error instanceof ApiError ? requestMessage(error) : t("historyLoadError"));
     } finally {
       setHistoryLoading(false);
     }
@@ -292,7 +294,7 @@ export default function PostAd() {
     void loadExisting();
     return () => { cancelled = true; };
     // Load the requested draft once; the form helpers intentionally use the current locale state.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [searchParams]);
 
   useEffect(() => {
@@ -326,7 +328,7 @@ export default function PostAd() {
       cancelled = true;
     };
     // Wait for role permissions before restoring restricted job categories.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [allowCategory, category?.id, isAuthLoading, searchParams]);
 
   const isJobCategory = category?.root_type === "job";

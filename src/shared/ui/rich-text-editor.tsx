@@ -1,8 +1,10 @@
 "use client";
 
 import "quill/dist/quill.snow.css";
-import { useEffect, useEffectEvent, useRef } from "react";
+import DOMPurify from "dompurify";
+import { useEffect, useEffectEvent, useRef, useState } from "react";
 import styles from "./rich-text-editor.module.css";
+const sanitizeRichText = (html: string) => DOMPurify.sanitize(html, { USE_PROFILES: { html: true } });
 
 type Props = { value: string; onChange: (value: string) => void; placeholder?: string; dir?: "ltr" | "rtl"; disabled?: boolean };
 
@@ -27,14 +29,14 @@ export function RichTextEditor({ value, onChange, placeholder, dir, disabled }: 
         readOnly: Boolean(initialProps.disabled),
         modules: { toolbar: { container: toolbarNode } },
       });
-      instance.clipboard.dangerouslyPasteHTML(initialProps.value, "silent");
+      instance.clipboard.dangerouslyPasteHTML(sanitizeRichText(initialProps.value), "silent");
       lastEditorValue.current = instance.root.innerHTML;
       instance.root.setAttribute("dir", initialProps.dir ?? "auto");
       instance.root.setAttribute("lang", initialProps.dir === "rtl" ? "fa" : "en");
       instance.root.setAttribute("spellcheck", initialProps.dir === "rtl" ? "false" : "true");
       instance.enable(!Boolean(initialProps.disabled));
       instance.on("text-change", () => {
-        const html = instance.root.innerHTML;
+        const html = sanitizeRichText(instance.root.innerHTML);
         lastEditorValue.current = html;
         emitChange(html);
       });
@@ -56,7 +58,7 @@ export function RichTextEditor({ value, onChange, placeholder, dir, disabled }: 
     latest.current = { value, placeholder, dir, disabled };
     const instance = editor.current;
     if (instance && !instance.hasFocus() && value !== lastEditorValue.current) {
-      instance.clipboard.dangerouslyPasteHTML(value, "silent");
+      instance.clipboard.dangerouslyPasteHTML(sanitizeRichText(value), "silent");
       lastEditorValue.current = instance.root.innerHTML;
     }
     instance?.enable(!Boolean(disabled));
@@ -81,6 +83,14 @@ export function RichTextEditor({ value, onChange, placeholder, dir, disabled }: 
 }
 
 export function RichText({ html, className = "" }: { html: string; className?: string }) {
-  if (!/<[a-z][\s\S]*>/i.test(html)) return <div className={`${styles.output} ${className}`}>{html}</div>;
-  return <div className={`${styles.output} ${className}`} dangerouslySetInnerHTML={{ __html: html }} />;
+  const hasHtml = /<[a-z][\s\S]*>/i.test(html);
+  const [sanitizedHtml, setSanitizedHtml] = useState("");
+  const outputClassName = [styles.output, className].filter(Boolean).join(" ");
+  useEffect(() => {
+    const timer = window.setTimeout(() => setSanitizedHtml(hasHtml ? sanitizeRichText(html) : ""), 0);
+    return () => window.clearTimeout(timer);
+  }, [hasHtml, html]);
+
+  if (!hasHtml) return <div className={outputClassName}>{html}</div>;
+  return <div className={outputClassName} dangerouslySetInnerHTML={{ __html: sanitizedHtml }} />;
 }

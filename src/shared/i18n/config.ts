@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-location-assign-relative-destination -- Changing the locale requires a full navigation so server-rendered locale state reloads. */
 export const locales = ["en", "fa", "ps"] as const;
 export type AppLocale = (typeof locales)[number];
 export const defaultLocale: AppLocale = "en";

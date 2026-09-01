@@ -281,11 +281,6 @@ export function AccountDashboard({
   );
 }
 
-function AccountInformation() {
-  const t = useTranslations("account");
-  return <section className="settings-panel"><header><div><h1>{t("accountInformation")}</h1><p>{t("accountInformationDescription")}</p></div></header><div className="status-rows"><p>{t("chooseAccountSetting")}</p></div></section>;
-}
-
 function ListingManagement({ status }: { status: "published" | "unpublished" }) {
   const t = useTranslations("accountDashboard");
   const locale = useLocale() as AppLocale;

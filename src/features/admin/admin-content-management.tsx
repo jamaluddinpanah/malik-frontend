@@ -94,7 +94,10 @@ function PageIconPicker({
     ? categoryIconMap[value]
     : Tags;
 
-  useEffect(() => setQuery(value), [value]);
+  useEffect(() => {
+    const timer = window.setTimeout(() => setQuery(value), 0);
+    return () => window.clearTimeout(timer);
+  }, [value]);
   useEffect(() => {
     const close = (event: PointerEvent) => {
       if (!pickerRef.current?.contains(event.target as Node)) setOpen(false);
@@ -220,16 +223,19 @@ export function AdminContentManagement({ view }: { view: View }) {
   }, [bannerCursor, pageCursor, view]);
 
   useEffect(() => {
-    setPageCursor(null);
-    setPageCursors([null]);
-    setPageIndex(0);
-    setPagePagination(null);
-    setPageTotal(0);
-    setBannerCursor(null);
-    setBannerCursors([null]);
-    setBannerIndex(0);
-    setBannerPagination(null);
-    setBannerTotal(0);
+    const timer = window.setTimeout(() => {
+      setPageCursor(null);
+      setPageCursors([null]);
+      setPageIndex(0);
+      setPagePagination(null);
+      setPageTotal(0);
+      setBannerCursor(null);
+      setBannerCursors([null]);
+      setBannerIndex(0);
+      setBannerPagination(null);
+      setBannerTotal(0);
+    }, 0);
+    return () => window.clearTimeout(timer);
   }, [view]);
 
   useEffect(() => {

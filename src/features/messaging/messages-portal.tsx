@@ -1,4 +1,5 @@
 "use client";
+/* eslint-disable react-hooks/exhaustive-deps -- Realtime subscriptions intentionally track their explicit state keys. */
 
 import { RefreshCw } from "lucide-react";
 import { useEffect, useRef, useState } from "react";

@@ -38,7 +38,7 @@ export function LocationSelector({ value, onChange }: { value?: number; onChange
   useEffect(() => { void apiClient.request<{ data: LocationOption[] }>("/api/v1/locations/roots").then((response) => { setRoots(response.data); setError(null); }).catch(() => setError(t("locationError"))); }, [t]);
   useEffect(() => { if (country) loadChildren(country.id, setProvinces); }, [country, loadChildren]);
   useEffect(() => { if (province) loadChildren(province.id, (items) => { setDistricts(items.filter((area) => area.type === "district")); setProvinceVillages(items.filter((area) => area.type === "neighborhood")); }); }, [province, loadChildren]);
-  useEffect(() => { if (district) { if (district.id === province?.id) setVillages(provinceVillages); else loadChildren(district.id, setVillages); } }, [district, province, provinceVillages, loadChildren]);
+  useEffect(() => { if (!district || district.id === province?.id) return; loadChildren(district.id, setVillages); }, [district, province, loadChildren]);
   useEffect(() => {
     if (!value || resolvedValue.current === value) return;
     let cancelled = false;
@@ -62,10 +62,11 @@ export function LocationSelector({ value, onChange }: { value?: number; onChange
   const resetBelowCountry = () => { setProvince(null); setDistrict(null); setVillage(null); setProvinces([]); setDistricts([]); setProvinceVillages([]); setVillages([]); };
   const provincialDistrict = province && provinceVillages.length ? { ...province, name: t("provinceCapital", { province: province.name }), children_count: provinceVillages.length } : null;
   const districtOptions = provincialDistrict ? [provincialDistrict, ...districts] : districts;
+  const selectedVillages = district?.id === province?.id ? provinceVillages : villages;
   return <div className={styles.selector}>
     <ReactSelect {...props} options={optionsFor(roots)} value={selected(country)} aria-label={t("selectLocation")} placeholder={t("selectLocation")} onChange={(option) => { if (!option) { resolvedValue.current = undefined; setCountry(null); resetBelowCountry(); onChange(null); return; } resolvedValue.current = option.area.id; setCountry(option.area); resetBelowCountry(); onChange(option.area); }} />
     {country ? <ReactSelect {...props} options={optionsFor(provinces)} value={selected(province)} aria-label={t("selectProvince")} placeholder={t("selectProvince")} noOptionsMessage={() => t("selectProvince")} onChange={(option) => { if (!option) { resolvedValue.current = country.id; setProvince(null); setDistrict(null); setVillage(null); setDistricts([]); setProvinceVillages([]); setVillages([]); onChange(country); return; } resolvedValue.current = option.area.id; setProvince(option.area); setDistrict(null); setVillage(null); setDistricts([]); setProvinceVillages([]); setVillages([]); onChange(option.area); }} /> : null}
     {districtOptions.length ? <ReactSelect {...props} options={optionsFor(districtOptions)} value={selected(district)} aria-label={t("selectDistrict")} placeholder={t("selectDistrict")} noOptionsMessage={() => t("selectDistrict")} onChange={(option) => { if (!option) { resolvedValue.current = province?.id; setDistrict(null); setVillage(null); setVillages([]); onChange(province); return; } resolvedValue.current = option.area.id; setDistrict(option.area); setVillage(null); setVillages([]); onChange(option.area); }} /> : null}
-    {district?.children_count ? <ReactSelect {...props} options={optionsFor(villages)} value={selected(village)} aria-label={t("selectVillage")} placeholder={t("selectVillage")} noOptionsMessage={() => t("selectVillage")} onChange={(option) => { if (!option) { resolvedValue.current = district.id; setVillage(null); onChange(district); return; } resolvedValue.current = option.area.id; setVillage(option.area); onChange(option.area); }} /> : null}
+    {district?.children_count ? <ReactSelect {...props} options={optionsFor(selectedVillages)} value={selected(village)} aria-label={t("selectVillage")} placeholder={t("selectVillage")} noOptionsMessage={() => t("selectVillage")} onChange={(option) => { if (!option) { resolvedValue.current = district.id; setVillage(null); onChange(district); return; } resolvedValue.current = option.area.id; setVillage(option.area); onChange(option.area); }} /> : null}
   </div>;
 }

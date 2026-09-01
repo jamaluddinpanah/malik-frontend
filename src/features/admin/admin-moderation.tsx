@@ -1,4 +1,6 @@
 "use client";
+/* eslint-disable react-hooks/exhaustive-deps -- Effects use stable Effect Events and derived status keys. */
+/* eslint-disable @next/next/no-img-element -- Moderation media may use user-provided hosts that cannot be statically allowlisted. */
 
 import { useEffect, useEffectEvent, useRef, useState } from "react";
 import { useParams } from "next/navigation";
@@ -188,8 +190,11 @@ export function AdminModerationQueue() {
   }, [applied, cursor, aiRiskFilter]);
 
   useEffect(() => {
-    setSelectedIds([]);
-    setBulkApproveOpen(false);
+    const timer = window.setTimeout(() => {
+      setSelectedIds([]);
+      setBulkApproveOpen(false);
+    }, 0);
+    return () => window.clearTimeout(timer);
   }, [applied, cursor, aiRiskFilter]);
 
   useEffect(() => {
@@ -212,9 +217,12 @@ export function AdminModerationQueue() {
   const analysisStatusKey = analysisItems?.map((item) => `${item.id}:${item.ai_review_summary?.status ?? ""}`).join(",");
   useEffect(() => {
     if (!analysisItems?.some((item) => isAiInProgress(item.ai_review_summary))) return;
-    void pollAnalysis();
+    const initialPoll = window.setTimeout(() => void pollAnalysis(), 0);
     const timer = window.setInterval(() => void pollAnalysis(), 3000);
-    return () => window.clearInterval(timer);
+    return () => {
+      window.clearTimeout(initialPoll);
+      window.clearInterval(timer);
+    };
   }, [analysisStatusKey]);
 
   async function analyzeCurrentPage() {

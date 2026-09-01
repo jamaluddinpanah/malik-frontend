@@ -46,7 +46,13 @@ function mediaUrl(value: RawValue | undefined): string {
   }
 }
 
-function mapListing(raw: RawListing): Listing {
+function translatedName(raw: RawListing, locale: string): string {
+  const translations = list(raw.translations);
+  const translation = translations.find((item) => item.locale === locale) ?? translations.find((item) => item.locale === "en");
+  return typeof translation?.name === "string" ? translation.name : "";
+}
+
+function mapListing(raw: RawListing, locale = "en"): Listing {
   const category = record(raw.category);
   const owner = record(raw.owner);
   const media = list(raw.media);
@@ -58,7 +64,7 @@ function mapListing(raw: RawListing): Listing {
   const attributes = list(raw.values).map((item) => {
     const attribute = record(item.attribute);
     const value = item.string_value ?? item.text_value ?? item.integer_value ?? item.decimal_value ?? item.boolean_value ?? item.date_value ?? item.datetime_value ?? item.json_value;
-    const label = String(attribute.name ?? attribute.code ?? "");
+    const label = translatedName(attribute, locale) || String(attribute.name ?? attribute.code ?? "");
     if (
       (attribute.input_type === "vehicle-condition-map" || attribute.code === "vehicle_body_condition") &&
       value && typeof value === "object" && !Array.isArray(value)
@@ -185,6 +191,7 @@ export class LaravelMarketplaceRepository
   }
 
   async searchPage(filters: ListingFilters): Promise<ListingPage> {
+    const locale = await getLocale();
     const params = new URLSearchParams({ per_page: "50" });
     if (filters.q) params.set("q", filters.q);
     if (filters.category) params.set("category", filters.category);
@@ -211,16 +218,17 @@ export class LaravelMarketplaceRepository
     );
     const paginated = Array.isArray(response.data) ? null : response.data;
     const items = paginated?.data ?? (Array.isArray(response.data) ? response.data : []);
-    return { items: items.map(mapListing), currentPage: Number(paginated?.current_page ?? 1), lastPage: Number(paginated?.last_page ?? 1), total: Number(paginated?.total ?? items.length), perPage: Number(paginated?.per_page ?? items.length) };
+    return { items: items.map((item) => mapListing(item, locale)), currentPage: Number(paginated?.current_page ?? 1), lastPage: Number(paginated?.last_page ?? 1), total: Number(paginated?.total ?? items.length), perPage: Number(paginated?.per_page ?? items.length) };
   }
 
   async findBySlug(slug: string): Promise<Listing | null> {
+    const locale = await getLocale();
     try {
       const response = await request<{ data: RawListing }>(
         routes.api.listingBySlug(slug),
         { fresh: true },
       );
-      return mapListing(response.data);
+      return mapListing(response.data, locale);
     } catch (error) {
       if (error instanceof MarketplaceRequestError && error.status === 404) return null;
       throw error;
