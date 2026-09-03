@@ -9,6 +9,8 @@ export type MapCoordinates = { latitude: number; longitude: number };
 
 type MapSurfaceProps = {
   coordinates: MapCoordinates | null;
+  focusCoordinates?: MapCoordinates | null;
+  zoom?: number;
   interactive?: boolean;
   preferGoogle?: boolean;
   onCoordinatesChange?: (coordinates: MapCoordinates) => void;
@@ -52,7 +54,7 @@ async function loadGoogleMarkers(key: string) {
   return importLibrary("marker");
 }
 
-export function ListingMapSurface({ coordinates, interactive = false, preferGoogle = false, onCoordinatesChange, onProviderChange, overlay }: MapSurfaceProps) {
+export function ListingMapSurface({ coordinates, focusCoordinates, zoom, interactive = false, preferGoogle = false, onCoordinatesChange, onProviderChange, overlay }: MapSurfaceProps) {
   const t = useTranslations("maps");
   const element = useRef<HTMLDivElement>(null);
   const [provider, setProvider] = useState<"mapbox" | "google" | null>(null);
@@ -68,7 +70,7 @@ export function ListingMapSurface({ coordinates, interactive = false, preferGoog
     let disposed = false;
     let mapboxMap: { remove: () => void } | undefined;
     let googleMarker: google.maps.marker.AdvancedMarkerElement | undefined;
-    const center = coordinates ?? defaultCenter;
+    const center = focusCoordinates ?? coordinates ?? defaultCenter;
     const setActive = (next: "mapbox" | "google" | null) => {
       if (!disposed) {
         setProvider(next);
@@ -84,7 +86,7 @@ export function ListingMapSurface({ coordinates, interactive = false, preferGoog
       const point = { lat: center.latitude, lng: center.longitude };
       const map = new google.maps.Map(element.current, {
         center: point,
-        zoom: coordinates ? 13 : 6,
+        zoom: zoom ?? (coordinates ? 13 : 6),
         gestureHandling: "cooperative",
         mapId: process.env.NEXT_PUBLIC_GOOGLE_MAP_ID || "DEMO_MAP_ID",
         mapTypeControl: false,
@@ -109,7 +111,7 @@ export function ListingMapSurface({ coordinates, interactive = false, preferGoog
       const mapboxgl = (await import("mapbox-gl")).default;
       if (disposed || !element.current) return;
       mapboxgl.accessToken = mapboxToken;
-      const map = new mapboxgl.Map({ container: element.current, style: process.env.NEXT_PUBLIC_MAPBOX_STYLE || "mapbox://styles/mapbox/streets-v12", center: [center.longitude, center.latitude], zoom: coordinates ? 13 : 6 });
+      const map = new mapboxgl.Map({ container: element.current, style: process.env.NEXT_PUBLIC_MAPBOX_STYLE || "mapbox://styles/mapbox/streets-v12", center: [center.longitude, center.latitude], zoom: zoom ?? (coordinates ? 13 : 6) });
       mapboxMap = map;
       const marker = new mapboxgl.Marker({ draggable: interactive });
       if (coordinates) marker.setLngLat([coordinates.longitude, coordinates.latitude]).addTo(map);
@@ -127,7 +129,7 @@ export function ListingMapSurface({ coordinates, interactive = false, preferGoog
     return () => { disposed = true; if (googleMarker) googleMarker.map = null; mapboxMap?.remove(); };
   // Maps are recreated only when the configured provider or selected point changes.
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [coordinates?.latitude, coordinates?.longitude, googleKey, mapboxToken, preferred]);
+  }, [coordinates?.latitude, coordinates?.longitude, focusCoordinates?.latitude, focusCoordinates?.longitude, googleKey, mapboxToken, preferred, zoom]);
 
   if (!mapboxToken && !googleKey) return <div className={styles.fallback}>{t("unavailable")}</div>;
   return (

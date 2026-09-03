@@ -14,6 +14,16 @@ const SearchBox = dynamic(() => import("@mapbox/search-js-react").then((module) 
 
 export type ListingLocationValue = { address: string; administrativeAreaId: number | null; latitude: number | null; longitude: number | null };
 
+const afghanistanCenter: MapCoordinates = { latitude: 33.9391, longitude: 67.7100 };
+
+const areaZoom: Record<LocationOption["type"], number> = {
+  country: 6,
+  province: 9,
+  city: 11,
+  district: 13,
+  neighborhood: 15,
+};
+
 function GooglePlaceSearch({ apiKey, locale, placeholder, onSelect, onError }: { apiKey: string; locale: string; placeholder: string; onSelect: (location: { address: string; latitude: number; longitude: number }) => void; onError: () => void }) {
   const container = useRef<HTMLDivElement>(null);
 
@@ -65,10 +75,30 @@ export function ListingLocationPicker({ value, onChange }: { value: ListingLocat
   const [preferGoogle, setPreferGoogle] = useState(false);
   const [locating, setLocating] = useState(false);
   const [searchBoxKey, setSearchBoxKey] = useState(0);
+  const [selectedAreaZoom, setSelectedAreaZoom] = useState<number | undefined>(undefined);
+  const [selectedAreaCenter, setSelectedAreaCenter] = useState<MapCoordinates | null>(null);
+  const areaFocusRequest = useRef(0);
   const mapboxToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
   const googleKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY;
   const coordinates = value.latitude !== null && value.longitude !== null ? { latitude: value.latitude, longitude: value.longitude } : null;
   const updateCoordinates = (point: MapCoordinates) => onChange({ ...value, latitude: point.latitude, longitude: point.longitude });
+  const selectAdministrativeArea = (area: LocationOption | null, lineage: LocationOption[] = []) => {
+    const requestId = ++areaFocusRequest.current;
+    const latitude = area?.latitude == null ? Number.NaN : Number(area.latitude);
+    const longitude = area?.longitude == null ? Number.NaN : Number(area.longitude);
+    const hasCoordinates = Number.isFinite(latitude) && Number.isFinite(longitude);
+
+    setSelectedAreaZoom(area ? areaZoom[area.type] : undefined);
+    setSelectedAreaCenter(hasCoordinates ? { latitude, longitude } : area?.country_code === "AF" ? afghanistanCenter : null);
+    onChange({ ...value, administrativeAreaId: area?.id ?? null });
+
+    if (!area || hasCoordinates || !googleKey) return;
+    const areaNames = [...new Set([...lineage, area].map((item) => item.name).filter(Boolean))].reverse();
+    void loadGoogleGeocoding(googleKey).then(({ Geocoder }) => new Geocoder().geocode({ address: areaNames.join(", ") })).then((result) => {
+      const location = result.results[0]?.geometry.location;
+      if (areaFocusRequest.current === requestId && location) setSelectedAreaCenter({ latitude: location.lat(), longitude: location.lng() });
+    }).catch(() => undefined);
+  };
 
   // The parent can restore a draft or reset the field without remounting this picker.
   // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -132,7 +162,7 @@ export function ListingLocationPicker({ value, onChange }: { value: ListingLocat
     <p className={styles.hint}>{t("editorHint")}</p>
     {error ? <p className={styles.error} role="alert">{error}</p> : null}
     {accuracy !== null ? <p className={styles.hint}>{t("currentLocationAccuracy", { meters: accuracy })}</p> : null}
-    <ListingMapSurface coordinates={coordinates} interactive preferGoogle={Boolean(googleKey) || preferGoogle} onCoordinatesChange={updateCoordinates} overlay={
+    <ListingMapSurface coordinates={coordinates} focusCoordinates={selectedAreaCenter} zoom={selectedAreaZoom} interactive preferGoogle={Boolean(googleKey) || preferGoogle} onCoordinatesChange={updateCoordinates} overlay={
       <div className={styles.mapSearch}>
         <div className={styles.search}>
           {googleKey ? <GooglePlaceSearch key={searchBoxKey} apiKey={googleKey} locale={locale} placeholder={t("searchPlaceholder")} onError={() => setError(t("searchError"))} onSelect={({ address, latitude, longitude }) => {
@@ -158,7 +188,7 @@ export function ListingLocationPicker({ value, onChange }: { value: ListingLocat
     <div className={styles.fields}>
       <label>{t("latitude")}<input type="number" step="any" value={value.latitude ?? ""} readOnly /></label>
       <label>{t("longitude")}<input type="number" step="any" value={value.longitude ?? ""} readOnly /></label>
-      <div className={`${styles.wide} ${styles.field}`}><span>{t("administrativeArea")}</span><LocationSelector value={value.administrativeAreaId ?? undefined} onChange={(area: LocationOption | null) => onChange({ ...value, administrativeAreaId: area?.id ?? null })} /></div>
+      <div className={`${styles.wide} ${styles.field}`}><span>{t("administrativeArea")}</span><LocationSelector value={value.administrativeAreaId ?? undefined} onChange={selectAdministrativeArea} /></div>
       <label className={styles.wide}>{t("address")}<textarea value={value.address} onChange={(event) => { setQuery(event.target.value); onChange({ ...value, address: event.target.value }); }} /></label>
     </div>
   </section>;

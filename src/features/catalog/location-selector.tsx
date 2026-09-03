@@ -9,8 +9,11 @@ import styles from "./location-selector.module.css";
 export type LocationOption = {
   id: number;
   parent_id: number | null;
+  country_code?: string | null;
   type: "country" | "province" | "city" | "district" | "neighborhood";
   name: string;
+  latitude: number | string | null;
+  longitude: number | string | null;
   children_count: number;
 };
 
@@ -20,7 +23,7 @@ function optionsFor(items: LocationOption[]): SelectOption[] {
   return items.map((area) => ({ value: area.id, label: area.name, area }));
 }
 
-export function LocationSelector({ value, onChange }: { value?: number; onChange: (area: LocationOption | null) => void }) {
+export function LocationSelector({ value, onChange }: { value?: number; onChange: (area: LocationOption | null, lineage?: LocationOption[]) => void }) {
   const t = useTranslations("categoryForms"); const locale = useLocale();
   const [roots, setRoots] = useState<LocationOption[]>([]);
   const [provinces, setProvinces] = useState<LocationOption[]>([]);
@@ -59,14 +62,15 @@ export function LocationSelector({ value, onChange }: { value?: number; onChange
   if (error) return <p role="alert">{error}</p>;
   const props = { className: styles.select, classNamePrefix: "location-select", isRtl: locale !== "en", isSearchable: true, isClearable: true, menuPortalTarget: typeof document === "undefined" ? undefined : document.body, styles: { menuPortal: (base: object) => ({ ...base, zIndex: 20 }) } };
   const selected = (area: LocationOption | null) => area ? { value: area.id, label: area.name, area } : null;
+  const hierarchy = (...areas: Array<LocationOption | null | undefined>) => areas.filter((area): area is LocationOption => Boolean(area));
   const resetBelowCountry = () => { setProvince(null); setDistrict(null); setVillage(null); setProvinces([]); setDistricts([]); setProvinceVillages([]); setVillages([]); };
   const provincialDistrict = province && provinceVillages.length ? { ...province, name: t("provinceCapital", { province: province.name }), children_count: provinceVillages.length } : null;
   const districtOptions = provincialDistrict ? [provincialDistrict, ...districts] : districts;
   const selectedVillages = district?.id === province?.id ? provinceVillages : villages;
   return <div className={styles.selector}>
-    <ReactSelect {...props} options={optionsFor(roots)} value={selected(country)} aria-label={t("selectLocation")} placeholder={t("selectLocation")} onChange={(option) => { if (!option) { resolvedValue.current = undefined; setCountry(null); resetBelowCountry(); onChange(null); return; } resolvedValue.current = option.area.id; setCountry(option.area); resetBelowCountry(); onChange(option.area); }} />
-    {country ? <ReactSelect {...props} options={optionsFor(provinces)} value={selected(province)} aria-label={t("selectProvince")} placeholder={t("selectProvince")} noOptionsMessage={() => t("selectProvince")} onChange={(option) => { if (!option) { resolvedValue.current = country.id; setProvince(null); setDistrict(null); setVillage(null); setDistricts([]); setProvinceVillages([]); setVillages([]); onChange(country); return; } resolvedValue.current = option.area.id; setProvince(option.area); setDistrict(null); setVillage(null); setDistricts([]); setProvinceVillages([]); setVillages([]); onChange(option.area); }} /> : null}
-    {districtOptions.length ? <ReactSelect {...props} options={optionsFor(districtOptions)} value={selected(district)} aria-label={t("selectDistrict")} placeholder={t("selectDistrict")} noOptionsMessage={() => t("selectDistrict")} onChange={(option) => { if (!option) { resolvedValue.current = province?.id; setDistrict(null); setVillage(null); setVillages([]); onChange(province); return; } resolvedValue.current = option.area.id; setDistrict(option.area); setVillage(null); setVillages([]); onChange(option.area); }} /> : null}
-    {district?.children_count ? <ReactSelect {...props} options={optionsFor(selectedVillages)} value={selected(village)} aria-label={t("selectVillage")} placeholder={t("selectVillage")} noOptionsMessage={() => t("selectVillage")} onChange={(option) => { if (!option) { resolvedValue.current = district.id; setVillage(null); onChange(district); return; } resolvedValue.current = option.area.id; setVillage(option.area); onChange(option.area); }} /> : null}
+    <ReactSelect {...props} options={optionsFor(roots)} value={selected(country)} aria-label={t("selectLocation")} placeholder={t("selectLocation")} onChange={(option) => { if (!option) { resolvedValue.current = undefined; setCountry(null); resetBelowCountry(); onChange(null, []); return; } resolvedValue.current = option.area.id; setCountry(option.area); resetBelowCountry(); onChange(option.area, hierarchy(option.area)); }} />
+    {country ? <ReactSelect {...props} options={optionsFor(provinces)} value={selected(province)} aria-label={t("selectProvince")} placeholder={t("selectProvince")} noOptionsMessage={() => t("selectProvince")} onChange={(option) => { if (!option) { resolvedValue.current = country.id; setProvince(null); setDistrict(null); setVillage(null); setDistricts([]); setProvinceVillages([]); setVillages([]); onChange(country, hierarchy(country)); return; } resolvedValue.current = option.area.id; setProvince(option.area); setDistrict(null); setVillage(null); setDistricts([]); setProvinceVillages([]); setVillages([]); onChange(option.area, hierarchy(country, option.area)); }} /> : null}
+    {districtOptions.length ? <ReactSelect {...props} options={optionsFor(districtOptions)} value={selected(district)} aria-label={t("selectDistrict")} placeholder={t("selectDistrict")} noOptionsMessage={() => t("selectDistrict")} onChange={(option) => { if (!option) { resolvedValue.current = province?.id; setDistrict(null); setVillage(null); setVillages([]); onChange(province, hierarchy(country, province)); return; } resolvedValue.current = option.area.id; setDistrict(option.area); setVillage(null); setVillages([]); onChange(option.area, hierarchy(country, province, option.area)); }} /> : null}
+    {district?.children_count ? <ReactSelect {...props} options={optionsFor(selectedVillages)} value={selected(village)} aria-label={t("selectVillage")} placeholder={t("selectVillage")} noOptionsMessage={() => t("selectVillage")} onChange={(option) => { if (!option) { resolvedValue.current = district.id; setVillage(null); onChange(district, hierarchy(country, province, district)); return; } resolvedValue.current = option.area.id; setVillage(option.area); onChange(option.area, hierarchy(country, province, district, option.area)); }} /> : null}
   </div>;
 }
