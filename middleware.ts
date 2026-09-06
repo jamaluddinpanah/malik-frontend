@@ -75,5 +75,7 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!api|_next|favicon.ico|robots.txt|sitemap.xml|assets).*)"],
+  // Public files must bypass locale redirects. Otherwise a request such as
+  // `/malik-logo.png` becomes `/en/malik-logo.png`, which is an HTML route.
+  matcher: ["/((?!api|_next|.*\\..*).*)"],
 };
