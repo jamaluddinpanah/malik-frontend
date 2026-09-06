@@ -100,6 +100,11 @@ export default function PostAd() {
   const [historyError, setHistoryError] = useState("");
   const [location, setLocation] = useState<ListingLocationValue>(emptyLocation);
   const locationRef = useRef(location);
+  // State updates are asynchronous. These refs make the draft ID and in-flight
+  // requests available immediately to the autosave and final-submit handlers.
+  const draftIdRef = useRef<number | null>(null);
+  const saveDraftPromiseRef = useRef<Promise<ListingResponse | null> | null>(null);
+  const submittingRef = useRef(false);
   const previousListingId = useRef(searchParams.get("listing"));
 
   const updateLocation = useCallback((next: ListingLocationValue) => {
@@ -144,6 +149,7 @@ export default function PostAd() {
     setSalaryPeriod("monthly");
     setPhoneVisible(false);
     setUrgent(false);
+    draftIdRef.current = null;
     setDraftId(null);
     setDraftStatus("idle");
     setMedia([]);
@@ -171,6 +177,7 @@ export default function PostAd() {
     setUrgent(false);
     setCurrency(null);
     setCurrencyId(undefined);
+    draftIdRef.current = null;
     setDraftId(null);
     setDraftStatus("idle");
     setMedia([]);
@@ -265,6 +272,7 @@ export default function PostAd() {
         setUrgent(Boolean(existing.is_urgent));
         setCurrencyId(existing.currency_id == null ? undefined : Number(existing.currency_id));
         updateLocation({ address: existing.address ?? "", administrativeAreaId: existing.administrative_area_id == null ? null : Number(existing.administrative_area_id), latitude: existing.latitude == null ? null : Number(existing.latitude), longitude: existing.longitude == null ? null : Number(existing.longitude) });
+        draftIdRef.current = existing.id;
         setDraftId(existing.id);
         setDraftStatus("saved");
         void loadHistory(existing.id);
@@ -334,49 +342,53 @@ export default function PostAd() {
   const isJobCategory = category?.root_type === "job";
 
   const saveDraft = useCallback(async (): Promise<ListingResponse | null> => {
-    if (hydrating) return draftId ? { id: draftId } : null;
-    if (!category || !locales.every((item) => translations[item].title.trim() && translations[item].description.trim())) return draftId ? { id: draftId } : null;
-    setDraftStatus("saving");
-    try {
-      await apiClient.csrfCookie();
-      const currentLocation = locationRef.current;
-      const body = {
-        category_id: category.id,
-        language_code: locale,
-        translations: Object.fromEntries(locales.map((item) => [item, { title: translations[item].title.trim(), description: translations[item].description.trim() }])),
-        price_type: priceType,
-        price: !isJobCategory || priceType === "fixed" ? (price ? Number(price) : null) : null,
-        minimum_price: isJobCategory && priceType === "range" && minimumPrice ? Number(minimumPrice) : null,
-        maximum_price: isJobCategory && priceType === "range" && maximumPrice ? Number(maximumPrice) : null,
-        currency_id: currency?.id ?? currencyId ?? null,
-        salary_period: isJobCategory ? salaryPeriod : null,
-        is_phone_visible: phoneVisible,
-        is_urgent: urgent,
-        address: currentLocation.address.trim() || null,
-        administrative_area_id: currentLocation.administrativeAreaId,
-        latitude: currentLocation.latitude,
-        longitude: currentLocation.longitude,
-        attributes: values,
-      };
-      const response = draftId
-        ? await apiClient.request<ApiResponse<ListingResponse>>(routes.api.listing(draftId), { method: "PATCH", body })
-        : await apiClient.request<ApiResponse<ListingResponse>>(routes.api.listings, { method: "POST", body });
-      const id = response.data.id;
-      setDraftId(id);
-      setDraftStatus("saved");
-      return response.data;
-    } catch (error) {
-      setDraftStatus("failed");
-      throw error;
-    }
-  }, [category, currency, currencyId, draftId, hydrating, isJobCategory, locale, maximumPrice, minimumPrice, phoneVisible, price, priceType, salaryPeriod, translations, urgent, values]);
+    if (saveDraftPromiseRef.current) return saveDraftPromiseRef.current;
+    const currentDraftId = draftIdRef.current;
+    if (hydrating) return currentDraftId ? { id: currentDraftId } : null;
+    if (!category || !locales.every((item) => translations[item].title.trim() && translations[item].description.trim())) return currentDraftId ? { id: currentDraftId } : null;
 
-  useEffect(() => {
-    if (searchParams.get("listing")) return;
-    if (!category || !locales.every((item) => translations[item].title.trim() && translations[item].description.trim())) return;
-    const timeout = window.setTimeout(() => void saveDraft().catch((error) => setMessage(requestMessageEvent(error))), 900);
-    return () => window.clearTimeout(timeout);
-  }, [category, saveDraft, searchParams, translations, values]);
+    const save = (async (): Promise<ListingResponse> => {
+      setDraftStatus("saving");
+      try {
+        await apiClient.csrfCookie();
+        const currentLocation = locationRef.current;
+        const body = {
+          category_id: category.id,
+          language_code: locale,
+          translations: Object.fromEntries(locales.map((item) => [item, { title: translations[item].title.trim(), description: translations[item].description.trim() }])),
+          price_type: priceType,
+          price: !isJobCategory || priceType === "fixed" ? (price ? Number(price) : null) : null,
+          minimum_price: isJobCategory && priceType === "range" && minimumPrice ? Number(minimumPrice) : null,
+          maximum_price: isJobCategory && priceType === "range" && maximumPrice ? Number(maximumPrice) : null,
+          currency_id: currency?.id ?? currencyId ?? null,
+          salary_period: isJobCategory ? salaryPeriod : null,
+          is_phone_visible: phoneVisible,
+          is_urgent: urgent,
+          address: currentLocation.address.trim() || null,
+          administrative_area_id: currentLocation.administrativeAreaId,
+          latitude: currentLocation.latitude,
+          longitude: currentLocation.longitude,
+          attributes: values,
+        };
+        const response = currentDraftId
+          ? await apiClient.request<ApiResponse<ListingResponse>>(routes.api.listing(currentDraftId), { method: "PATCH", body })
+          : await apiClient.request<ApiResponse<ListingResponse>>(routes.api.listings, { method: "POST", body });
+        draftIdRef.current = response.data.id;
+        setDraftId(response.data.id);
+        setDraftStatus("saved");
+        return response.data;
+      } catch (error) {
+        setDraftStatus("failed");
+        throw error;
+      }
+    })();
+    saveDraftPromiseRef.current = save;
+    try {
+      return await save;
+    } finally {
+      if (saveDraftPromiseRef.current === save) saveDraftPromiseRef.current = null;
+    }
+  }, [category, currency, currencyId, hydrating, isJobCategory, locale, maximumPrice, minimumPrice, phoneVisible, price, priceType, salaryPeriod, translations, urgent, values]);
 
   function addMedia(event: React.ChangeEvent<HTMLInputElement>) {
     const files = Array.from(event.target.files ?? []);
@@ -407,8 +419,34 @@ export default function PostAd() {
     }
   }
 
+  async function saveAsDraft() {
+    if (submittingRef.current) return;
+    submittingRef.current = true;
+    setErrors({});
+    setMessage("");
+    setListing(null);
+    setLoading(true);
+    try {
+      const saved = await saveDraft();
+      if (!saved) throw new Error("Draft could not be saved.");
+      await uploadMedia(saved.id);
+      setListing(saved);
+      setMessage(t("draft.saved"));
+    } catch (error) {
+      if (error instanceof ApiError) {
+        setErrors(error.errors);
+        setMessage(requestMessage(error));
+      } else setMessage(requestMessage(error));
+    } finally {
+      submittingRef.current = false;
+      setLoading(false);
+    }
+  }
+
   async function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (submittingRef.current) return;
+    submittingRef.current = true;
     setErrors({});
     setMessage("");
     setListing(null);
@@ -431,6 +469,7 @@ export default function PostAd() {
         setMessage(requestMessage(error));
       } else setMessage(requestMessage(error));
     } finally {
+      submittingRef.current = false;
       setLoading(false);
     }
   }
@@ -619,9 +658,14 @@ export default function PostAd() {
                           ))}
                         </div>
                       </div>
-                      <button className="wide submit-listing" type="submit" disabled={loading}>
-                        {loading ? t("submitting") : t("submit")}
-                      </button>
+                      <div className="wide posting-actions">
+                        <button className="save-draft" type="button" disabled={loading} onClick={() => void saveAsDraft()}>
+                          {loading ? t("draft.saving") : t("saveDraft")}
+                        </button>
+                        <button className="submit-listing" type="submit" disabled={loading}>
+                          {loading ? t("submitting") : t("submit")}
+                        </button>
+                      </div>
                       {draftStatus !== "idle" ? <small role="status">{t(`draft.${draftStatus}`)}</small> : null}
                       {message ? (
                         <p role={listing ? "status" : "alert"}>

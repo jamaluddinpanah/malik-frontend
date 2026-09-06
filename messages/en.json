@@ -340,6 +340,7 @@
     "media": "Photos",
     "removeMedia": "Remove photo",
     "draft": {"saving": "Saving draft…", "saved": "Draft saved", "failed": "Draft could not be saved"},
+    "saveDraft": "Save as draft",
     "submit": "Submit listing",
     "success": "Your ad has been submitted for review.",
     "resubmitted": "Your updated listing has been sent for review.",
