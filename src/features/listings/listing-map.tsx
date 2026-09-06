@@ -38,7 +38,7 @@ export async function loadGooglePlaces(key: string) {
   return importLibrary("places");
 }
 
-async function loadGoogleMaps(key: string) {
+export async function loadGoogleMaps(key: string) {
   if (!configuredGoogleKey) {
     setOptions({ key, v: "weekly" });
     configuredGoogleKey = key;
@@ -46,7 +46,7 @@ async function loadGoogleMaps(key: string) {
   return importLibrary("maps");
 }
 
-async function loadGoogleMarkers(key: string) {
+export async function loadGoogleMarkers(key: string) {
   if (!configuredGoogleKey) {
     setOptions({ key, v: "weekly" });
     configuredGoogleKey = key;

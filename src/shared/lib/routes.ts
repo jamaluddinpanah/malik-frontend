@@ -45,6 +45,8 @@ export const routes = {
      categoryFilters: (category: string | number) =>
        `/api/v1/categories/${encode(category)}/filters`,
     listings: "/api/v1/listings",
+    listingsMap: "/api/v1/listings/map",
+    listingsMapItems: (latitude: number, longitude: number) => "/api/v1/listings/map/items?latitude=" + encode(latitude) + "&longitude=" + encode(longitude),
       listing: (id: string | number) => `/api/v1/listings/${encode(id)}`,
       listingHistory: (id: string | number) => `/api/v1/listings/${encode(id)}/history`,
      listingSubmit: (id: string | number) => `/api/v1/listings/${encode(id)}/submit`,

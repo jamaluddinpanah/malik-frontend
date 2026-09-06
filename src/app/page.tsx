@@ -5,6 +5,7 @@ import {
   Car,
   House,
   ShoppingBag,
+  Map,
   type LucideIcon,
 } from "lucide-react";
 import { marketplace } from "@/features/listings/container";
@@ -27,6 +28,7 @@ const featuredCategories: {
 
 export default async function Home() {
   const t = await getTranslations("home");
+  const tMap = await getTranslations("maps");
   const locale = (await getLocale()) as "en" | "fa" | "ps";
   const [categories, listings, mostViewed, mostPopular, searchedAll, searchedGoods, searchedVehicles, searchedJobs] = await Promise.all([
     marketplace.listCategories.execute(),
@@ -46,6 +48,7 @@ export default async function Home() {
           <h1>{t("heroTitle")}</h1>
           <p>{t("heroDescription")}</p>
           <SearchForm />
+          <Link className="home-map-button" href="/map"><Map size={18} aria-hidden="true" /> {tMap("browseListings")}</Link>
         </div>
       </section>
       <div className="shell home-layout">

@@ -132,7 +132,11 @@
     "mapLabel": "Listing map",
     "loading": "Loading map...",
     "unavailable": "Map service is unavailable. You can still enter the address and location details.",
-    "noPublicLocation": "The seller has not shared an approximate map location."
+    "noPublicLocation": "The seller has not shared an approximate map location.",
+    "browseListings": "Explore listings on the map",
+    "publicTitle": "Listings map",
+    "publicDescription": "Browse active listings by location. Each marker shows its main category and listing count.",
+    "publicLoadError": "Listings could not be loaded."
   },
   "categories": {
     "title": "Categories",
