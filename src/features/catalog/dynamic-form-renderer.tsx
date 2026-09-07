@@ -1,4 +1,5 @@
 "use client";
+import { Textarea, Select, Input } from "@/shared/ui/form-controls";
 
 import { useMemo } from "react";
 import { useTranslations } from "next-intl";
@@ -189,7 +190,7 @@ function DynamicField({
   let control: React.ReactNode;
   if (field.input_type === "textarea")
     control = (
-      <textarea
+      <Textarea
         {...common}
         placeholder={field.placeholder ?? undefined}
         value={typeof value === "string" ? value : ""}
@@ -237,7 +238,7 @@ function DynamicField({
     );
   else if (field.input_type === "select")
     control = (
-      <select
+      <Select
         {...common}
         value={typeof value === "string" ? value : ""}
         onChange={(event) => set(event.target.value)}
@@ -248,11 +249,11 @@ function DynamicField({
             {option.label ?? option.value}
           </option>
         ))}
-      </select>
+      </Select>
     );
   else if (field.input_type === "multi-select")
     control = (
-      <select
+      <Select
         {...common}
         multiple
         value={Array.isArray(value) ? value : []}
@@ -270,7 +271,7 @@ function DynamicField({
             {option.label ?? option.value}
           </option>
         ))}
-      </select>
+      </Select>
     );
   else {
     const numeric = ["integer", "decimal", "number", "range"].includes(
@@ -288,7 +289,7 @@ function DynamicField({
           ? field.input_type
           : "text";
     control = (
-      <input
+      <Input
         {...common}
         type={type}
         step={field.input_type === "decimal" ? "any" : undefined}

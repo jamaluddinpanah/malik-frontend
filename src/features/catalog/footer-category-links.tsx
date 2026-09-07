@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { usePathname } from "next/navigation";
+import { useLocale } from "next-intl";
 import { apiClient } from "@/shared/lib/api";
 import { routes } from "@/shared/lib/routes";
 import { LocalizedLink } from "@/shared/ui/localized-link";
@@ -10,13 +10,14 @@ type RootCategory = { id: number; slug: string; name?: string | null };
 
 export function FooterCategoryLinks() {
   const [categories, setCategories] = useState<RootCategory[]>([]);
-  const pathname = usePathname();
+  const locale = useLocale();
 
   useEffect(() => {
     const controller = new AbortController();
     void apiClient
       .request<{ data?: RootCategory[] }>(routes.api.categoryRoots, {
         cache: "no-store",
+        locale,
         signal: controller.signal,
       })
       .then((payload) => setCategories(payload.data ?? []))
@@ -25,7 +26,7 @@ export function FooterCategoryLinks() {
       });
 
     return () => controller.abort();
-  }, [pathname]);
+  }, [locale]);
 
   return categories.map((category) => (
     <LocalizedLink

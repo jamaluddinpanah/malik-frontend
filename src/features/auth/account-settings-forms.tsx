@@ -1,4 +1,6 @@
 "use client";
+import { Input, Select, Textarea } from "@/shared/ui/form-controls";
+import { Form, Button } from "@/shared/ui/form-controls";
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
@@ -88,7 +90,7 @@ export function ProfileSettingsForm() {
           {t("firstName")}
           {field(
             "first_name",
-            <input
+            <Input
               name="first_name"
               defaultValue={profileValue(user.profile, "first_name")}
               required
@@ -100,7 +102,7 @@ export function ProfileSettingsForm() {
           {t("lastName")}
           {field(
             "last_name",
-            <input
+            <Input
               name="last_name"
               defaultValue={profileValue(user.profile, "last_name")}
               maxLength={100}
@@ -109,7 +111,7 @@ export function ProfileSettingsForm() {
         </label>
         <label>
           Gender
-          <select
+          <Select
             name="gender"
             defaultValue={profileValue(user.profile, "gender")}
           >
@@ -118,11 +120,11 @@ export function ProfileSettingsForm() {
             <option value="male">Male</option>
             <option value="other">Other</option>
             <option value="prefer_not_to_say">Prefer not to say</option>
-          </select>
+          </Select>
         </label>
         <label>
           Date of birth
-          <input
+          <Input
             name="date_of_birth"
             type="date"
             defaultValue={profileValue(user.profile, "date_of_birth")}
@@ -134,7 +136,7 @@ export function ProfileSettingsForm() {
         </div>
         <label className={styles.fullField}>
           Address
-          <textarea name="address" defaultValue={profileValue(user.profile, "address")} />
+          <Textarea name="address" defaultValue={profileValue(user.profile, "address")} />
         </label>
       </>
     ) : accountType === "business" ? (
@@ -143,7 +145,7 @@ export function ProfileSettingsForm() {
         {t("legalName")}
         {field(
           "legal_name",
-          <input
+          <Input
             name="legal_name"
             defaultValue={profileValue(user.profile, "legal_name")}
             required
@@ -151,14 +153,14 @@ export function ProfileSettingsForm() {
           />,
         )}
       </label>
-      <label>Registration number<input name="registration_number" defaultValue={profileValue(user.profile, "registration_number")} /></label><label>Tax number<input name="tax_number" defaultValue={profileValue(user.profile, "tax_number")} /></label><label>Business type<input name="business_type" defaultValue={profileValue(user.profile, "business_type")} /></label><label>Website<input name="website_url" type="url" defaultValue={profileValue(user.profile, "website_url")} /></label><div className={`${styles.fullField} ${styles.richTextField}`}><span>Description</span><ProfileRichTextField name="description" value={profileValue(user.profile, "description")} /></div><label className={styles.fullField}>Address<textarea name="address" defaultValue={profileValue(user.profile, "address")} /></label><label>Latitude<input name="latitude" type="number" step="any" defaultValue={profileValue(user.profile, "latitude")} /></label><label>Longitude<input name="longitude" type="number" step="any" defaultValue={profileValue(user.profile, "longitude")} /></label></>
+      <label>Registration number<Input name="registration_number" defaultValue={profileValue(user.profile, "registration_number")} /></label><label>Tax number<Input name="tax_number" defaultValue={profileValue(user.profile, "tax_number")} /></label><label>Business type<Input name="business_type" defaultValue={profileValue(user.profile, "business_type")} /></label><label>Website<Input name="website_url" type="url" defaultValue={profileValue(user.profile, "website_url")} /></label><div className={`${styles.fullField} ${styles.richTextField}`}><span>Description</span><ProfileRichTextField name="description" value={profileValue(user.profile, "description")} /></div><label className={styles.fullField}>Address<Textarea name="address" defaultValue={profileValue(user.profile, "address")} /></label><label>Latitude<Input name="latitude" type="number" step="any" defaultValue={profileValue(user.profile, "latitude")} /></label><label>Longitude<Input name="longitude" type="number" step="any" defaultValue={profileValue(user.profile, "longitude")} /></label></>
     ) : accountType === "organization" ? (
       <>
         <label>
           {t("organizationName")}
           {field(
             "organization_name",
-            <input
+            <Input
               name="organization_name"
               defaultValue={profileValue(user.profile, "name")}
               required
@@ -166,12 +168,12 @@ export function ProfileSettingsForm() {
             />,
           )}
         </label>
-        <label>Employee size<input name="employee_size" defaultValue={profileValue(user.profile, "employee_size")} /></label><label>Registration number<input name="registration_number" defaultValue={profileValue(user.profile, "registration_number")} /></label><label>Website<input name="website_url" type="url" defaultValue={profileValue(user.profile, "website_url")} /></label><label>Contact email<input name="contact_email" type="email" defaultValue={profileValue(user.profile, "contact_email")} /></label><label>Contact phone<input name="contact_phone" defaultValue={profileValue(user.profile, "contact_phone")} /></label><div className={`${styles.fullField} ${styles.richTextField}`}><span>Description</span><ProfileRichTextField name="description" value={profileValue(user.profile, "description")} /></div><label className={styles.fullField}>Address<textarea name="address" defaultValue={profileValue(user.profile, "address")} /></label><label>Latitude<input name="latitude" type="number" step="any" defaultValue={profileValue(user.profile, "latitude")} /></label><label>Longitude<input name="longitude" type="number" step="any" defaultValue={profileValue(user.profile, "longitude")} /></label>
+        <label>Employee size<Input name="employee_size" defaultValue={profileValue(user.profile, "employee_size")} /></label><label>Registration number<Input name="registration_number" defaultValue={profileValue(user.profile, "registration_number")} /></label><label>Website<Input name="website_url" type="url" defaultValue={profileValue(user.profile, "website_url")} /></label><label>Contact email<Input name="contact_email" type="email" defaultValue={profileValue(user.profile, "contact_email")} /></label><label>Contact phone<Input name="contact_phone" defaultValue={profileValue(user.profile, "contact_phone")} /></label><div className={`${styles.fullField} ${styles.richTextField}`}><span>Description</span><ProfileRichTextField name="description" value={profileValue(user.profile, "description")} /></div><label className={styles.fullField}>Address<Textarea name="address" defaultValue={profileValue(user.profile, "address")} /></label><label>Latitude<Input name="latitude" type="number" step="any" defaultValue={profileValue(user.profile, "latitude")} /></label><label>Longitude<Input name="longitude" type="number" step="any" defaultValue={profileValue(user.profile, "longitude")} /></label>
         <label>
           {t("organizationType")}
           {field(
             "organization_type",
-            <input
+            <Input
               name="organization_type"
               defaultValue={profileValue(user.profile, "organization_type")}
               maxLength={100}
@@ -183,7 +185,7 @@ export function ProfileSettingsForm() {
   return (
     <main className={styles.page}>
       <section className={`${styles.card} ${styles.profileCard}`}>
-        <form className={styles.profileForm} onSubmit={submit}>
+        <Form className={styles.profileForm} onSubmit={submit}>
           <h1>{t("profile")}</h1>
           {message ? <p role="status">{message}</p> : null}
           {error ? (
@@ -195,7 +197,7 @@ export function ProfileSettingsForm() {
             {t("accountName")}
             {field(
               "name",
-              <input
+              <Input
                 name="name"
                 defaultValue={user.name}
                 required
@@ -209,7 +211,7 @@ export function ProfileSettingsForm() {
               {t("displayName")}
               {field(
                 "display_name",
-                <input
+                <Input
                   name="display_name"
                   defaultValue={profileDisplayName(user.profile)}
                   required
@@ -218,10 +220,10 @@ export function ProfileSettingsForm() {
               )}
             </label>
           ) : null}
-          <button disabled={isAuthenticating}>
+          <Button variant="primary" disabled={isAuthenticating}>
             {isAuthenticating ? t("saving") : t("saveProfile")}
-          </button>
-        </form>
+          </Button>
+        </Form>
       </section>
     </main>
   );
@@ -269,7 +271,7 @@ export function SecuritySettingsForm() {
   return (
     <main className={styles.page}>
       <section className={styles.card}>
-        <form onSubmit={submit}>
+        <Form onSubmit={submit}>
           <h1>{t("security")}</h1>
           {message ? <p role="status">{message}</p> : null}
           {error ? (
@@ -291,7 +293,7 @@ export function SecuritySettingsForm() {
           ) : null}
           <label>
             {t("currentPassword")}
-            <input
+            <Input
               name="current_password"
               type="password"
               autoComplete="current-password"
@@ -305,7 +307,7 @@ export function SecuritySettingsForm() {
           </label>
           <label>
             {t("newPassword")}
-            <input
+            <Input
               name="password"
               type="password"
               autoComplete="new-password"
@@ -320,7 +322,7 @@ export function SecuritySettingsForm() {
           </label>
           <label>
             {t("confirmPassword")}
-            <input
+            <Input
               name="password_confirmation"
               type="password"
               autoComplete="new-password"
@@ -333,10 +335,10 @@ export function SecuritySettingsForm() {
               </small>
             ) : null}
           </label>
-          <button disabled={isAuthenticating}>
+          <Button variant="primary" disabled={isAuthenticating}>
             {isAuthenticating ? t("saving") : t("changePassword")}
-          </button>
-        </form>
+          </Button>
+        </Form>
       </section>
     </main>
   );
@@ -370,13 +372,13 @@ export function VerifyEmailCard() {
           ) : (
             <>
               <p>{t("checkInbox")}</p>
-              <button
+              <Button variant="ghost"
                 type="button"
                 disabled={isAuthenticating}
-                onClick={() => void resend()}
+                onClick={() => resend()}
               >
                 {isAuthenticating ? t("sending") : t("resendVerification")}
-              </button>
+              </Button>
             </>
           )}
           {message ? <p role="status">{message}</p> : null}

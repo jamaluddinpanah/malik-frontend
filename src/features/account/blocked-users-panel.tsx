@@ -1,4 +1,5 @@
 "use client";
+import { Button } from "@/shared/ui/form-controls";
 
 import { useEffect, useState } from "react";
 import { apiClient } from "@/shared/lib/api";
@@ -11,5 +12,5 @@ export function BlockedUsersPanel() {
   const [error, setError] = useState(false);
   useEffect(() => { const timer = window.setTimeout(() => { void apiClient.request<{ data: BlockedUser[] }>(routes.api.blockedUsers).then((response) => setUsers(response.data)).catch(() => setError(true)).finally(() => setLoading(false)); }, 0); return () => window.clearTimeout(timer); }, []);
   async function unblock(id: number) { await apiClient.csrfCookie(); await apiClient.request(routes.api.userBlock(id), { method: "DELETE" }); setUsers((current) => current.filter((user) => user.id !== id)); }
-  return <section className="settings-panel"><header><div><h1>Blocked users</h1><p>Manage users you have blocked from messaging you.</p></div></header>{loading ? <p role="status">Loading blocked users...</p> : error ? <p role="alert">Blocked users could not be loaded.</p> : !users.length ? <p>No blocked users.</p> : <div className="status-rows">{users.map((user) => <article className="account-listing-row" key={user.id}><span><b>{user.name}</b>{user.email ? <small>{user.email}</small> : null}</span><button type="button" onClick={() => void unblock(user.id)}>Unblock</button></article>)}</div>}</section>;
+  return <section className="settings-panel"><header><div><h1>Blocked users</h1><p>Manage users you have blocked from messaging you.</p></div></header>{loading ? <p role="status">Loading blocked users...</p> : error ? <p role="alert">Blocked users could not be loaded.</p> : !users.length ? <p>No blocked users.</p> : <div className="status-rows">{users.map((user) => <article className="account-listing-row" key={user.id}><span><b>{user.name}</b>{user.email ? <small>{user.email}</small> : null}</span><Button variant="ghost" type="button" onClick={() => unblock(user.id)}>Unblock</Button></article>)}</div>}</section>;
 }

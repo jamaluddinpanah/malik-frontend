@@ -4,12 +4,15 @@
 import { Eye, EyeOff, Search, Upload } from "lucide-react";
 import {
   cloneElement,
+  createContext,
+  useContext,
   type ChangeEvent,
   type InputHTMLAttributes,
   type ReactElement,
   type ReactNode,
   useEffect,
   useId,
+  useRef,
   useState,
 } from "react";
 import { useTranslations } from "next-intl";
@@ -18,6 +21,24 @@ import styles from "./ui.module.css";
 type ButtonVariant = "primary" | "secondary" | "danger" | "ghost";
 type ButtonSize = "sm" | "md" | "lg";
 
+const FormPendingContext = createContext(false);
+
+/** React state alone cannot guard reentrant submits before the next render. */
+export function Form({ onSubmit, children, ...props }: Omit<React.FormHTMLAttributes<HTMLFormElement>, "onSubmit"> & {
+  onSubmit: (event: React.FormEvent<HTMLFormElement>) => unknown | Promise<unknown>;
+}) {
+  const locked = useRef(false);
+  const [pending, setPending] = useState(false);
+  return <FormPendingContext.Provider value={pending}><form {...props} aria-busy={pending || undefined} onSubmit={async (event) => {
+    event.preventDefault();
+    if (locked.current) return;
+    locked.current = true;
+    setPending(true);
+    try { await onSubmit(event); }
+    finally { locked.current = false; setPending(false); }
+  }}>{children}</form></FormPendingContext.Provider>;
+}
+
 export function Button({
   variant = "primary",
   size = "md",
@@ -25,19 +46,42 @@ export function Button({
   className = "",
   children,
   disabled,
+  onClick,
+  type = "submit",
   ...props
-}: React.ButtonHTMLAttributes<HTMLButtonElement> & {
+}: Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "onClick"> & {
+  onClick?: (event: React.MouseEvent<HTMLButtonElement>) => unknown | Promise<unknown>;
   variant?: ButtonVariant;
   size?: ButtonSize;
   loading?: boolean;
 }) {
+  const formPending = useContext(FormPendingContext);
+  const locked = useRef(false);
+  const [clickPending, setClickPending] = useState(false);
+  const busy = loading || clickPending || (type === "submit" && formPending);
   return (
     <button
       {...props}
-      disabled={disabled || loading}
+      type={type}
+      data-ui="button"
+      data-variant={variant}
+      data-size={size}
+      aria-busy={busy || undefined}
+      disabled={disabled || busy}
+      onClick={onClick ? async (event) => {
+        if (locked.current || disabled || busy) { event.preventDefault(); return; }
+        locked.current = true;
+        try {
+          const result = onClick(event);
+          if (result && typeof (result as PromiseLike<unknown>).then === "function") {
+            setClickPending(true);
+            await result;
+          }
+        } finally { locked.current = false; setClickPending(false); }
+      } : undefined}
       className={`${styles.button} ${styles[`button_${variant}`]} ${styles[`size_${size}`]} ${className}`}
     >
-      {loading ? <SpinnerLabel /> : null}
+      {busy ? <SpinnerLabel /> : null}
       {children}
     </button>
   );
@@ -94,11 +138,31 @@ export function Select({
   error,
   className = "",
   children,
+  onChange,
+  disabled,
   ...props
-}: React.SelectHTMLAttributes<HTMLSelectElement> & { error?: boolean }) {
+}: Omit<React.SelectHTMLAttributes<HTMLSelectElement>, "onChange"> & {
+  error?: boolean;
+  onChange?: (event: React.ChangeEvent<HTMLSelectElement>) => unknown | Promise<unknown>;
+}) {
+  const locked = useRef(false);
+  const [pending, setPending] = useState(false);
   return (
     <select
       {...props}
+      disabled={disabled || pending}
+      aria-busy={pending || undefined}
+      onChange={onChange ? async (event) => {
+        if (locked.current) return;
+        locked.current = true;
+        try {
+          const result = onChange(event);
+          if (result && typeof (result as PromiseLike<unknown>).then === "function") {
+            setPending(true);
+            await result;
+          }
+        } finally { locked.current = false; setPending(false); }
+      } : undefined}
       aria-invalid={error || undefined}
       className={`${styles.control} ${error ? styles.invalid : ""} ${className}`}
     >

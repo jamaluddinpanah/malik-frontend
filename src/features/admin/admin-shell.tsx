@@ -1,4 +1,6 @@
 "use client";
+import { Select } from "@/shared/ui/form-controls";
+import { Button } from "@/shared/ui/form-controls";
 
 import { LocalizedLink as Link } from "@/shared/ui/localized-link";
 import {
@@ -8,6 +10,7 @@ import {
   LayoutDashboard,
   Languages,
   LogOut,
+  CircleUserRound,
   MapPinned,
   Menu,
   ShieldCheck,
@@ -54,29 +57,39 @@ const navigation = [
     MapPinned,
     [adminPermissions.settingsManage],
   ],
-  [
-    "currencies",
-    "/admin/currencies",
-    Landmark,
-    [adminPermissions.currencies],
-  ],
+  ["currencies", "/admin/currencies", Landmark, [adminPermissions.currencies]],
   [
     "exchangeRates",
     "/admin/exchange-rates",
     ArrowLeftRight,
     [adminPermissions.currencies],
   ],
-  [
-    "settings",
-    "/admin/settings",
-    Settings,
-    [adminPermissions.settings],
-  ],
+  ["settings", "/admin/settings", Settings, [adminPermissions.settings]],
   ["catalog", "/admin/catalog", Tags, [adminPermissions.categories]],
-  ["moderation", "/admin/moderation", ClipboardCheck, [adminPermissions.listingsModerate]],
-  ["listings", "/admin/listings", ClipboardList, [adminPermissions.listingsViewAll]],
-  ["reports", "/admin/reports", ClipboardCheck, [adminPermissions.messagesModerate]],
-  ["auditLogs", "/admin/audit-logs", ClipboardList, [adminPermissions.auditLogs]],
+  [
+    "moderation",
+    "/admin/moderation",
+    ClipboardCheck,
+    [adminPermissions.listingsModerate],
+  ],
+  [
+    "listings",
+    "/admin/listings",
+    ClipboardList,
+    [adminPermissions.listingsViewAll],
+  ],
+  [
+    "reports",
+    "/admin/reports",
+    ClipboardCheck,
+    [adminPermissions.messagesModerate],
+  ],
+  [
+    "auditLogs",
+    "/admin/audit-logs",
+    ClipboardList,
+    [adminPermissions.auditLogs],
+  ],
 ] as const;
 
 export function AdminShell({ children }: { children: React.ReactNode }) {
@@ -191,72 +204,82 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
           >
             <Menu size={20} />
           </button>
-            <div className={styles.crumbs}>
-              <Link href="/admin">{t("brand")}</Link>
-              <span>/</span>
-              {(() => {
-                const ActiveIcon = active[2];
-                return <ActiveIcon className={styles.crumbIcon} size={17} aria-hidden="true" />;
-              })()}
-              <b>{t(active[0])}</b>
+          <div className={styles.crumbs}>
+            <Link href="/admin">{t("brand")}</Link>
+            <span>/</span>
+            {(() => {
+              const ActiveIcon = active[2];
+              return (
+                <ActiveIcon
+                  className={styles.crumbIcon}
+                  size={17}
+                  aria-hidden="true"
+                />
+              );
+            })()}
+            <b>{t(active[0])}</b>
           </div>
-          <label className={styles.language} title={languageT("select")}>
-            <Languages size={17} aria-hidden="true" />
-            <select
-              aria-label={languageT("select")}
-              value={activeLocale}
-              onChange={(event) =>
-                switchClientLocale(event.target.value as AppLocale)
-              }
-            >
-              {locales.map((locale) => (
-                <option key={locale} value={locale}>
-                  {languageT(locale)}
-                </option>
-              ))}
-            </select>
-          </label>
-          <div className={styles.profile} ref={profileRef}>
-            <button
-              className={styles.profileTrigger}
-              aria-expanded={profileOpen}
-              onClick={() => setProfileOpen((value) => !value)}
-            >
-              <span>{user?.name}</span>
-              <ChevronDown size={15} />
-            </button>
-            {profileOpen && (
-              <div className={styles.profileMenu}>
-                <strong>{user?.name}</strong>
-                <small>
-                  {user?.roles.map(roleLabel).join(", ") ||
-                    (user?.role ? roleLabel(user.role) : "")}
-                </small>
-                <a
-                  href={withActiveLocale("/", pathname) as string}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() => setProfileOpen(false)}
-                >
-                  <Globe2 size={15} />
-                  {t("viewWebsite")}
-                </a>
-                <button
-                  className={styles.logout}
-                  disabled={isAuthenticating}
-                  onClick={async () => {
-                    setProfileOpen(false);
-                    await logout();
-                    router.replace(
-                      withActiveLocale("/login", pathname) as string,
-                    );
-                  }}
-                >
-                  <LogOut size={15} />
-                  {t("logout")}
-                </button>
-              </div>
-            )}
+          <div className={styles.topbarControls}>
+            <label className={styles.language} title={languageT("select")}>
+              <Languages size={17} aria-hidden="true" />
+              <Select
+                aria-label={languageT("select")}
+                value={activeLocale}
+                onChange={(event) =>
+                  switchClientLocale(event.target.value as AppLocale)
+                }
+              >
+                {locales.map((locale) => (
+                  <option key={locale} value={locale}>
+                    {languageT(locale)}
+                  </option>
+                ))}
+              </Select>
+            </label>
+            <div className={styles.profile} ref={profileRef}>
+              <button
+                className={styles.profileTrigger}
+                aria-expanded={profileOpen}
+                onClick={() => setProfileOpen((value) => !value)}
+              >
+                <CircleUserRound size={17} aria-hidden="true" />
+                <span>{user?.name}</span>
+                <ChevronDown className={styles.profileChevron} size={15} />
+              </button>
+              {profileOpen && (
+                <div className={styles.profileMenu}>
+                  <strong>{user?.name}</strong>
+                  <small>
+                    {user?.roles.map(roleLabel).join(", ") ||
+                      (user?.role ? roleLabel(user.role) : "")}
+                  </small>
+                  <a
+                    href={withActiveLocale("/", pathname) as string}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => setProfileOpen(false)}
+                  >
+                    <Globe2 size={15} />
+                    {t("viewWebsite")}
+                  </a>
+                  <Button
+                    variant="danger"
+                    className={styles.logout}
+                    disabled={isAuthenticating}
+                    onClick={async () => {
+                      setProfileOpen(false);
+                      await logout();
+                      router.replace(
+                        withActiveLocale("/login", pathname) as string,
+                      );
+                    }}
+                  >
+                    <LogOut size={15} />
+                    {t("logout")}
+                  </Button>
+                </div>
+              )}
+            </div>
           </div>
         </header>
         <div className={styles.body}>{children}</div>

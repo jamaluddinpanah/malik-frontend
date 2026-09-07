@@ -1,4 +1,5 @@
 "use client";
+import { Button } from "@/shared/ui/form-controls";
 
 import { useAuth } from "./auth-provider";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
@@ -6,6 +7,7 @@ import { useEffect } from "react";
 import { useTranslations } from "next-intl";
 import type { UserRole } from "@/features/auth/entities";
 import { withActiveLocale } from "@/shared/ui/localized-link";
+import { LoadingState } from "@/shared/ui/feedback";
 
 export function ProtectedRoute({
   children,
@@ -70,12 +72,12 @@ export function ProtectedRoute({
       <main className="page">
         <div className="empty">
           <p>{t("errorDescription")}</p>
-          <button
+          <Button variant="ghost"
             type="button"
-            onClick={() => void refreshUser().catch(() => undefined)}
+            onClick={() => refreshUser().catch(() => undefined)}
           >
             {t("retry")}
-          </button>
+          </Button>
         </div>
       </main>
     );
@@ -83,7 +85,7 @@ export function ProtectedRoute({
   if (isLoading || !user || forbidden)
     return (
       <main className="page">
-        <div className="empty">{t("loading")}</div>
+        <LoadingState />
       </main>
     );
 

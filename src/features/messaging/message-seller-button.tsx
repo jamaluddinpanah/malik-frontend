@@ -1,4 +1,5 @@
 "use client";
+import { Button } from "@/shared/ui/form-controls";
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
@@ -32,6 +33,6 @@ export function MessageSellerButton({ listingId, ownerUserId }: { listingId: num
       setState("error");
     }
   }
-  if (state === "error") return user ? <span><button type="button" onClick={() => void start()}>{t("messageSeller")}</button><small role="alert">{failure}</small></span> : <Link href="/login">{t("loginToMessage")}</Link>;
-  return <button type="button" onClick={() => void start()} disabled={state === "starting"}>{state === "starting" ? t("startingMessage") : t("messageSeller")}</button>;
+  if (state === "error") return user ? <span><Button variant="ghost" type="button" onClick={() => start()}>{t("messageSeller")}</Button><small role="alert">{failure}</small></span> : <Link href="/login">{t("loginToMessage")}</Link>;
+  return <Button variant="ghost" type="button" onClick={() => start()} disabled={state === "starting"}>{state === "starting" ? t("startingMessage") : t("messageSeller")}</Button>;
 }

@@ -1,4 +1,5 @@
 "use client";
+import { Button } from "@/shared/ui/form-controls";
 
 import { Heart, LoaderCircle } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -32,6 +33,6 @@ export function FavoriteButton({ listingId, initial = false }: { listingId: numb
     }
   }
   if (requiresLogin) return <Link href="/login" className="favorite-login"><Heart size={16} /> {t("save")}</Link>;
-  if (error) return <button type="button" className="favorite-button" onClick={() => void save()} disabled={saving}><Heart size={16} /> {t("favoriteError")}</button>;
-  return <button type="button" className={`favorite-button ${saved ? "saved" : ""} ${saving ? "saving" : ""}`} onClick={() => void save()} disabled={saving} aria-pressed={saved} aria-live="polite" aria-label={saved ? t("saved") : t("save")} title={saved ? t("saved") : t("save")}><span aria-hidden="true">{saving ? <LoaderCircle className="favorite-spinner" size={17} /> : <Heart size={17} fill={saved ? "currentColor" : "none"} />}</span><span>{saving ? t("savingFavorite") : saved ? t("saved") : t("save")}</span></button>;
+  if (error) return <Button variant="ghost" type="button" className="favorite-button" onClick={() => save()} disabled={saving}><Heart size={16} /> {t("favoriteError")}</Button>;
+  return <Button variant="ghost" type="button" className={`favorite-button ${saved ? "saved" : ""} ${saving ? "saving" : ""}`} onClick={() => save()} disabled={saving} aria-pressed={saved} aria-live="polite" aria-label={saved ? t("saved") : t("save")} title={saved ? t("saved") : t("save")}><span aria-hidden="true">{saving ? <LoaderCircle className="favorite-spinner" size={17} /> : <Heart size={17} fill={saved ? "currentColor" : "none"} />}</span><span>{saving ? t("savingFavorite") : saved ? t("saved") : t("save")}</span></Button>;
 }

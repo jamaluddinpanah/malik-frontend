@@ -94,6 +94,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     [],
   );
 
+  const can = useCallback((permission: string) => Boolean(user?.roles.includes("superadmin") || user?.permissions.includes(permission)), [user]);
+  const canAny = useCallback((permissions: string[]) => Boolean(user && (user.roles.includes("superadmin") || permissions.some((permission) => user.permissions.includes(permission)))), [user]);
+  const canAll = useCallback((permissions: string[]) => Boolean(user && (user.roles.includes("superadmin") || permissions.every((permission) => user.permissions.includes(permission)))), [user]);
+
   const value = useMemo<AuthContextValue>(
     () => ({
       user,
@@ -159,27 +163,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       resendVerification: () => perform(() => auth.resendVerification()),
       forgotPassword: (email) => perform(() => auth.forgotPassword(email)),
       resetPassword: (input) => perform(() => auth.resetPassword(input)),
-      can: (permission) =>
-        Boolean(
-          user?.roles.includes("superadmin") ||
-            user?.permissions.includes(permission),
-        ),
-      canAny: (permissions) =>
-        Boolean(
-          user?.roles.includes("superadmin") ||
-            permissions.some((permission) =>
-              user?.permissions.includes(permission),
-            ),
-        ),
-      canAll: (permissions) =>
-        Boolean(
-          user?.roles.includes("superadmin") ||
-            permissions.every((permission) =>
-              user?.permissions.includes(permission),
-            ),
-        ),
+      can,
+      canAny,
+      canAll,
     }),
-    [isAuthenticating, isLoading, perform, refreshUser, sessionError, user],
+    [can, canAny, canAll, isAuthenticating, isLoading, perform, refreshUser, sessionError, user],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

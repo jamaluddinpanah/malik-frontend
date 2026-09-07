@@ -1,4 +1,5 @@
 "use client";
+import { Button } from "@/shared/ui/form-controls";
 
 /* eslint-disable @next/next/no-img-element */
 import { useEffect, useState } from "react";
@@ -354,7 +355,8 @@ function ListingManagement({ status }: { status: "published" | "unpublished" }) 
         title={t("deleteListingTitle")}
         cancelLabel={t("cancel")}
         confirmLabel={deleting ? t("deleting") : t("actions.delete")}
-        onConfirm={() => void remove()}
+        danger
+        onConfirm={() => remove()}
         className={styles.deleteDialog}
       >
         <p>{t("confirmDelete", { listing: listingToDelete?.title ?? "" })}</p>
@@ -395,27 +397,27 @@ function ListingManagement({ status }: { status: "published" | "unpublished" }) 
                   <Link href={`/post-ad?listing=${listing.id}`}>{t("actions.edit")}</Link>
                 ) : null}
                 {listing.status === "published" ? (
-                  <button type="button" onClick={() => void transition(routes.api.listingPause(listing.id))}>
+                  <Button variant="ghost" type="button" onClick={() => transition(routes.api.listingPause(listing.id))}>
                     {t("actions.pause")}
-                  </button>
+                  </Button>
                 ) : listing.status === "paused" ? (
-                  <button type="button" onClick={() => void transition(routes.api.listingResume(listing.id))}>
+                  <Button variant="ghost" type="button" onClick={() => transition(routes.api.listingResume(listing.id))}>
                     {t("actions.resume")}
-                  </button>
+                  </Button>
                 ) : null}
                 {listing.status === "published" || listing.status === "paused" ? (
-                  <button type="button" onClick={() => void transition(routes.api.listingSold(listing.id))}>
+                  <Button variant="ghost" type="button" onClick={() => transition(routes.api.listingSold(listing.id))}>
                     {t("actions.sold")}
-                  </button>
+                  </Button>
                 ) : null}
                 {listing.status !== "archived" ? (
-                  <button type="button" onClick={() => void transition(routes.api.listingArchive(listing.id))}>
+                  <Button variant="ghost" type="button" onClick={() => transition(routes.api.listingArchive(listing.id))}>
                     {t("actions.archive")}
-                  </button>
+                  </Button>
                 ) : (
-                  <button type="button" onClick={() => void transition(routes.api.listingRestore(listing.id))}>
+                  <Button variant="ghost" type="button" onClick={() => transition(routes.api.listingRestore(listing.id))}>
                     {t("actions.restore")}
-                  </button>
+                  </Button>
                 )}
                 {status === "unpublished" ? (
                   <button type="button" onClick={() => setListingToDelete(listing)}>
@@ -446,7 +448,7 @@ function Favorites() {
     setRemoving(id); setError(false);
     try { await apiClient.csrfCookie(); await apiClient.request(routes.api.listingFavorite(id), { method: "DELETE" }); setItems((current) => current.filter((item) => item.id !== id)); } catch { setError(true); } finally { setRemoving(null); }
   }
-  return <section className="settings-panel"><header><div><h1>{t("sections.favoriteListings")}</h1><p>{t("favoriteDescription")}</p></div><Link href="/my-account">{t("back")}</Link></header>{error ? <p role="alert">{t("actionError")}</p> : null}<div className="status-rows">{items.length ? items.map((item) => <article className="account-listing-row" key={item.id}>{item.media?.[0]?.url ? <img src={item.media[0].url} alt="" /> : null}<span><Link href={`/listing/${item.slug}`}><b>{item.title}</b></Link>{item.price != null ? <small>{formatCurrency(item.price, item.currency?.code ?? "AFN", locale)}</small> : null}</span><button type="button" className="favorite-remove" disabled={removing === item.id} onClick={() => void remove(item.id)}>{removing === item.id ? t("saving") : t("removeFavorite")}</button></article>) : <div className="listing-empty"><b>{t("emptyTitle", { section: t("sections.favoriteListings") })}</b><small>{t("emptyDescription")}</small></div>}</div></section>;
+  return <section className="settings-panel"><header><div><h1>{t("sections.favoriteListings")}</h1><p>{t("favoriteDescription")}</p></div><Link href="/my-account">{t("back")}</Link></header>{error ? <p role="alert">{t("actionError")}</p> : null}<div className="status-rows">{items.length ? items.map((item) => <article className="account-listing-row" key={item.id}>{item.media?.[0]?.url ? <img src={item.media[0].url} alt="" /> : null}<span><Link href={`/listing/${item.slug}`}><b>{item.title}</b></Link>{item.price != null ? <small>{formatCurrency(item.price, item.currency?.code ?? "AFN", locale)}</small> : null}</span><Button variant="ghost" type="button" className="favorite-remove" disabled={removing === item.id} onClick={() => remove(item.id)}>{removing === item.id ? t("saving") : t("removeFavorite")}</Button></article>) : <div className="listing-empty"><b>{t("emptyTitle", { section: t("sections.favoriteListings") })}</b><small>{t("emptyDescription")}</small></div>}</div></section>;
 }
 
 function Overview({ locale }: { locale: AppLocale }) {

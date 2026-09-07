@@ -1,0 +1,124 @@
+.page {
+  display: grid;
+  gap: var(--section-gap);
+  min-width: 0;
+  color: var(--admin-ink);
+}
+
+.pageHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  min-height: 112px;
+  padding: 24px 28px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  background: linear-gradient(135deg, #fff 0%, var(--wash) 100%);
+  box-shadow: 0 4px 14px rgb(23 51 78 / 7%);
+}
+.pageHeaderMain {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  min-width: 0;
+}
+.pageHeaderIcon {
+  display: grid;
+  place-items: center;
+  flex: 0 0 46px;
+  width: 46px;
+  height: 46px;
+  border-radius: 13px;
+  color: var(--admin-blue);
+  background: #e8f3fc;
+}
+.pageHeaderCopy {
+  min-width: 0;
+}
+.pageHeaderEyebrow {
+  margin: 0 0 5px;
+  color: var(--admin-blue);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.025em;
+}
+.pageHeader h1 {
+  margin: 0;
+  color: var(--admin-ink);
+  font-size: clamp(24px, 2vw, 30px);
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+.pageHeader p {
+  max-width: 720px;
+  margin: 7px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.55;
+}
+.pageHeaderActions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 0 0 auto;
+}
+.loadingSurface {
+  display: grid;
+  place-items: center;
+  min-height: 240px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  background: #fff;
+}
+
+@media (max-width: 620px) {
+  .pageHeader {
+    align-items: flex-start;
+    flex-direction: column;
+    min-height: 0;
+    padding: 20px;
+  }
+  .pageHeaderIcon {
+    flex-basis: 42px;
+    width: 42px;
+    height: 42px;
+  }
+  .pageHeaderActions {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+}
+
+.hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 10px 12px;
+}
+
+.hero h1 {
+  margin: 0;
+  color: var(--admin-ink);
+  font-size: var(--page-title-size);
+  line-height: 1.2;
+}
+
+.hero p,
+.hero small {
+  margin: 3px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+@media (max-width: 620px) {
+  .hero {
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+  .hero h1 {
+    font-size: 22px;
+  }
+}

@@ -1,4 +1,6 @@
 "use client";
+import { Input } from "@/shared/ui/form-controls";
+import { Form, Button } from "@/shared/ui/form-controls";
 
 import { useState } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
@@ -41,7 +43,7 @@ export function PasswordRecoveryCard({ reset = false }: { reset?: boolean }) {
   return (
     <main className={styles.page}>
       <section className={styles.card}>
-        <form onSubmit={submit}>
+        <Form onSubmit={submit}>
           <h1>{reset ? t("resetPassword") : t("forgotPassword")}</h1>
           {message && <p role="status">{message}</p>}
           {error && (
@@ -51,7 +53,7 @@ export function PasswordRecoveryCard({ reset = false }: { reset?: boolean }) {
           )}
           <label>
             {authT("email")}
-            <input
+            <Input
               name="email"
               type="email"
               required
@@ -63,7 +65,7 @@ export function PasswordRecoveryCard({ reset = false }: { reset?: boolean }) {
             <>
               <label>
                 {t("resetToken")}
-                <input
+                <Input
                   name="token"
                   required
                   defaultValue={searchParams.get("token") ?? ""}
@@ -71,7 +73,7 @@ export function PasswordRecoveryCard({ reset = false }: { reset?: boolean }) {
               </label>
               <label>
                 {t("newPassword")}
-                <input
+                <Input
                   name="password"
                   type="password"
                   required
@@ -81,7 +83,7 @@ export function PasswordRecoveryCard({ reset = false }: { reset?: boolean }) {
               </label>
               <label>
                 {t("confirmPassword")}
-                <input
+                <Input
                   name="password_confirmation"
                   type="password"
                   required
@@ -91,20 +93,20 @@ export function PasswordRecoveryCard({ reset = false }: { reset?: boolean }) {
               </label>
             </>
           )}
-          <button disabled={isAuthenticating}>
+          <Button variant="primary" disabled={isAuthenticating}>
             {isAuthenticating
               ? t("pleaseWait")
               : reset
                 ? t("resetPassword")
                 : t("sendResetLink")}
-          </button>
+          </Button>
           <LocalizedLink
             className={styles.outline}
             href={withActiveLocale("/login", pathname) as string}
           >
             {t("backToSignIn")}
           </LocalizedLink>
-        </form>
+        </Form>
       </section>
     </main>
   );

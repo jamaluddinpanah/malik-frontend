@@ -13,6 +13,8 @@ import { CategorySidebar } from "@/features/catalog/category-sidebar";
 import { ListingCard } from "@/features/listings/listing-card";
 import { SearchForm } from "@/features/listings/search-form";
 import { ActiveBanner } from "@/features/content/active-banner";
+import { Suspense } from "react";
+import { LoadingState } from "@/shared/ui/feedback";
 
 const featuredCategories: {
   slug: string;
@@ -30,15 +32,9 @@ export default async function Home() {
   const t = await getTranslations("home");
   const tMap = await getTranslations("maps");
   const locale = (await getLocale()) as "en" | "fa" | "ps";
-  const [categories, listings, mostViewed, mostPopular, searchedAll, searchedGoods, searchedVehicles, searchedJobs] = await Promise.all([
+  const [categories, listings] = await Promise.all([
     marketplace.listCategories.execute(),
-    marketplace.searchListings.execute({ featured: true }),
-    marketplace.analytics.mostViewed(),
-    marketplace.analytics.mostPopular(),
-    marketplace.analytics.topSearched("all"),
-    marketplace.analytics.topSearched("goods"),
-    marketplace.analytics.topSearched("vehicle"),
-    marketplace.analytics.topSearched("job"),
+    marketplace.searchListings.execute({ featured: true, perPage: 12 }),
   ]);
   const roots = categories.filter((category) => !category.parentSlug);
   return (
@@ -113,18 +109,28 @@ export default async function Home() {
               ))}
             </div>
           </section>
-          <section className="link-groups analytics-groups">
-            <AnalyticsSection title={t("mostViewed")} listings={mostViewed} />
-            <AnalyticsSection title={t("mostPopular")} listings={mostPopular} />
-            <SearchAnalyticsSection title={t("groups.popularSearches.title")} terms={searchedAll} />
-            <SearchAnalyticsSection title={t("topSearchedGoods")} terms={searchedGoods} />
-            <SearchAnalyticsSection title={t("topSearchedVehicles")} terms={searchedVehicles} />
-            <SearchAnalyticsSection title={t("topSearchedJobs")} terms={searchedJobs} />
-          </section>
+          <Suspense fallback={<LoadingState />}><HomeAnalytics /></Suspense>
         </div>
       </div>
     </main>
   );
+}
+
+async function HomeAnalytics() {
+  const t = await getTranslations("home");
+  const [mostViewed, mostPopular, searchedAll, searchedGoods, searchedVehicles, searchedJobs] = await Promise.all([
+    marketplace.analytics.mostViewed(), marketplace.analytics.mostPopular(),
+    marketplace.analytics.topSearched("all"), marketplace.analytics.topSearched("goods"),
+    marketplace.analytics.topSearched("vehicle"), marketplace.analytics.topSearched("job"),
+  ]);
+  return <section className="link-groups analytics-groups">
+    <AnalyticsSection title={t("mostViewed")} listings={mostViewed} />
+    <AnalyticsSection title={t("mostPopular")} listings={mostPopular} />
+    <SearchAnalyticsSection title={t("groups.popularSearches.title")} terms={searchedAll} />
+    <SearchAnalyticsSection title={t("topSearchedGoods")} terms={searchedGoods} />
+    <SearchAnalyticsSection title={t("topSearchedVehicles")} terms={searchedVehicles} />
+    <SearchAnalyticsSection title={t("topSearchedJobs")} terms={searchedJobs} />
+  </section>;
 }
 
 function AnalyticsSection({ title, listings }: { title: string; listings: Array<{ id: number; slug: string; title: string }> }) {

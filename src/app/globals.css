@@ -7,6 +7,17 @@
   --line: #cfd9e2;
   --wash: #f3f8fb;
   --foot: #0c1820;
+  --admin-blue: #086bc2;
+  --admin-ink: #17334e;
+  --danger: #b42318;
+  --danger-fill: #c93232;
+  --surface: #fff;
+  --radius-control: 6px;
+  --radius-card: 8px;
+  --section-gap: 20px;
+  --field-gap: 14px;
+  --page-title-size: 25px;
+  --content-width: 1400px;
 }
 * {
   box-sizing: border-box;
@@ -30,7 +41,7 @@ a {
   color: inherit;
 }
 .shell {
-  width: 1400px;
+  width: var(--content-width);
   max-width: 100%;
   margin: auto;
   padding: 0 20px;

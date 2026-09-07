@@ -1,10 +1,11 @@
 "use client";
 
 import { ChevronDown, X } from "lucide-react";
-import { type ReactNode, useEffect, useEffectEvent, useId, useRef } from "react";
+import { type ReactNode, useEffect, useEffectEvent, useId, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useTranslations } from "next-intl";
 import styles from "./ui.module.css";
+import { Button } from "./form-controls";
 
 function useFocusTrap(
   active: boolean,
@@ -138,31 +139,45 @@ export function ConfirmationDialog({
   confirmLabel = "Confirm",
   cancelLabel = "Cancel",
   onConfirm,
+  danger = false,
   ...props
 }: OverlayProps & {
   confirmLabel?: string;
   cancelLabel?: string;
-  onConfirm: () => void;
+  onConfirm: () => unknown | Promise<unknown>;
+  danger?: boolean;
 }) {
+  const locked = useRef(false);
+  const [pending, setPending] = useState(false);
+  const close = () => { if (!locked.current) props.onClose(); };
   return (
     <Dialog
       {...props}
+      onClose={close}
       footer={
         <>
-          <button
+          <Button
             type="button"
-            className={styles.textButton}
-            onClick={props.onClose}
+            variant="ghost"
+            disabled={pending}
+            onClick={close}
           >
             {cancelLabel}
-          </button>
-          <button
+          </Button>
+          <Button
             type="button"
-            className={styles.confirmButton}
-            onClick={onConfirm}
+            variant={danger ? "danger" : "secondary"}
+            loading={pending}
+            onClick={async () => {
+              if (locked.current) return;
+              locked.current = true;
+              setPending(true);
+              try { await onConfirm(); }
+              finally { locked.current = false; setPending(false); }
+            }}
           >
             {confirmLabel}
-          </button>
+          </Button>
         </>
       }
     />

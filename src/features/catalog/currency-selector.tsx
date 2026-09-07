@@ -1,4 +1,5 @@
 "use client";
+import { Select } from "@/shared/ui/form-controls";
 
 import { useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
@@ -43,7 +44,7 @@ export function CurrencySelector({
   }, [currencies, onChange, value]);
   if (error) return <p role="alert">{error}</p>;
   return (
-    <select
+    <Select
       value={value ?? ""}
       aria-label={t("selectCurrency")}
       onChange={(event) => {
@@ -59,6 +60,6 @@ export function CurrencySelector({
           {currency.code} - {currency.name}
         </option>
       ))}
-    </select>
+    </Select>
   );
 }

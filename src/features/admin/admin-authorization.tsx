@@ -1,21 +1,24 @@
-"use client";
+'use client';
+import { Input, Select } from '@/shared/ui/form-controls';
+import { Form, Button } from '@/shared/ui/form-controls';
 
-import { ForbiddenState } from "@/shared/ui/feedback";
-import { adminPermissions } from "@/features/auth/permissions";
-import { ApiError } from "@/shared/lib/api";
+import { ForbiddenState } from '@/shared/ui/feedback';
+import { adminPermissions } from '@/features/auth/permissions';
+import { ApiError } from '@/shared/lib/api';
 import {
   AdminRepository,
   type AdminPermission,
   type AdminRole,
   type AdminUser,
   type CursorPage,
-} from "@/features/admin/admin-repository";
-import { AdminPageGuard } from "@/features/auth/admin-page-guard";
-import { useAuth } from "@/features/auth/auth-provider";
-import { KeyRound, ShieldCheck, Users } from "lucide-react";
-import { useEffect, useEffectEvent, useState } from "react";
-import { useTranslations } from "next-intl";
-import styles from "./admin-authorization.module.css";
+} from '@/features/admin/admin-repository';
+import { AdminPageGuard } from '@/features/auth/admin-page-guard';
+import { useAuth } from '@/features/auth/auth-provider';
+import { KeyRound, ShieldCheck, Users, X } from 'lucide-react';
+import { useEffect, useEffectEvent, useState } from 'react';
+import { useTranslations } from 'next-intl';
+import styles from './admin-authorization.module.css';
+import { AdminLoadingState, AdminPageHeader } from './admin-page-patterns';
 
 const repository = new AdminRepository();
 
@@ -33,36 +36,29 @@ function AdminState({
   error: unknown;
   retry: () => void;
 }) {
-  const t = useTranslations("adminAuthorization");
-  if (loading) return <div className={styles.state}>{t("loading")}</div>;
-  if (error instanceof ApiError && error.status === 403)
-    return <ForbiddenState />;
+  const t = useTranslations('adminAuthorization');
+  if (loading) return <AdminLoadingState label={t('loading')} />;
+  if (error instanceof ApiError && error.status === 403) return <ForbiddenState />;
   if (error)
     return (
       <div className={styles.state}>
-        <p>{apiMessage(error, t("loadFailed"))}</p>
-        <button onClick={retry}>{t("retry")}</button>
+        <p>{apiMessage(error, t('loadFailed'))}</p>
+        <button onClick={retry}>{t('retry')}</button>
       </div>
     );
   return null;
 }
 
-function Hero({ type }: { type: "users" | "roles" | "permissions" }) {
-  const t = useTranslations("adminAuthorization");
-  const Icon =
-    type === "users" ? Users : type === "roles" ? ShieldCheck : KeyRound;
+function Hero({ type }: { type: 'users' | 'roles' | 'permissions' }) {
+  const t = useTranslations('adminAuthorization');
+  const Icon = type === 'users' ? Users : type === 'roles' ? ShieldCheck : KeyRound;
   return (
-    <header className={styles.hero}>
-      <div className={styles.heading}>
-        <span className={styles.icon}>
-          <Icon size={20} />
-        </span>
-        <div>
-          <h1>{t(type)}</h1>
-          <p>{t(`${type}Description`)}</p>
-        </div>
-      </div>
-    </header>
+    <AdminPageHeader
+      icon={Icon}
+      eyebrow="Administration"
+      title={t(type)}
+      description={t(`${type}Description`)}
+    />
   );
 }
 
@@ -75,42 +71,43 @@ function Search({
   onChange: (value: string) => void;
   onSubmit: () => void;
 }) {
-  const t = useTranslations("adminAuthorization");
+  const t = useTranslations('adminAuthorization');
   return (
-    <form
+    <Form
       className={styles.search}
       onSubmit={(event) => {
         event.preventDefault();
         onSubmit();
       }}
     >
-      <input
+      <Input
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        placeholder={t("search")}
-        aria-label={t("search")}
+        placeholder={t('search')}
+        aria-label={t('search')}
       />
-      <button type="submit">{t("searchAction")}</button>
-    </form>
+      <Button variant="secondary" type="submit">
+        {t('searchAction')}
+      </Button>
+    </Form>
   );
 }
 
 export function AdminUsers() {
-  const t = useTranslations("adminAuthorization");
-  const roleT = useTranslations("roles");
+  const t = useTranslations('adminAuthorization');
+  const roleT = useTranslations('roles');
   const { user: actor, can } = useAuth();
   const mayManageRoles = can(adminPermissions.userRoles);
   const mayUpdateUsers = can(adminPermissions.usersUpdate);
   const maySuspendUsers = can(adminPermissions.usersSuspend);
   const mayRestoreUsers = can(adminPermissions.usersRestore);
   const mayEditUsers = mayUpdateUsers || maySuspendUsers || mayRestoreUsers;
-  const mayManageSuperadmin = Boolean(actor?.roles.includes("superadmin"));
-  const roleLabel = (role: string) =>
-    roleT.has(role) ? roleT(role) : role.replaceAll("_", " ");
+  const mayManageSuperadmin = Boolean(actor?.roles.includes('superadmin'));
+  const roleLabel = (role: string) => (roleT.has(role) ? roleT(role) : role.replaceAll('_', ' '));
   const [page, setPage] = useState<CursorPage<AdminUser> | null>(null);
   const [availableRoles, setAvailableRoles] = useState<AdminRole[]>([]);
-  const [query, setQuery] = useState("");
-  const [appliedQuery, setAppliedQuery] = useState("");
+  const [query, setQuery] = useState('');
+  const [appliedQuery, setAppliedQuery] = useState('');
   const [cursor, setCursor] = useState<string | null>(null);
   const [total, setTotal] = useState(0);
   const [offset, setOffset] = useState(0);
@@ -147,11 +144,7 @@ export function AdminUsers() {
     return () => window.clearTimeout(timeout);
   }, [appliedQuery, can, cursor, mayManageRoles]);
 
-  const updateRoles = async (
-    user: AdminUser,
-    role: string | number,
-    remove = false,
-  ) => {
+  const updateRoles = async (user: AdminUser, role: string | number, remove = false) => {
     setMutationError(null);
     setRoleErrors((current) => {
       const next = { ...current };
@@ -173,30 +166,24 @@ export function AdminUsers() {
                     ...item,
                     roles: roles.map(
                       (name) =>
-                        availableRoles.find(
-                          (candidate) => candidate.name === name,
-                        ) ??
-                        user.roles.find(
-                          (candidate) => candidate.name === name,
-                        ) ?? { id: 0, name },
+                        availableRoles.find((candidate) => candidate.name === name) ??
+                        user.roles.find((candidate) => candidate.name === name) ?? { id: 0, name },
                     ),
                   }
                 : item,
             ),
           },
       );
-      setNotice(t(remove ? "roleRemoved" : "roleAssigned"));
+      setNotice(t(remove ? 'roleRemoved' : 'roleAssigned'));
     } catch (reason) {
-      const roleError =
-        reason instanceof ApiError ? reason.errors.role?.[0] : undefined;
-      if (roleError)
-        setRoleErrors((current) => ({ ...current, [user.id]: roleError }));
+      const roleError = reason instanceof ApiError ? reason.errors.role?.[0] : undefined;
+      if (roleError) setRoleErrors((current) => ({ ...current, [user.id]: roleError }));
       setMutationError(
         roleError
           ? null
           : reason instanceof ApiError && reason.status === 403
-            ? t("mutationForbidden")
-            : apiMessage(reason, t("mutationFailed")),
+            ? t('mutationForbidden')
+            : apiMessage(reason, t('mutationFailed')),
       );
     }
   };
@@ -211,31 +198,26 @@ export function AdminUsers() {
     setNotice(null);
     try {
       let updated = editingUser;
-      const status = String(form.get("status") ?? editingUser.status);
+      const status = String(form.get('status') ?? editingUser.status);
       if (mayUpdateUsers) {
         updated = await repository.updateUser(editingUser.id, {
-          name: String(form.get("name") ?? ""),
-          email: String(form.get("email") ?? "").trim() || null,
+          name: String(form.get('name') ?? ''),
+          email: String(form.get('email') ?? '').trim() || null,
           status,
         });
       } else if (status !== editingUser.status) {
-        const updatedStatus = await repository.updateUserStatus(
-          editingUser.id,
-          status,
-        );
+        const updatedStatus = await repository.updateUserStatus(editingUser.id, status);
         updated = { ...updated, status: updatedStatus };
       }
       setPage(
         (current) =>
           current && {
             ...current,
-            data: current.data.map((user) =>
-              user.id === updated.id ? updated : user,
-            ),
+            data: current.data.map((user) => (user.id === updated.id ? updated : user)),
           },
       );
       setEditingUser(null);
-      setNotice(t("userUpdated"));
+      setNotice(t('userUpdated'));
     } catch (reason) {
       const fields = reason instanceof ApiError ? reason.errors : {};
       setUserErrors(fields);
@@ -243,8 +225,8 @@ export function AdminUsers() {
         Object.keys(fields).length
           ? null
           : reason instanceof ApiError && reason.status === 403
-            ? t("mutationForbidden")
-            : apiMessage(reason, t("mutationFailed")),
+            ? t('mutationForbidden')
+            : apiMessage(reason, t('mutationFailed')),
       );
     } finally {
       setSavingUser(false);
@@ -261,8 +243,8 @@ export function AdminUsers() {
           <section className={styles.panel}>
             <div className={styles.panelHeader}>
               <div>
-                <h2>{t("userDirectory")}</h2>
-                <p>{t("records", { count: page?.data.length ?? 0 })}</p>
+                <h2>{t('userDirectory')}</h2>
+                <p>{t('records', { count: page?.data.length ?? 0 })}</p>
               </div>
               <Search
                 value={query}
@@ -285,11 +267,11 @@ export function AdminUsers() {
               </p>
             )}
             {editingUser ? (
-              <form className={styles.userEditor} onSubmit={saveUser}>
-                <h3>{t("editUser")}</h3>
+              <Form className={styles.userEditor} onSubmit={saveUser}>
+                <h3>{t('editUser')}</h3>
                 <label>
-                  {t("name")}
-                  <input
+                  {t('name')}
+                  <Input
                     name="name"
                     defaultValue={editingUser.name}
                     disabled={!mayUpdateUsers}
@@ -302,11 +284,11 @@ export function AdminUsers() {
                   ) : null}
                 </label>
                 <label>
-                  {t("email")}
-                  <input
+                  {t('email')}
+                  <Input
                     name="email"
                     type="email"
-                    defaultValue={editingUser.email ?? ""}
+                    defaultValue={editingUser.email ?? ''}
                     disabled={!mayUpdateUsers}
                     aria-invalid={Boolean(userErrors.email)}
                   />
@@ -317,20 +299,18 @@ export function AdminUsers() {
                   ) : null}
                 </label>
                 <label>
-                  {t("status")}
-                  <select
+                  {t('status')}
+                  <Select
                     name="status"
                     defaultValue={editingUser.status}
                     aria-invalid={Boolean(userErrors.status)}
                   >
-                    <option value={editingUser.status}>
-                      {t(editingUser.status)}
-                    </option>
-                    {mayRestoreUsers && editingUser.status !== "active" ? (
-                      <option value="active">{t("active")}</option>
+                    <option value={editingUser.status}>{t(editingUser.status)}</option>
+                    {mayRestoreUsers && editingUser.status !== 'active' ? (
+                      <option value="active">{t('active')}</option>
                     ) : null}
                     {maySuspendUsers
-                      ? ["suspended", "blocked", "deactivated"]
+                      ? ['suspended', 'blocked', 'deactivated']
                           .filter((status) => status !== editingUser.status)
                           .map((status) => (
                             <option key={status} value={status}>
@@ -338,7 +318,7 @@ export function AdminUsers() {
                             </option>
                           ))
                       : null}
-                  </select>
+                  </Select>
                   {userErrors.status?.[0] ? (
                     <small className={styles.fieldError} role="alert">
                       {userErrors.status[0]}
@@ -347,24 +327,24 @@ export function AdminUsers() {
                 </label>
                 <div className={styles.editorActions}>
                   <button type="button" onClick={() => setEditingUser(null)}>
-                    {t("cancel")}
+                    {t('cancel')}
                   </button>
-                  <button className={styles.primary} disabled={savingUser}>
-                    {savingUser ? t("saving") : t("saveUser")}
-                  </button>
+                  <Button variant="secondary" className={styles.primary} disabled={savingUser}>
+                    {savingUser ? t('saving') : t('saveUser')}
+                  </Button>
                 </div>
-              </form>
+              </Form>
             ) : null}
             <div className={styles.tableWrap}>
               <table className={styles.table}>
                 <thead>
                   <tr>
                     <th>Count</th>
-                    <th>{t("user")}</th>
-                    <th>{t("status")}</th>
-                    <th>{t("roles")}</th>
-                    {mayManageRoles && <th>{t("assignRole")}</th>}
-                    {mayEditUsers && <th>{t("actions")}</th>}
+                    <th>{t('user')}</th>
+                    <th>{t('status')}</th>
+                    <th>{t('roles')}</th>
+                    {mayManageRoles && <th>{t('assignRole')}</th>}
+                    {mayEditUsers && <th>{t('actions')}</th>}
                   </tr>
                 </thead>
                 <tbody>
@@ -375,36 +355,28 @@ export function AdminUsers() {
                         <strong>{user.name}</strong>
                         <br />
                         <span className={styles.muted}>
-                          {user.email ?? t("noEmail")} · {user.account_type}
+                          {user.email ?? t('noEmail')} · {user.account_type}
                         </span>
                       </td>
                       <td>{user.status}</td>
                       <td>
                         <div className={styles.roles}>
                           {user.roles.map((role) => (
-                            <span
-                              className={styles.role}
-                              key={role.id || role.name}
-                            >
+                            <span className={styles.role} key={role.id || role.name}>
                               {roleLabel(role.name)}
                               {mayManageRoles &&
-                                (role.name !== "superadmin" ||
-                                  mayManageSuperadmin) && (
-                                  <button
+                                (role.name !== 'superadmin' || mayManageSuperadmin) && (
+                                  <Button
+                                    className={styles.roleRemove}
+                                    variant="ghost"
+                                    size="sm"
                                     type="button"
-                                    aria-label={t("removeRole", {
-                                      role: role.name,
-                                    })}
-                                    onClick={() =>
-                                      void updateRoles(
-                                        user,
-                                        role.id || role.name,
-                                        true,
-                                      )
-                                    }
+                                    aria-label={t('removeRole', { role: role.name })}
+                                    title={t('removeRole', { role: role.name })}
+                                    onClick={() => updateRoles(user, role.id || role.name, true)}
                                   >
-                                    ×
-                                  </button>
+                                    <X size={12} strokeWidth={2.5} aria-hidden="true" />
+                                  </Button>
                                 )}
                             </span>
                           ))}
@@ -412,46 +384,43 @@ export function AdminUsers() {
                       </td>
                       {mayManageRoles && (
                         <td>
-                          <form
+                          <Form
                             className={styles.assign}
                             onSubmit={(event) => {
                               event.preventDefault();
                               const data = new FormData(event.currentTarget);
-                              const role = String(data.get("role") ?? "");
-                              if (role) void updateRoles(user, role);
+                              const role = String(data.get('role') ?? '');
+                              if (role) return updateRoles(user, role);
                             }}
                           >
-                            <select
+                            <Select
                               name="role"
-                              aria-label={t("assignRole")}
+                              aria-label={t('assignRole')}
                               aria-invalid={Boolean(roleErrors[user.id])}
                               aria-describedby={
-                                roleErrors[user.id]
-                                  ? `role-error-${user.id}`
-                                  : undefined
+                                roleErrors[user.id] ? `role-error-${user.id}` : undefined
                               }
                               defaultValue=""
                             >
                               <option value="" disabled>
-                                {t("selectRole")}
+                                {t('selectRole')}
                               </option>
                               {availableRoles
                                 .filter(
                                   (role) =>
-                                    (role.name !== "superadmin" ||
-                                      mayManageSuperadmin) &&
-                                    !user.roles.some(
-                                      (assigned) => assigned.name === role.name,
-                                    ),
+                                    (role.name !== 'superadmin' || mayManageSuperadmin) &&
+                                    !user.roles.some((assigned) => assigned.name === role.name),
                                 )
                                 .map((role) => (
                                   <option key={role.id} value={role.name}>
                                     {roleLabel(role.name)}
                                   </option>
                                 ))}
-                            </select>
-                            <button className={styles.primary} type="submit">{t("add")}</button>
-                          </form>
+                            </Select>
+                            <Button variant="secondary" className={styles.primary} type="submit">
+                              {t('add')}
+                            </Button>
+                          </Form>
                           {roleErrors[user.id] ? (
                             <small
                               id={`role-error-${user.id}`}
@@ -466,9 +435,7 @@ export function AdminUsers() {
                       {mayEditUsers && (
                         <td>
                           {mayManageSuperadmin ||
-                          !user.roles.some(
-                            (role) => role.name === "superadmin",
-                          ) ? (
+                          !user.roles.some((role) => role.name === 'superadmin') ? (
                             <button
                               className={`${styles.primary} ${styles.editUser}`}
                               type="button"
@@ -478,7 +445,7 @@ export function AdminUsers() {
                                 setMutationError(null);
                               }}
                             >
-                              {t("editUser")}
+                              {t('editUser')}
                             </button>
                           ) : null}
                         </td>
@@ -488,10 +455,19 @@ export function AdminUsers() {
                 </tbody>
               </table>
             </div>
-            {!page?.data.length && (
-              <p className={styles.empty}>{t("noUsers")}</p>
-            )}
-            <CursorPager page={page} total={total} onCursor={(nextCursor) => { setOffset((value) => nextCursor === page?.next_cursor ? value + (page?.data.length ?? 0) : Math.max(0, value - 10)); setCursor(nextCursor); }} />
+            {!page?.data.length && <p className={styles.empty}>{t('noUsers')}</p>}
+            <CursorPager
+              page={page}
+              total={total}
+              onCursor={(nextCursor) => {
+                setOffset((value) =>
+                  nextCursor === page?.next_cursor
+                    ? value + (page?.data.length ?? 0)
+                    : Math.max(0, value - 10),
+                );
+                setCursor(nextCursor);
+              }}
+            />
           </section>
         )}
       </div>
@@ -508,7 +484,7 @@ function CursorPager<T>({
   onCursor: (cursor: string) => void;
   total?: number;
 }) {
-  const t = useTranslations("adminAuthorization");
+  const t = useTranslations('adminAuthorization');
   if (!page?.prev_cursor && !page?.next_cursor) return null;
   return (
     <div className={styles.pager}>
@@ -517,24 +493,23 @@ function CursorPager<T>({
         disabled={!page.prev_cursor}
         onClick={() => page.prev_cursor && onCursor(page.prev_cursor)}
       >
-        {t("previous")}
+        {t('previous')}
       </button>
       <button
         disabled={!page.next_cursor}
         onClick={() => page.next_cursor && onCursor(page.next_cursor)}
       >
-        {t("next")}
+        {t('next')}
       </button>
     </div>
   );
 }
 
 export function AdminRoles() {
-  const t = useTranslations("adminAuthorization");
-  const roleT = useTranslations("roles");
+  const t = useTranslations('adminAuthorization');
+  const roleT = useTranslations('roles');
   const { can } = useAuth();
-  const roleLabel = (role: string) =>
-    roleT.has(role) ? roleT(role) : role.replaceAll("_", " ");
+  const roleLabel = (role: string) => (roleT.has(role) ? roleT(role) : role.replaceAll('_', ' '));
   const mayManagePermissions =
     can(adminPermissions.rolesManage) && can(adminPermissions.permissions);
   const [roles, setRoles] = useState<AdminRole[]>([]);
@@ -547,7 +522,7 @@ export function AdminRoles() {
   const [mutationError, setMutationError] = useState<string | null>(null);
   const [permissionError, setPermissionError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState('');
 
   const load = () => {
     setLoading(true);
@@ -585,32 +560,27 @@ export function AdminRoles() {
     setNotice(null);
     try {
       const role = await repository.updateRolePermissions(selected, checked);
-      setRoles((current) =>
-        current.map((item) => (item.id === role.id ? role : item)),
-      );
+      setRoles((current) => current.map((item) => (item.id === role.id ? role : item)));
       setChecked(role.permissions.map((permission) => permission.name));
-      setNotice(t("permissionsSaved"));
+      setNotice(t('permissionsSaved'));
     } catch (reason) {
       const fieldError =
         reason instanceof ApiError
-          ? (reason.errors.permissions?.[0] ??
-            reason.errors["permissions.0"]?.[0])
+          ? (reason.errors.permissions?.[0] ?? reason.errors['permissions.0']?.[0])
           : undefined;
       setPermissionError(fieldError ?? null);
       setMutationError(
         fieldError
           ? null
           : reason instanceof ApiError && reason.status === 403
-            ? t("mutationForbidden")
-            : apiMessage(reason, t("mutationFailed")),
+            ? t('mutationForbidden')
+            : apiMessage(reason, t('mutationFailed')),
       );
     } finally {
       setSaving(false);
     }
   };
-  const filtered = roles.filter((role) =>
-    role.name.toLowerCase().includes(query.toLowerCase()),
-  );
+  const filtered = roles.filter((role) => role.name.toLowerCase().includes(query.toLowerCase()));
   return (
     <AdminPageGuard permission={adminPermissions.roles}>
       <div className={styles.page}>
@@ -622,25 +592,19 @@ export function AdminRoles() {
             <section className={styles.panel}>
               <div className={styles.panelHeader}>
                 <div>
-                  <h2>{t("roleDirectory")}</h2>
-                  <p>{t("records", { count: filtered.length })}</p>
+                  <h2>{t('roleDirectory')}</h2>
+                  <p>{t('records', { count: filtered.length })}</p>
                 </div>
-                <Search
-                  value={query}
-                  onChange={setQuery}
-                  onSubmit={() => undefined}
-                />
+                <Search value={query} onChange={setQuery} onSubmit={() => undefined} />
               </div>
-              {!filtered.length ? (
-                <p className={styles.empty}>{t("noRoles")}</p>
-              ) : null}
+              {!filtered.length ? <p className={styles.empty}>{t('noRoles')}</p> : null}
               <div className={styles.tableWrap}>
                 <table className={styles.table}>
                   <thead>
                     <tr>
-                      <th>{t("role")}</th>
-                      <th>{t("permissions")}</th>
-                      <th>{t("actions")}</th>
+                      <th>{t('role')}</th>
+                      <th>{t('permissions')}</th>
+                      <th>{t('actions')}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -652,11 +616,8 @@ export function AdminRoles() {
                         <td>{role.permissions.length}</td>
                         <td>
                           {mayManagePermissions ? (
-                            <button
-                              className={styles.primary}
-                              onClick={() => choose(role)}
-                            >
-                              {t("editPermissions")}
+                            <button className={styles.primary} onClick={() => choose(role)}>
+                              {t('editPermissions')}
                             </button>
                           ) : null}
                         </td>
@@ -670,11 +631,10 @@ export function AdminRoles() {
               <aside className={styles.editor}>
                 <h2>
                   {selected === null
-                    ? t("selectRoleToEdit")
-                    : t("editRole", {
+                    ? t('selectRoleToEdit')
+                    : t('editRole', {
                         role: roleLabel(
-                          roles.find((role) => role.id === selected)?.name ??
-                            "customer",
+                          roles.find((role) => role.id === selected)?.name ?? 'customer',
                         ),
                       })}
                 </h2>
@@ -697,16 +657,12 @@ export function AdminRoles() {
                             type="checkbox"
                             checked={checked.includes(permission.name)}
                             aria-invalid={Boolean(permissionError)}
-                            aria-describedby={
-                              permissionError ? "permissions-error" : undefined
-                            }
+                            aria-describedby={permissionError ? 'permissions-error' : undefined}
                             onChange={(event) =>
                               setChecked((current) =>
                                 event.target.checked
                                   ? [...current, permission.name]
-                                  : current.filter(
-                                      (name) => name !== permission.name,
-                                    ),
+                                  : current.filter((name) => name !== permission.name),
                               )
                             }
                           />
@@ -715,21 +671,18 @@ export function AdminRoles() {
                       ))}
                     </div>
                     {permissionError ? (
-                      <small
-                        id="permissions-error"
-                        className={styles.fieldError}
-                        role="alert"
-                      >
+                      <small id="permissions-error" className={styles.fieldError} role="alert">
                         {permissionError}
                       </small>
                     ) : null}
-                    <button
+                    <Button
+                      variant="secondary"
                       className={styles.primary}
                       disabled={saving}
-                      onClick={() => void save()}
+                      onClick={() => save()}
                     >
-                      {saving ? t("saving") : t("savePermissions")}
-                    </button>
+                      {saving ? t('saving') : t('savePermissions')}
+                    </Button>
                   </>
                 )}
               </aside>
@@ -742,10 +695,10 @@ export function AdminRoles() {
 }
 
 export function AdminPermissions() {
-  const t = useTranslations("adminAuthorization");
+  const t = useTranslations('adminAuthorization');
   const [page, setPage] = useState<CursorPage<AdminPermission> | null>(null);
-  const [query, setQuery] = useState("");
-  const [appliedQuery, setAppliedQuery] = useState("");
+  const [query, setQuery] = useState('');
+  const [appliedQuery, setAppliedQuery] = useState('');
   const [cursor, setCursor] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<unknown>(null);
@@ -773,8 +726,8 @@ export function AdminPermissions() {
           <section className={styles.panel}>
             <div className={styles.panelHeader}>
               <div>
-                <h2>{t("permissionCatalogue")}</h2>
-                <p>{t("records", { count: page?.data.length ?? 0 })}</p>
+                <h2>{t('permissionCatalogue')}</h2>
+                <p>{t('records', { count: page?.data.length ?? 0 })}</p>
               </div>
               <Search
                 value={query}
@@ -789,13 +742,11 @@ export function AdminPermissions() {
               {page?.data.map((permission) => (
                 <article className={styles.permission} key={permission.id}>
                   <strong>{permission.name}</strong>
-                  <small>{permission.guard_name ?? "web"}</small>
+                  <small>{permission.guard_name ?? 'web'}</small>
                 </article>
               ))}
             </div>
-            {!page?.data.length && (
-              <p className={styles.empty}>{t("noPermissions")}</p>
-            )}
+            {!page?.data.length && <p className={styles.empty}>{t('noPermissions')}</p>}
             <CursorPager page={page} onCursor={setCursor} />
           </section>
         )}

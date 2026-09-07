@@ -14,6 +14,7 @@ import { useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { EmptyState, ErrorState, ForbiddenState } from "@/shared/ui/feedback";
 import styles from "./ui.module.css";
+import { LocalizedLink } from "./localized-link";
 
 export { EmptyState, ErrorState, ForbiddenState };
 
@@ -114,7 +115,7 @@ export function Breadcrumbs({
         {items.map((item, index) => (
           <li key={`${item.label}-${index}`}>
             {item.href ? (
-              <a href={item.href}>{item.label}</a>
+              <LocalizedLink href={item.href}>{item.label}</LocalizedLink>
             ) : (
               <span aria-current="page">{item.label}</span>
             )}

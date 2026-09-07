@@ -1,14 +1,11 @@
 .page {
-  display: grid;
-  gap: 20px;
-  color: #17334e;
+  composes: page from './admin-patterns.module.css';
 }
 .hero {
+  composes: hero from './admin-patterns.module.css';
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 18px;
-  padding: 10px 12px;
 }
 .heading {
   display: flex;
@@ -23,20 +20,17 @@
   height: 38px;
   border-radius: 8px;
   background: #e4f1fc;
-  color: #086bc2;
+  color: var(--admin-blue);
 }
 .hero h1,
 .panel h2,
 .editor h2 {
   margin: 0;
 }
-.hero h1 {
-  font-size: 25px;
-}
 .hero p,
 .panelHeader p {
   margin: 3px 0 0;
-  color: #55718f;
+  color: var(--muted);
   font-size: 13px;
 }
 .layout {
@@ -48,8 +42,8 @@
 .panel,
 .editor,
 .state {
-  border: 1px solid #cfd9e2;
-  border-radius: 9px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
   background: #fff;
 }
 .panel {
@@ -61,7 +55,7 @@
   justify-content: space-between;
   gap: 12px;
   padding: 18px;
-  border-block-end: 1px solid #cfd9e2;
+  border-block-end: 1px solid var(--line);
 }
 .search {
   display: flex;
@@ -70,10 +64,10 @@
 .search input,
 .editor select {
   min-height: 40px;
-  border: 1px solid #cfd9e2;
+  border: 1px solid var(--line);
   border-radius: 6px;
   background: #fff;
-  color: #17334e;
+  color: var(--admin-ink);
   padding: 8px 10px;
   font: inherit;
 }
@@ -81,7 +75,7 @@
 .primary {
   border: 0;
   border-radius: 6px;
-  background: #086bc2;
+  background: var(--admin-blue);
   color: #fff;
   padding: 9px 14px;
   font: inherit;
@@ -103,14 +97,14 @@
   vertical-align: top;
 }
 .table th {
-  color: #55718f;
+  color: var(--muted);
   font-size: 12px;
 }
 .table td {
   font-size: 14px;
 }
 .muted {
-  color: #55718f;
+  color: var(--muted);
   font-size: 12px;
 }
 .roles {
@@ -128,14 +122,29 @@
   padding: 5px 9px;
   font-size: 12px;
 }
-.role button {
-  border: 0;
-  background: transparent;
-  color: #b42318;
+.role .roleRemove[data-ui='button'] {
+  display: inline-grid;
+  place-items: center;
+  flex: 0 0 20px;
+  width: 20px;
+  min-width: 20px;
+  height: 20px;
+  min-height: 20px;
+  margin-inline-end: -4px;
   padding: 0;
-  cursor: pointer;
-  font-size: 15px;
-  line-height: 1;
+  border: 0;
+  border-radius: 50%;
+  background: rgb(7 90 159 / 9%);
+  color: #075a9f;
+  box-shadow: none;
+}
+.role .roleRemove[data-ui='button']:hover:not(:disabled) {
+  background: var(--danger);
+  color: #fff;
+}
+.role .roleRemove[data-ui='button']:focus-visible {
+  outline: 2px solid var(--admin-blue);
+  outline-offset: 2px;
 }
 .assign {
   display: flex;
@@ -146,10 +155,10 @@
   min-width: 0;
   flex: 1;
   min-height: 40px;
-  border: 1px solid #cfd9e2;
+  border: 1px solid var(--line);
   border-radius: 6px;
   background: #fff;
-  color: #17334e;
+  color: var(--admin-ink);
   padding: 8px 10px;
   font: inherit;
 }
@@ -191,7 +200,7 @@
   overflow-wrap: anywhere;
 }
 .check input {
-  accent-color: #086bc2;
+  accent-color: var(--admin-blue);
 }
 .feedback {
   margin: 0;
@@ -220,7 +229,7 @@
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 12px;
   padding: 18px;
-  border-block-end: 1px solid #cfd9e2;
+  border-block-end: 1px solid var(--line);
   background: #f8fbfd;
 }
 .userEditor h3,
@@ -239,11 +248,11 @@
 .userEditor input,
 .userEditor select {
   min-height: 40px;
-  border: 1px solid #cfd9e2;
+  border: 1px solid var(--line);
   border-radius: 6px;
   padding: 8px 10px;
   background: #fff;
-  color: #17334e;
+  color: var(--admin-ink);
   font: inherit;
 }
 .editorActions {
@@ -258,10 +267,10 @@
   min-height: 260px;
   padding: 24px;
   text-align: center;
-  color: #55718f;
+  color: var(--muted);
 }
 .state button {
-  background: #086bc2;
+  background: var(--admin-blue);
   color: #fff;
 }
 .pager {
@@ -272,10 +281,10 @@
   padding: 12px 18px;
 }
 .pager button {
-  border: 1px solid #cfd9e2;
+  border: 1px solid var(--line);
   border-radius: 5px;
   background: #fff;
-  color: #086bc2;
+  color: var(--admin-blue);
   padding: 7px 11px;
   cursor: pointer;
 }
@@ -299,11 +308,11 @@
   overflow-wrap: anywhere;
 }
 .permission small {
-  color: #55718f;
+  color: var(--muted);
 }
 .empty {
   padding: 24px;
-  color: #55718f;
+  color: var(--muted);
   text-align: center;
 }
 @media (max-width: 900px) {

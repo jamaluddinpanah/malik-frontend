@@ -1,4 +1,5 @@
 "use client";
+import { Input, Textarea } from "@/shared/ui/form-controls";
 
 import { useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
@@ -180,16 +181,16 @@ export function ListingLocationPicker({ value, onChange }: { value: ListingLocat
             const address = feature?.properties?.full_address ?? feature?.properties?.name ?? query;
             onChange({ ...value, address, latitude, longitude });
             setQuery(address);
-          }} /> : <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder={t("searchPlaceholder")} />}
+          }} /> : <Input value={query} onChange={(event) => setQuery(event.target.value)} placeholder={t("searchPlaceholder")} />}
           <button type="button" onClick={useCurrentLocation} disabled={locating}><LocateFixed size={16} /> {locating ? t("locating") : t("currentLocation")}</button>
         </div>
       </div>
     } />
     <div className={styles.fields}>
-      <label>{t("latitude")}<input type="number" step="any" value={value.latitude ?? ""} readOnly /></label>
-      <label>{t("longitude")}<input type="number" step="any" value={value.longitude ?? ""} readOnly /></label>
+      <label>{t("latitude")}<Input type="number" step="any" value={value.latitude ?? ""} readOnly /></label>
+      <label>{t("longitude")}<Input type="number" step="any" value={value.longitude ?? ""} readOnly /></label>
       <div className={`${styles.wide} ${styles.field}`}><span>{t("administrativeArea")}</span><LocationSelector value={value.administrativeAreaId ?? undefined} onChange={selectAdministrativeArea} /></div>
-      <label className={styles.wide}>{t("address")}<textarea value={value.address} onChange={(event) => { setQuery(event.target.value); onChange({ ...value, address: event.target.value }); }} /></label>
+      <label className={styles.wide}>{t("address")}<Textarea value={value.address} onChange={(event) => { setQuery(event.target.value); onChange({ ...value, address: event.target.value }); }} /></label>
     </div>
   </section>;
 }

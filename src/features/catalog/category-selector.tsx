@@ -1,4 +1,5 @@
 "use client";
+import { Button } from "@/shared/ui/form-controls";
 
 import {
   ChevronLeft,
@@ -121,9 +122,9 @@ export function CategorySelector({
       {state === "error" ? (
         <p className={styles.state}>
           {t("error")}{" "}
-          <button type="button" onClick={() => void load(path.at(-1))}>
+          <Button variant="ghost" type="button" onClick={() => load(path.at(-1))}>
             <RotateCcw size={15} /> {t("retry")}
-          </button>
+          </Button>
         </p>
       ) : null}
       {state === "ready" && !items.length ? (
@@ -133,7 +134,7 @@ export function CategorySelector({
         <ul>
           {items.map((category) => (
             <li key={category.id}>
-              <button type="button" onClick={() => void choose(category)}>
+              <Button variant="ghost" type="button" onClick={() => choose(category)}>
                 <span>
                   <b>{category.name ?? category.slug}</b>
                   {category.description ? (
@@ -141,7 +142,7 @@ export function CategorySelector({
                   ) : null}
                 </span>
                 <ChevronRight className={styles.directionalIcon} />
-              </button>
+              </Button>
             </li>
           ))}
         </ul>

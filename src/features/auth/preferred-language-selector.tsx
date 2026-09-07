@@ -1,4 +1,6 @@
 "use client";
+import { Select } from "@/shared/ui/form-controls";
+import { Form, Button } from "@/shared/ui/form-controls";
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
@@ -44,15 +46,15 @@ export function PreferredLanguageSelector() {
           <p>{t("preferredLanguageDescription")}</p>
         </div>
       </header>
-      <form
+      <Form
         onSubmit={(event) => {
           event.preventDefault();
-          void save();
+          return save();
         }}
       >
         <label>
           {t("preferredLanguage")}
-          <select
+          <Select
             value={selected}
             onChange={(event) => setSelected(event.target.value as AppLocale)}
             disabled={!user || isAuthenticating}
@@ -62,15 +64,15 @@ export function PreferredLanguageSelector() {
                 {language(locale)}
               </option>
             ))}
-          </select>
+          </Select>
         </label>
         {!user ? <p className="muted">{t("languagePlaceholder")}</p> : null}
         {message ? <p role="status">{message}</p> : null}
         {error ? <p role="alert">{error}</p> : null}
-        <button type="submit" disabled={!user || isAuthenticating}>
+        <Button variant="primary" type="submit" disabled={!user || isAuthenticating}>
           {isAuthenticating ? t("savingLanguage") : t("saveLanguage")}
-        </button>
-      </form>
+        </Button>
+      </Form>
     </section>
   );
 }

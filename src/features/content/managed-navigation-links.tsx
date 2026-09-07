@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, type ReactNode } from "react";
-import { usePathname } from "next/navigation";
+import { useLocale } from "next-intl";
 import { apiClient } from "@/shared/lib/api";
 import { routes } from "@/shared/lib/routes";
 import { LocalizedLink } from "@/shared/ui/localized-link";
@@ -13,17 +13,17 @@ type NavigationItem = { slug: string; title: string; icon?: string | null };
 
 export function ManagedNavigationLinks({ location, onNavigate, prefix }: { location: NavigationLocation; onNavigate?: () => void; prefix?: ReactNode }) {
   const [items, setItems] = useState<NavigationItem[]>([]);
-  const pathname = usePathname();
+  const locale = useLocale();
 
   useEffect(() => {
     const controller = new AbortController();
-    void apiClient.request<{ data?: NavigationItem[] }>(routes.api.pageNavigation(location), { cache: "no-store", signal: controller.signal })
+    void apiClient.request<{ data?: NavigationItem[] }>(routes.api.pageNavigation(location), { cache: "no-store", locale, signal: controller.signal })
       .then((payload) => setItems(payload.data ?? []))
       .catch(() => {
         if (!controller.signal.aborted) setItems([]);
       });
     return () => controller.abort();
-  }, [location, pathname]);
+  }, [location, locale]);
 
   if (!items.length) return null;
 

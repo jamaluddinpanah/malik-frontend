@@ -1,4 +1,5 @@
 "use client";
+import { Button } from "@/shared/ui/form-controls";
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
@@ -29,10 +30,10 @@ export function ListingContactControls({ listingId, ownerUserId, phoneVisible, p
     await apiClient.request(routes.api.listingContactEvents(listingId), { method: "POST", body: { event_type: eventType } }).catch(() => undefined);
   }
   return <>
-    {phoneVisible ? revealed ? <a href={`tel:${revealed}`}>{revealed}</a> : <button type="button" onClick={() => void revealPhone()}>{t("showPhone")}</button> : null}
-    {revealed ? <a href={`https://wa.me/${revealed.replace(/\D/g, "")}`} target="_blank" rel="noreferrer" onClick={() => void track("whatsapp_click")}>{t("whatsapp")}</a> : null}
+    {phoneVisible ? revealed ? <a href={`tel:${revealed}`}>{revealed}</a> : <Button variant="ghost" type="button" onClick={() => revealPhone()}>{t("showPhone")}</Button> : null}
+    {revealed ? <a href={`https://wa.me/${revealed.replace(/\D/g, "")}`} target="_blank" rel="noreferrer" onClick={() => track("whatsapp_click")}>{t("whatsapp")}</a> : null}
     {loginRequired ? <small>{t("phoneLoginRequired")} <Link href="/login">{t("login")}</Link></small> : null}
     {limited ? <small>{t("contactRateLimited")}</small> : null}
-    {email ? <a href={`mailto:${email}`} onClick={() => void track("email_click")}>{t("emailSeller")}</a> : null}
+    {email ? <a href={`mailto:${email}`} onClick={() => track("email_click")}>{t("emailSeller")}</a> : null}
   </>;
 }

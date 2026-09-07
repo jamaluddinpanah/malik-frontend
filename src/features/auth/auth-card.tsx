@@ -1,4 +1,6 @@
 "use client";
+import { Input, Select } from "@/shared/ui/form-controls";
+import { Form, Button } from "@/shared/ui/form-controls";
 
 import { LocalizedLink as Link } from "@/shared/ui/localized-link";
 import { Info, QrCode } from "lucide-react";
@@ -12,7 +14,7 @@ import {
   isAdminPath,
   safeInternalRedirect,
 } from "@/features/auth/redirects";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import { withActiveLocale } from "@/shared/ui/localized-link";
 import styles from "./auth-card.module.css";
 
@@ -48,6 +50,8 @@ function isPublicAccountType(value: string): value is PublicAccountType {
   return publicAccountTypes.includes(value as PublicAccountType);
 }
 
+const subscribeToClient = () => () => {};
+
 export function AuthCard({ signup = false }: { signup?: boolean }) {
   const router = useRouter();
   const pathname = usePathname();
@@ -59,10 +63,13 @@ export function AuthCard({ signup = false }: { signup?: boolean }) {
   const [accountType, setAccountType] =
     useState<PublicAccountType>("individual");
   const [phoneCountryCode, setPhoneCountryCode] = useState("+93");
-  const [countrySelectReady, setCountrySelectReady] = useState(false);
+  const countrySelectReady = useSyncExternalStore(
+    subscribeToClient,
+    () => true,
+    () => false,
+  );
   const next = searchParams.get("next");
   const safeNext = safeInternalRedirect(next);
-  useEffect(() => setCountrySelectReady(true), []);
   useEffect(() => {
     if (signup && !isLoading && user)
       router.replace(
@@ -159,7 +166,7 @@ export function AuthCard({ signup = false }: { signup?: boolean }) {
     props: React.InputHTMLAttributes<HTMLInputElement> = {},
   ) => (
     <>
-      <input name={name} {...props} aria-invalid={Boolean(errorFor(name))} />
+      <Input name={name} {...props} aria-invalid={Boolean(errorFor(name))} />
       {errorFor(name) && (
         <small className={styles.fieldError} role="alert">
           {errorFor(name)}
@@ -176,7 +183,7 @@ export function AuthCard({ signup = false }: { signup?: boolean }) {
         <span>{signup ? t("registerDescription") : t("loginDescription")}</span>
       </div>
       <section className={styles.card}>
-        <form onSubmit={submit} autoComplete="off">
+        <Form onSubmit={submit} autoComplete="off">
           <h1>{title}</h1>
           {generalError && (
             <p className={styles.formError} role="alert">
@@ -187,7 +194,7 @@ export function AuthCard({ signup = false }: { signup?: boolean }) {
             <>
               <label>
                 {t("accountType")}
-                <select
+                <Select
                   value={accountType}
                   aria-invalid={Boolean(errorFor("account_type"))}
                   onChange={(event) => {
@@ -198,7 +205,7 @@ export function AuthCard({ signup = false }: { signup?: boolean }) {
                   <option value="individual">{t("individual")}</option>
                   <option value="business">{t("business")}</option>
                   <option value="organization">{t("organization")}</option>
-                </select>
+                </Select>
                 {errorFor("account_type") && (
                   <small className={styles.fieldError} role="alert">
                     {errorFor("account_type")}
@@ -330,13 +337,13 @@ export function AuthCard({ signup = false }: { signup?: boolean }) {
           {signup && errorFor("agreement") && (
             <small className={styles.fieldError} role="alert">{errorFor("agreement")}</small>
           )}
-          <button disabled={isAuthenticating || isLoading}>
+          <Button variant="primary" disabled={isAuthenticating || isLoading}>
             {isAuthenticating
               ? t("loading")
               : signup
                 ? t("register")
                 : t("login")}
-          </button>
+          </Button>
           <div className={styles.divide}>
             {signup ? t("alreadyHaveAccount") : t("newToMalik")}
           </div>
@@ -346,7 +353,7 @@ export function AuthCard({ signup = false }: { signup?: boolean }) {
           >
             {signup ? t("loginTitle") : t("register")}
           </Link>
-        </form>
+        </Form>
         <aside>
           <div className={styles.qr}>
             <QrCode size={122} strokeWidth={1.5} />

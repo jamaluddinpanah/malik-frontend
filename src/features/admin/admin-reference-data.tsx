@@ -1,16 +1,17 @@
-"use client";
+'use client';
+import { Form } from '@/shared/ui/form-controls';
 
-import { useEffect, useState } from "react";
-import { useTranslations } from "next-intl";
-import ReactSelect from "react-select";
-import { apiClient, ApiError } from "@/shared/lib/api";
-import { adminPermissions } from "@/features/auth/permissions";
-import { AdminPageGuard } from "@/features/auth/admin-page-guard";
-import { useAuth } from "@/features/auth/auth-provider";
-import { clientLocale, type AppLocale } from "@/shared/i18n/config";
-import { formatCurrency, formatDateTime } from "@/shared/lib/formatting/locale";
-import { Button, Dialog, Input, Select, Toast } from "@/shared/ui";
-import { ForbiddenState } from "@/shared/ui/feedback";
+import { useEffect, useState } from 'react';
+import { useTranslations } from 'next-intl';
+import ReactSelect from 'react-select';
+import { apiClient, ApiError } from '@/shared/lib/api';
+import { adminPermissions } from '@/features/auth/permissions';
+import { AdminPageGuard } from '@/features/auth/admin-page-guard';
+import { useAuth } from '@/features/auth/auth-provider';
+import { clientLocale, type AppLocale } from '@/shared/i18n/config';
+import { formatCurrency, formatDateTime } from '@/shared/lib/formatting/locale';
+import { Button, ConfirmationDialog, Input, Select, Toast } from '@/shared/ui';
+import { ForbiddenState } from '@/shared/ui/feedback';
 import {
   ArrowLeft,
   ArrowLeftRight,
@@ -22,12 +23,13 @@ import {
   Search,
   SlidersHorizontal,
   Trash2,
-} from "lucide-react";
-import type { LaravelCursorPagination } from "@/shared/types/api";
-import styles from "./admin-reference-data.module.css";
+} from 'lucide-react';
+import type { LaravelCursorPagination } from '@/shared/types/api';
+import styles from './admin-reference-data.module.css';
+import { AdminLoadingState, AdminPageHeader } from './admin-page-patterns';
 
-type Section = "locations" | "currencies" | "exchange-rates";
-type Translation = { locale: "en" | "fa" | "ps"; name: string };
+type Section = 'locations' | 'currencies' | 'exchange-rates';
+type Translation = { locale: 'en' | 'fa' | 'ps'; name: string };
 type Area = {
   id: number;
   parent_id: number | null;
@@ -56,45 +58,45 @@ type Rate = {
   base: Currency;
   quote: Currency;
 };
-type Notice = { title: string; message?: string; tone: "success" | "danger" };
+type Notice = { title: string; message?: string; tone: 'success' | 'danger' };
 type EditorLabels = Record<
-  | "add"
-  | "edit"
-  | "save"
-  | "cancel"
-  | "parent"
-  | "noParent"
-  | "countryCode"
-  | "type"
-  | "slug"
-  | "englishName"
-  | "dariName"
-  | "pashtoName"
-  | "code"
-  | "name"
-  | "symbol"
-  | "decimalPlaces"
-  | "defaultCurrency"
-  | "active"
-  | "baseCurrency"
-  | "quoteCurrency"
-  | "rate"
-  | "source"
-  | "effectiveAt"
-  | "selectCurrency"
-  | "searchParents",
+  | 'add'
+  | 'edit'
+  | 'save'
+  | 'cancel'
+  | 'parent'
+  | 'noParent'
+  | 'countryCode'
+  | 'type'
+  | 'slug'
+  | 'englishName'
+  | 'dariName'
+  | 'pashtoName'
+  | 'code'
+  | 'name'
+  | 'symbol'
+  | 'decimalPlaces'
+  | 'defaultCurrency'
+  | 'active'
+  | 'baseCurrency'
+  | 'quoteCurrency'
+  | 'rate'
+  | 'source'
+  | 'effectiveAt'
+  | 'selectCurrency'
+  | 'searchParents',
   string
 >;
 
 const paths: Record<Section, string> = {
-  locations: "/admin/api/v1/locations",
-  currencies: "/admin/api/v1/currencies",
-  "exchange-rates": "/admin/api/v1/exchange-rates",
+  locations: '/admin/api/v1/locations',
+  currencies: '/admin/api/v1/currencies',
+  'exchange-rates': '/admin/api/v1/exchange-rates',
 };
 const icons = {
   locations: MapPinned,
   currencies: Landmark,
-  "exchange-rates": ArrowLeftRight,
+  'exchange-rates': ArrowLeftRight,
 } as const;
 const pageSize = 10;
 
@@ -105,7 +107,7 @@ function cursorPath(
   filters: Record<string, string> = {},
 ): string {
   const query = new URLSearchParams({ per_page: String(perPage) });
-  if (cursor) query.set("cursor", cursor);
+  if (cursor) query.set('cursor', cursor);
   Object.entries(filters).forEach(([key, value]) => {
     if (value) query.set(key, value);
   });
@@ -117,9 +119,7 @@ export function AdminReferenceData({ section }: { section: Section }) {
   const [items, setItems] = useState<(Area | Currency | Rate)[]>([]);
   const [currencies, setCurrencies] = useState<Currency[]>([]);
   const [parentAreas, setParentAreas] = useState<Area[]>([]);
-  const [page, setPage] = useState<LaravelCursorPagination<
-    Area | Currency | Rate
-  > | null>(null);
+  const [page, setPage] = useState<LaravelCursorPagination<Area | Currency | Rate> | null>(null);
   const [cursor, setCursor] = useState<string | null>(null);
   const [total, setTotal] = useState(0);
   const [offset, setOffset] = useState(0);
@@ -135,34 +135,29 @@ export function AdminReferenceData({ section }: { section: Section }) {
   const [loadError, setLoadError] = useState<unknown>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [deleting, setDeleting] = useState<{ id: number; name: string } | null>(
-    null,
-  );
+  const [deleting, setDeleting] = useState<{ id: number; name: string } | null>(null);
   const [notice, setNotice] = useState<Notice | null>(null);
   const locale = clientLocale() as AppLocale;
-  const t = useTranslations("adminReference");
-  const formT = useTranslations("adminForm");
-  const authorizationT = useTranslations("adminAuthorization");
+  const t = useTranslations('adminReference');
+  const formT = useTranslations('adminForm');
+  const authorizationT = useTranslations('adminAuthorization');
   const viewPermission =
-    section === "locations"
-      ? adminPermissions.settingsManage
-      : adminPermissions.currencies;
+    section === 'locations' ? adminPermissions.settingsManage : adminPermissions.currencies;
   const managePermission =
-    section === "locations"
-      ? adminPermissions.settingsManage
-      : adminPermissions.currenciesManage;
+    section === 'locations' ? adminPermissions.settingsManage : adminPermissions.currenciesManage;
   const mayManage = can(managePermission);
   const Icon = icons[section];
-  const title = t(section === "exchange-rates" ? "exchangeRates" : section);
+  const title = t(section === 'exchange-rates' ? 'exchangeRates' : section);
   const description = t(
-    section === "locations"
-      ? "locationDescription"
-      : section === "currencies"
-        ? "currencyDescription"
-        : "rateDescription",
+    section === 'locations'
+      ? 'locationDescription'
+      : section === 'currencies'
+        ? 'currencyDescription'
+        : 'rateDescription',
   );
 
   useEffect(() => {
+    const controller = new AbortController();
     const timeout = window.setTimeout(() => {
       setLoading(true);
       setLoadError(null);
@@ -170,29 +165,39 @@ export function AdminReferenceData({ section }: { section: Section }) {
         apiClient.request<{
           data: LaravelCursorPagination<Area | Currency | Rate>;
           meta: { total: number };
-        }>(cursorPath(paths[section], cursor, pageSize, filters)),
-        section === "exchange-rates"
+        }>(cursorPath(paths[section], cursor, pageSize, filters), { signal: controller.signal }),
+        section === 'exchange-rates'
           ? apiClient.request<{ data: LaravelCursorPagination<Currency> }>(
-              cursorPath("/admin/api/v1/currencies", null, 100),
+              cursorPath('/admin/api/v1/currencies', null, 100),
+              { signal: controller.signal },
             )
           : Promise.resolve(null),
-        section === "locations"
+        section === 'locations'
           ? apiClient.request<{ data: LaravelCursorPagination<Area> }>(
-              cursorPath("/admin/api/v1/locations", null, 100),
+              cursorPath('/admin/api/v1/locations', null, 100),
+              { signal: controller.signal },
             )
           : Promise.resolve(null),
       ])
         .then(([data, currencyData, locationData]) => {
+          if (controller.signal.aborted) return;
           setItems(data.data.data);
           setPage(data.data);
           setTotal(data.meta.total);
           setCurrencies(currencyData?.data.data ?? []);
           setParentAreas(locationData?.data.data ?? []);
         })
-        .catch(setLoadError)
-        .finally(() => setLoading(false));
-    }, 0);
-    return () => window.clearTimeout(timeout);
+        .catch((reason) => {
+          if (!controller.signal.aborted) setLoadError(reason);
+        })
+        .finally(() => {
+          if (!controller.signal.aborted) setLoading(false);
+        });
+    }, 200);
+    return () => {
+      window.clearTimeout(timeout);
+      controller.abort();
+    };
   }, [cursor, filters, refreshKey, section]);
 
   useEffect(() => {
@@ -205,7 +210,7 @@ export function AdminReferenceData({ section }: { section: Section }) {
     if (!deleting || !mayManage) return;
     try {
       await apiClient.request(`${paths[section]}/${deleting.id}`, {
-        method: "DELETE",
+        method: 'DELETE',
       });
       setEditing(null);
       setDeleting(null);
@@ -213,20 +218,17 @@ export function AdminReferenceData({ section }: { section: Section }) {
       setCursor(null);
       setRefreshKey((key) => key + 1);
       setNotice({
-        title: t("deleted", { item: title }),
-        message: t("removed", { name: deleting.name }),
-        tone: "success",
+        title: t('deleted', { item: title }),
+        message: t('removed', { name: deleting.name }),
+        tone: 'success',
       });
     } catch (reason) {
-      const message =
-        reason instanceof ApiError
-          ? reason.message
-          : "Unable to delete the record.";
+      const message = reason instanceof ApiError ? reason.message : 'Unable to delete the record.';
       setError(message);
       setNotice({
-        title: t("deleteFailed"),
-        message: t("operationFailed"),
-        tone: "danger",
+        title: t('deleteFailed'),
+        message: t('operationFailed'),
+        tone: 'danger',
       });
     }
   };
@@ -238,27 +240,24 @@ export function AdminReferenceData({ section }: { section: Section }) {
     try {
       await apiClient.request(
         isExistingRecord ? `${paths[section]}/${editing!.id}` : paths[section],
-        { method: isExistingRecord ? "PATCH" : "POST", body },
+        { method: isExistingRecord ? 'PATCH' : 'POST', body },
       );
       setEditing(null);
       setOffset(0);
       setCursor(null);
       setRefreshKey((key) => key + 1);
       setNotice({
-        title: t(isExistingRecord ? "updated" : "created", { item: title }),
-        message: t("changesSaved"),
-        tone: "success",
+        title: t(isExistingRecord ? 'updated' : 'created', { item: title }),
+        message: t('changesSaved'),
+        tone: 'success',
       });
     } catch (reason) {
-      const message =
-        reason instanceof ApiError
-          ? reason.message
-          : "Check the form and try again.";
+      const message = reason instanceof ApiError ? reason.message : 'Check the form and try again.';
       setError(message);
       setNotice({
-        title: t("changesNotSaved"),
-        message: t("operationFailed"),
-        tone: "danger",
+        title: t('changesNotSaved'),
+        message: t('operationFailed'),
+        tone: 'danger',
       });
     } finally {
       setSaving(false);
@@ -268,7 +267,7 @@ export function AdminReferenceData({ section }: { section: Section }) {
   if (loading) {
     return (
       <AdminPageGuard permission={viewPermission}>
-        <div className={styles.empty}>{authorizationT("loading")}</div>
+        <AdminLoadingState label={authorizationT('loading')} />
       </AdminPageGuard>
     );
   }
@@ -285,14 +284,8 @@ export function AdminReferenceData({ section }: { section: Section }) {
     return (
       <AdminPageGuard permission={viewPermission}>
         <div className={styles.empty}>
-          <p>
-            {loadError instanceof ApiError
-              ? loadError.message
-              : authorizationT("loadFailed")}
-          </p>
-          <Button onClick={() => setRefreshKey((key) => key + 1)}>
-            {authorizationT("retry")}
-          </Button>
+          <p>{loadError instanceof ApiError ? loadError.message : authorizationT('loadFailed')}</p>
+          <Button onClick={() => setRefreshKey((key) => key + 1)}>{authorizationT('retry')}</Button>
         </div>
       </AdminPageGuard>
     );
@@ -310,44 +303,34 @@ export function AdminReferenceData({ section }: { section: Section }) {
           />
         ) : null}
         {mayManage ? (
-          <Dialog
+          <ConfirmationDialog
+            danger
             open={Boolean(deleting)}
             onClose={() => setDeleting(null)}
-            title={formT("deleteTitle")}
-            footer={
-              <>
-                <Button variant="ghost" onClick={() => setDeleting(null)}>
-                  {formT("deleteKeep")}
-                </Button>
-                <Button variant="danger" onClick={() => void remove()}>
-                  {formT("deletePermanent")}
-                </Button>
-              </>
-            }
+            title={formT('deleteTitle')}
+            cancelLabel={formT('deleteKeep')}
+            confirmLabel={formT('deletePermanent')}
+            onConfirm={remove}
           >
             <p className={styles.confirmation}>
-              This will permanently delete <b>{deleting?.name}</b>. This action
-              cannot be undone.
+              This will permanently delete <b>{deleting?.name}</b>. This action cannot be undone.
             </p>
-          </Dialog>
+          </ConfirmationDialog>
         ) : null}
-        <header className={styles.hero}>
-          <div className={styles.heading}>
-            <span className={styles.icon}>
-              <Icon size={21} />
-            </span>
-            <div>
-              <h1>{title}</h1>
-              <small>{description}</small>
-            </div>
-          </div>
-          {mayManage ? (
-            <Button size="sm" onClick={() => setEditing({} as Area)}>
-              <Plus size={16} />
-              {t("add")} {title}
-            </Button>
-          ) : null}
-        </header>
+        <AdminPageHeader
+          icon={Icon}
+          eyebrow="Administration / Reference data"
+          title={title}
+          description={description}
+          actions={
+            mayManage ? (
+              <Button size="sm" onClick={() => setEditing({} as Area)}>
+                <Plus size={16} />
+                {t('add')} {title}
+              </Button>
+            ) : null
+          }
+        />
         {error ? (
           <p className={styles.error} role="alert">
             {error}
@@ -358,10 +341,12 @@ export function AdminReferenceData({ section }: { section: Section }) {
             <div className={styles.tableHeader}>
               <div>
                 <h2>{title}</h2>
-                  <p>{total} {total === 1 ? "item" : "items"}</p>
+                <p>
+                  {total} {total === 1 ? 'item' : 'items'}
+                </p>
               </div>
             </div>
-            <form
+            <Form
               className={styles.filters}
               onSubmit={(event) => {
                 event.preventDefault();
@@ -374,8 +359,8 @@ export function AdminReferenceData({ section }: { section: Section }) {
                 <Search size={16} />
                 <Input
                   type="search"
-                  placeholder={`${t("search")} ${title}`}
-                  value={filters.q ?? ""}
+                  placeholder={`${t('search')} ${title}`}
+                  value={filters.q ?? ''}
                   onChange={(event) =>
                     setFilters((current) => ({
                       ...current,
@@ -384,9 +369,9 @@ export function AdminReferenceData({ section }: { section: Section }) {
                   }
                 />
               </label>
-              {section === "locations" ? (
+              {section === 'locations' ? (
                 <Select
-                  value={filters.type ?? ""}
+                  value={filters.type ?? ''}
                   onChange={(event) =>
                     setFilters((current) => ({
                       ...current,
@@ -394,24 +379,18 @@ export function AdminReferenceData({ section }: { section: Section }) {
                     }))
                   }
                 >
-                  <option value="">{t("allTypes")}</option>
-                  {[
-                    "country",
-                    "province",
-                    "city",
-                    "district",
-                    "neighborhood",
-                  ].map((type) => (
+                  <option value="">{t('allTypes')}</option>
+                  {['country', 'province', 'city', 'district', 'neighborhood'].map((type) => (
                     <option key={type} value={type}>
                       {type}
                     </option>
                   ))}
                 </Select>
               ) : null}
-              {section === "exchange-rates" ? (
+              {section === 'exchange-rates' ? (
                 <>
                   <Select
-                    value={filters.base_currency_id ?? ""}
+                    value={filters.base_currency_id ?? ''}
                     onChange={(event) =>
                       setFilters((current) => ({
                         ...current,
@@ -419,7 +398,7 @@ export function AdminReferenceData({ section }: { section: Section }) {
                       }))
                     }
                   >
-                    <option value="">{t("allBaseCurrencies")}</option>
+                    <option value="">{t('allBaseCurrencies')}</option>
                     {currencies.map((currency) => (
                       <option key={currency.id} value={currency.id}>
                         {currency.code}
@@ -427,7 +406,7 @@ export function AdminReferenceData({ section }: { section: Section }) {
                     ))}
                   </Select>
                   <Select
-                    value={filters.quote_currency_id ?? ""}
+                    value={filters.quote_currency_id ?? ''}
                     onChange={(event) =>
                       setFilters((current) => ({
                         ...current,
@@ -435,7 +414,7 @@ export function AdminReferenceData({ section }: { section: Section }) {
                       }))
                     }
                   >
-                    <option value="">{t("allQuoteCurrencies")}</option>
+                    <option value="">{t('allQuoteCurrencies')}</option>
                     {currencies.map((currency) => (
                       <option key={currency.id} value={currency.id}>
                         {currency.code}
@@ -444,9 +423,9 @@ export function AdminReferenceData({ section }: { section: Section }) {
                   </Select>
                 </>
               ) : null}
-              {section !== "exchange-rates" ? (
+              {section !== 'exchange-rates' ? (
                 <Select
-                  value={filters.is_active ?? ""}
+                  value={filters.is_active ?? ''}
                   onChange={(event) =>
                     setFilters((current) => ({
                       ...current,
@@ -454,14 +433,14 @@ export function AdminReferenceData({ section }: { section: Section }) {
                     }))
                   }
                 >
-                  <option value="">{t("allStatuses")}</option>
-                  <option value="1">{t("active")}</option>
-                  <option value="0">{t("inactive")}</option>
+                  <option value="">{t('allStatuses')}</option>
+                  <option value="1">{t('active')}</option>
+                  <option value="0">{t('inactive')}</option>
                 </Select>
               ) : null}
               <Button size="sm" type="submit">
                 <SlidersHorizontal size={15} />
-                {t("apply")}
+                {t('apply')}
               </Button>
               <Button
                 size="sm"
@@ -474,14 +453,14 @@ export function AdminReferenceData({ section }: { section: Section }) {
                   setRefreshKey((key) => key + 1);
                 }}
               >
-                {t("reset")}
+                {t('reset')}
               </Button>
-            </form>
+            </Form>
             {items.length === 0 ? (
               <div className={styles.empty}>
                 <Icon size={28} />
                 <b>{title}</b>
-                <p>{formT("empty")}</p>
+                <p>{formT('empty')}</p>
               </div>
             ) : (
               <>
@@ -489,13 +468,11 @@ export function AdminReferenceData({ section }: { section: Section }) {
                   <thead>
                     <tr>
                       <th>Count</th>
-                      <th>{t("name")}</th>
-                      <th>{t("details")}</th>
+                      <th>{t('name')}</th>
+                      <th>{t('details')}</th>
                       {mayManage ? (
                         <th>
-                          <span className={styles.actionsLabel}>
-                            {t("actions")}
-                          </span>
+                          <span className={styles.actionsLabel}>{t('actions')}</span>
                         </th>
                       ) : null}
                     </tr>
@@ -510,34 +487,37 @@ export function AdminReferenceData({ section }: { section: Section }) {
                         locale={locale}
                         onEdit={() => setEditing(item)}
                         onDelete={(name) => setDeleting({ id: item.id, name })}
-                        editLabel={t("edit")}
-                        deleteLabel={t("delete")}
+                        editLabel={t('edit')}
+                        deleteLabel={t('delete')}
                         mayManage={mayManage}
                       />
                     ))}
                   </tbody>
                 </table>
-                <nav
-                  className={styles.cursorNav}
-                  aria-label={`${title} pagination`}
-                >
+                <nav className={styles.cursorNav} aria-label={`${title} pagination`}>
                   <Button
                     size="sm"
                     variant="ghost"
                     disabled={!page?.prev_cursor}
-                    onClick={() => { setOffset((value) => Math.max(0, value - pageSize)); setCursor(page?.prev_cursor ?? null); }}
+                    onClick={() => {
+                      setOffset((value) => Math.max(0, value - pageSize));
+                      setCursor(page?.prev_cursor ?? null);
+                    }}
                   >
                     <ArrowLeft size={16} />
-                    {t("newer")}
+                    {t('newer')}
                   </Button>
                   <span>{total} items</span>
                   <Button
                     size="sm"
                     variant="ghost"
                     disabled={!page?.next_cursor}
-                    onClick={() => { setOffset((value) => value + items.length); setCursor(page?.next_cursor ?? null); }}
+                    onClick={() => {
+                      setOffset((value) => value + items.length);
+                      setCursor(page?.next_cursor ?? null);
+                    }}
                   >
-                    {t("older")}
+                    {t('older')}
                     <ArrowRight size={16} />
                   </Button>
                 </nav>
@@ -546,7 +526,7 @@ export function AdminReferenceData({ section }: { section: Section }) {
           </section>
           {mayManage && editing ? (
             <Editor
-              key={editing.id ?? "new"}
+              key={editing.id ?? 'new'}
               section={section}
               item={editing}
               areas={parentAreas}
@@ -555,39 +535,39 @@ export function AdminReferenceData({ section }: { section: Section }) {
               onCancel={() => setEditing(null)}
               onSave={save}
               labels={{
-                add: t("add"),
-                edit: t("edit"),
-                save: t("save"),
-                cancel: t("cancel"),
-                parent: formT("parent"),
-                noParent: formT("noParent"),
-                countryCode: formT("countryCode"),
-                type: formT("type"),
-                slug: formT("slug"),
-                englishName: formT("englishName"),
-                dariName: formT("dariName"),
-                pashtoName: formT("pashtoName"),
-                code: formT("code"),
-                name: formT("name"),
-                symbol: formT("symbol"),
-                decimalPlaces: formT("decimalPlaces"),
-                defaultCurrency: formT("defaultCurrency"),
-                active: t("active"),
-                baseCurrency: formT("baseCurrency"),
-                quoteCurrency: formT("quoteCurrency"),
-                rate: formT("rate"),
-                source: formT("source"),
-                effectiveAt: formT("effectiveAt"),
-                selectCurrency: formT("selectCurrency"),
-                searchParents: formT("searchParents"),
+                add: t('add'),
+                edit: t('edit'),
+                save: t('save'),
+                cancel: t('cancel'),
+                parent: formT('parent'),
+                noParent: formT('noParent'),
+                countryCode: formT('countryCode'),
+                type: formT('type'),
+                slug: formT('slug'),
+                englishName: formT('englishName'),
+                dariName: formT('dariName'),
+                pashtoName: formT('pashtoName'),
+                code: formT('code'),
+                name: formT('name'),
+                symbol: formT('symbol'),
+                decimalPlaces: formT('decimalPlaces'),
+                defaultCurrency: formT('defaultCurrency'),
+                active: t('active'),
+                baseCurrency: formT('baseCurrency'),
+                quoteCurrency: formT('quoteCurrency'),
+                rate: formT('rate'),
+                source: formT('source'),
+                effectiveAt: formT('effectiveAt'),
+                selectCurrency: formT('selectCurrency'),
+                searchParents: formT('searchParents'),
               }}
               locale={locale}
             />
           ) : (
             <aside className={styles.hint}>
               <Icon size={21} />
-              <b>{formT("sideTitle")}</b>
-              <p>{formT("sideDetail")}</p>
+              <b>{formT('sideTitle')}</b>
+              <p>{formT('sideDetail')}</p>
             </aside>
           )}
         </div>
@@ -618,17 +598,17 @@ function Row({
   mayManage: boolean;
 }) {
   const name =
-    "translations" in item
+    'translations' in item
       ? (item.translations.find((t) => t.locale === locale)?.name ??
-        item.translations.find((t) => t.locale === "en")?.name ??
+        item.translations.find((t) => t.locale === 'en')?.name ??
         item.slug)
-      : "code" in item
+      : 'code' in item
         ? `${item.code} - ${item.name}`
         : `${item.base.code}/${item.quote.code}`;
   const detail =
-    section === "locations"
+    section === 'locations'
       ? `${(item as Area).type} · ${(item as Area).country_code}`
-      : section === "currencies"
+      : section === 'currencies'
         ? `${(item as Currency).symbol} · ${(item as Currency).decimal_places} decimals`
         : `${formatCurrency(Number((item as Rate).rate), (item as Rate).quote.code, locale, (item as Rate).quote.decimal_places)} · ${formatDateTime((item as Rate).effective_at, locale)}`;
   return (
@@ -688,32 +668,28 @@ function Editor({
   labels: EditorLabels;
   locale: AppLocale;
 }) {
-  const area = "country_code" in item ? item : null;
-  const currency = "code" in item ? item : null;
-  const rate = "rate" in item ? item : null;
+  const area = 'country_code' in item ? item : null;
+  const currency = 'code' in item ? item : null;
+  const rate = 'rate' in item ? item : null;
   const parentOptions = areas
     .filter((candidate) => candidate.id !== item.id)
     .map((candidate) => ({
       value: String(candidate.id),
       label:
-        candidate.translations.find(
-          (translation) => translation.locale === locale,
-        )?.name ??
-        candidate.translations.find(
-          (translation) => translation.locale === "en",
-        )?.name ??
+        candidate.translations.find((translation) => translation.locale === locale)?.name ??
+        candidate.translations.find((translation) => translation.locale === 'en')?.name ??
         candidate.slug,
     }));
   const [form, setForm] = useState<Record<string, string | boolean>>(() => {
     if (area)
       return {
-        parent_id: area.parent_id?.toString() ?? "",
+        parent_id: area.parent_id?.toString() ?? '',
         country_code: area.country_code,
         type: area.type,
         slug: area.slug,
-        en: area.translations.find((t) => t.locale === "en")?.name ?? "",
-        fa: area.translations.find((t) => t.locale === "fa")?.name ?? "",
-        ps: area.translations.find((t) => t.locale === "ps")?.name ?? "",
+        en: area.translations.find((t) => t.locale === 'en')?.name ?? '',
+        fa: area.translations.find((t) => t.locale === 'fa')?.name ?? '',
+        ps: area.translations.find((t) => t.locale === 'ps')?.name ?? '',
         is_active: area.is_active,
       } as Record<string, string | boolean>;
     if (currency)
@@ -733,57 +709,57 @@ function Editor({
         source: rate.source,
         effective_at: rate.effective_at.slice(0, 16),
       } as Record<string, string | boolean>;
-    if (section === "locations")
+    if (section === 'locations')
       return {
-        parent_id: "",
-        country_code: "AF",
-        type: "country",
-        slug: "",
-        en: "",
-        fa: "",
-        ps: "",
+        parent_id: '',
+        country_code: 'AF',
+        type: 'country',
+        slug: '',
+        en: '',
+        fa: '',
+        ps: '',
         is_active: true,
       } as Record<string, string | boolean>;
-    if (section === "currencies")
+    if (section === 'currencies')
       return {
-        code: "",
-        name: "",
-        symbol: "",
-        decimal_places: "2",
+        code: '',
+        name: '',
+        symbol: '',
+        decimal_places: '2',
         is_default: false,
         is_active: true,
       } as Record<string, string | boolean>;
     return {
-      base_currency_id: "",
-      quote_currency_id: "",
-      rate: "",
-      source: "manual",
-      effective_at: "",
+      base_currency_id: '',
+      quote_currency_id: '',
+      rate: '',
+      source: 'manual',
+      effective_at: '',
     } as Record<string, string | boolean>;
   });
   const change = (key: string, value: string | boolean) =>
     setForm((current) => ({ ...current, [key]: value }));
   const submit = (event: React.FormEvent) => {
     event.preventDefault();
-    if (section === "locations")
-      onSave({
+    if (section === 'locations')
+      return onSave({
         parent_id: form.parent_id ? Number(form.parent_id) : null,
         country_code: String(form.country_code).toUpperCase(),
         type: form.type,
         slug: form.slug,
         is_active: form.is_active,
-        translations: (["en", "fa", "ps"] as const)
+        translations: (['en', 'fa', 'ps'] as const)
           .filter((locale) => form[locale])
           .map((locale) => ({ locale, name: form[locale] })),
       });
-    else if (section === "currencies")
-      onSave({
+    else if (section === 'currencies')
+      return onSave({
         ...form,
         code: String(form.code).toUpperCase(),
         decimal_places: Number(form.decimal_places),
       });
     else
-      onSave({
+      return onSave({
         ...form,
         base_currency_id: Number(form.base_currency_id),
         quote_currency_id: Number(form.quote_currency_id),
@@ -791,9 +767,9 @@ function Editor({
       });
   };
   return (
-    <form className={styles.editor} onSubmit={submit}>
+    <Form className={styles.editor} onSubmit={submit}>
       <h2>{item.id ? labels.edit : labels.add}</h2>
-      {section === "locations" ? (
+      {section === 'locations' ? (
         <>
           <label>
             {labels.parent}
@@ -801,16 +777,14 @@ function Editor({
               className={styles.searchableSelect}
               classNamePrefix="admin-select"
               isClearable
-              isRtl={locale !== "en"}
+              isRtl={locale !== 'en'}
               options={parentOptions}
               placeholder={labels.searchParents}
               noOptionsMessage={() => labels.noParent}
               value={
-                parentOptions.find(
-                  (option) => option.value === String(form.parent_id),
-                ) ?? null
+                parentOptions.find((option) => option.value === String(form.parent_id)) ?? null
               }
-              onChange={(option) => change("parent_id", option?.value ?? "")}
+              onChange={(option) => change('parent_id', option?.value ?? '')}
             />
           </label>
           <label>
@@ -819,20 +793,15 @@ function Editor({
               required
               maxLength={2}
               value={String(form.country_code)}
-              onChange={(e) => change("country_code", e.target.value)}
+              onChange={(e) => change('country_code', e.target.value)}
             />
           </label>
           <label>
             {labels.type}
-            <Select
-              value={String(form.type)}
-              onChange={(e) => change("type", e.target.value)}
-            >
-              {["country", "province", "city", "district", "neighborhood"].map(
-                (type) => (
-                  <option key={type}>{type}</option>
-                ),
-              )}
+            <Select value={String(form.type)} onChange={(e) => change('type', e.target.value)}>
+              {['country', 'province', 'city', 'district', 'neighborhood'].map((type) => (
+                <option key={type}>{type}</option>
+              ))}
             </Select>
           </label>
           <label>
@@ -840,25 +809,25 @@ function Editor({
             <Input
               required
               value={String(form.slug)}
-              onChange={(e) => change("slug", e.target.value)}
+              onChange={(e) => change('slug', e.target.value)}
             />
           </label>
-          {(["en", "fa", "ps"] as const).map((locale) => (
+          {(['en', 'fa', 'ps'] as const).map((locale) => (
             <label key={locale}>
-              {locale === "en"
+              {locale === 'en'
                 ? labels.englishName
-                : locale === "fa"
+                : locale === 'fa'
                   ? labels.dariName
                   : labels.pashtoName}
               <Input
-                required={locale === "en"}
+                required={locale === 'en'}
                 value={String(form[locale])}
                 onChange={(e) => change(locale, e.target.value)}
               />
             </label>
           ))}
         </>
-      ) : section === "currencies" ? (
+      ) : section === 'currencies' ? (
         <>
           <label>
             {labels.code}
@@ -866,7 +835,7 @@ function Editor({
               required
               maxLength={3}
               value={String(form.code)}
-              onChange={(e) => change("code", e.target.value)}
+              onChange={(e) => change('code', e.target.value)}
             />
           </label>
           <label>
@@ -874,7 +843,7 @@ function Editor({
             <Input
               required
               value={String(form.name)}
-              onChange={(e) => change("name", e.target.value)}
+              onChange={(e) => change('name', e.target.value)}
             />
           </label>
           <label>
@@ -882,7 +851,7 @@ function Editor({
             <Input
               required
               value={String(form.symbol)}
-              onChange={(e) => change("symbol", e.target.value)}
+              onChange={(e) => change('symbol', e.target.value)}
             />
           </label>
           <label>
@@ -893,23 +862,23 @@ function Editor({
               min="0"
               max="6"
               value={String(form.decimal_places)}
-              onChange={(e) => change("decimal_places", e.target.value)}
+              onChange={(e) => change('decimal_places', e.target.value)}
             />
-          </label>{" "}
+          </label>{' '}
           <label>
             <input
               type="checkbox"
               checked={Boolean(form.is_default)}
-              onChange={(e) => change("is_default", e.target.checked)}
-            />{" "}
+              onChange={(e) => change('is_default', e.target.checked)}
+            />{' '}
             {labels.defaultCurrency}
           </label>
           <label>
             <input
               type="checkbox"
               checked={Boolean(form.is_active)}
-              onChange={(e) => change("is_active", e.target.checked)}
-            />{" "}
+              onChange={(e) => change('is_active', e.target.checked)}
+            />{' '}
             {labels.active}
           </label>
         </>
@@ -920,7 +889,7 @@ function Editor({
             <Select
               required
               value={String(form.base_currency_id)}
-              onChange={(e) => change("base_currency_id", e.target.value)}
+              onChange={(e) => change('base_currency_id', e.target.value)}
             >
               <option value="">{labels.selectCurrency}</option>
               {currencies.map((option) => (
@@ -935,7 +904,7 @@ function Editor({
             <Select
               required
               value={String(form.quote_currency_id)}
-              onChange={(e) => change("quote_currency_id", e.target.value)}
+              onChange={(e) => change('quote_currency_id', e.target.value)}
             >
               <option value="">{labels.selectCurrency}</option>
               {currencies.map((option) => (
@@ -953,7 +922,7 @@ function Editor({
               min="0.000000000001"
               step="any"
               value={String(form.rate)}
-              onChange={(e) => change("rate", e.target.value)}
+              onChange={(e) => change('rate', e.target.value)}
             />
           </label>
           <label>
@@ -961,7 +930,7 @@ function Editor({
             <Input
               required
               value={String(form.source)}
-              onChange={(e) => change("source", e.target.value)}
+              onChange={(e) => change('source', e.target.value)}
             />
           </label>
           <label>
@@ -970,7 +939,7 @@ function Editor({
               required
               type="datetime-local"
               value={String(form.effective_at)}
-              onChange={(e) => change("effective_at", e.target.value)}
+              onChange={(e) => change('effective_at', e.target.value)}
             />
           </label>
         </>
@@ -983,6 +952,6 @@ function Editor({
           {labels.save}
         </Button>
       </div>
-    </form>
+    </Form>
   );
 }

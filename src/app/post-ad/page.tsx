@@ -1,4 +1,6 @@
 "use client";
+import { Input, Select } from "@/shared/ui/form-controls";
+import { Form, Button } from "@/shared/ui/form-controls";
 /* eslint-disable react-hooks/exhaustive-deps -- Draft hydration intentionally runs only when the requested listing changes. */
 /* eslint-disable @next/next/no-img-element -- Listing media may use user-provided hosts that cannot be statically allowlisted. */
 
@@ -515,38 +517,38 @@ export default function PostAd() {
                   ) : null}
                   {message && !listing ? <p role="alert">{message}</p> : null}
                   {schema ? (
-                    <form className="posting-form" onSubmit={submit}>
+                    <Form className="posting-form" onSubmit={submit}>
                       <h2>{t("detailsTitle")}</h2>
                       {locales.map((item) => <label key={item}>
                         {t("localizedTitle", { language: t(`languages.${item}`) })}
-                        <input dir={item === "en" ? "ltr" : "rtl"} name={`translations.${item}.title`} required maxLength={255} value={translations[item].title} onChange={(event) => setTranslations((current) => ({ ...current, [item]: { ...current[item], title: event.target.value } }))} aria-invalid={Boolean(errors[`translations.${item}.title`])} />
+                        <Input dir={item === "en" ? "ltr" : "rtl"} name={`translations.${item}.title`} required maxLength={255} value={translations[item].title} onChange={(event) => setTranslations((current) => ({ ...current, [item]: { ...current[item], title: event.target.value } }))} aria-invalid={Boolean(errors[`translations.${item}.title`])} />
                         {errors[`translations.${item}.title`]?.[0] ? <small role="alert">{errors[`translations.${item}.title`][0]}</small> : null}
                       </label>)}
                       {isJobCategory ? (
                         <>
                           <label>
                             {t("salaryType")}
-                            <select name="price_type" value={priceType} onChange={(event) => setPriceType(event.target.value)}>
+                            <Select name="price_type" value={priceType} onChange={(event) => setPriceType(event.target.value)}>
                               <option value="fixed">{t("fixedSalary")}</option>
                               <option value="range">{t("salaryRange")}</option>
                               <option value="negotiable">{t("negotiable")}</option>
                               <option value="not_disclosed">{t("notDisclosed")}</option>
-                            </select>
+                            </Select>
                           </label>
                           {priceType === "fixed" ? <label>
                             {t("salary")}
-                            <input name="price" type="number" min="0" step="any" inputMode="decimal" value={price} onChange={(event) => setPrice(event.target.value)} aria-invalid={Boolean(errors.price)} />
+                            <Input name="price" type="number" min="0" step="any" inputMode="decimal" value={price} onChange={(event) => setPrice(event.target.value)} aria-invalid={Boolean(errors.price)} />
                             {errors.price?.[0] ? <small role="alert">{errors.price[0]}</small> : null}
                           </label> : null}
                           {priceType === "range" ? <>
                             <label>
                               {t("minimumSalary")}
-                              <input name="minimum_price" type="number" min="0" step="any" inputMode="decimal" value={minimumPrice} onChange={(event) => setMinimumPrice(event.target.value)} aria-invalid={Boolean(errors.minimum_price)} />
+                              <Input name="minimum_price" type="number" min="0" step="any" inputMode="decimal" value={minimumPrice} onChange={(event) => setMinimumPrice(event.target.value)} aria-invalid={Boolean(errors.minimum_price)} />
                               {errors.minimum_price?.[0] ? <small role="alert">{errors.minimum_price[0]}</small> : null}
                             </label>
                             <label>
                               {t("maximumSalary")}
-                              <input name="maximum_price" type="number" min="0" step="any" inputMode="decimal" value={maximumPrice} onChange={(event) => setMaximumPrice(event.target.value)} aria-invalid={Boolean(errors.maximum_price)} />
+                              <Input name="maximum_price" type="number" min="0" step="any" inputMode="decimal" value={maximumPrice} onChange={(event) => setMaximumPrice(event.target.value)} aria-invalid={Boolean(errors.maximum_price)} />
                               {errors.maximum_price?.[0] ? <small role="alert">{errors.maximum_price[0]}</small> : null}
                             </label>
                           </> : null}
@@ -554,15 +556,15 @@ export default function PostAd() {
                       ) : <>
                         <label>
                           {t("priceType")}
-                          <select name="price_type" value={priceType} onChange={(event) => setPriceType(event.target.value)}>
+                          <Select name="price_type" value={priceType} onChange={(event) => setPriceType(event.target.value)}>
                             <option value="fixed">{t("fixed")}</option>
                             <option value="negotiable">{t("negotiable")}</option>
                             <option value="contact">{t("contact")}</option>
-                          </select>
+                          </Select>
                         </label>
                         <label>
                           {t("price")}{currency ? ` (${currency.code})` : ""}
-                          <input name="price" type="number" min="0" step="any" inputMode="decimal" value={price} onChange={(event) => setPrice(event.target.value)} aria-invalid={Boolean(errors.price)} />
+                          <Input name="price" type="number" min="0" step="any" inputMode="decimal" value={price} onChange={(event) => setPrice(event.target.value)} aria-invalid={Boolean(errors.price)} />
                           {errors.price?.[0] ? <small role="alert">{errors.price[0]}</small> : null}
                         </label>
                       </>}
@@ -578,13 +580,13 @@ export default function PostAd() {
                       </label>
                       {isJobCategory && priceType !== "not_disclosed" ? <label>
                         {t("payPeriod")}
-                        <select name="salary_period" value={salaryPeriod} onChange={(event) => setSalaryPeriod(event.target.value)} aria-invalid={Boolean(errors.salary_period)}>
+                        <Select name="salary_period" value={salaryPeriod} onChange={(event) => setSalaryPeriod(event.target.value)} aria-invalid={Boolean(errors.salary_period)}>
                           <option value="hourly">{t("hourly")}</option>
                           <option value="daily">{t("daily")}</option>
                           <option value="weekly">{t("weekly")}</option>
                           <option value="monthly">{t("monthly")}</option>
                           <option value="yearly">{t("yearly")}</option>
-                        </select>
+                        </Select>
                         {errors.salary_period?.[0] ? <small role="alert">{errors.salary_period[0]}</small> : null}
                       </label> : null}
                       {locales.map((item) => <div className="wide rich-text-field" key={item}>
@@ -635,9 +637,9 @@ export default function PostAd() {
                               </article>
                             ))}
                           {historyLoading ? <p>{t("loadingHistory")}</p> : null}
-                          {historyError ? <p role="alert">{historyError} <button type="button" onClick={() => void loadHistory(draftId)}>{t("retryHistory")}</button></p> : null}
+                          {historyError ? <p role="alert">{historyError} <Button variant="ghost" type="button" onClick={() => loadHistory(draftId)}>{t("retryHistory")}</Button></p> : null}
                           <div className="listing-history-actions">
-                            {historyCursor ? <button type="button" onClick={() => void loadHistory(draftId, historyCursor)}>{t("showMoreHistory")}</button> : null}
+                            {historyCursor ? <Button variant="ghost" type="button" onClick={() => loadHistory(draftId, historyCursor)}>{t("showMoreHistory")}</Button> : null}
                             {historyPages.length ? <button type="button" onClick={showLessHistory}>{t("showLessHistory")}</button> : null}
                           </div>
                         </section>
@@ -659,12 +661,12 @@ export default function PostAd() {
                         </div>
                       </div>
                       <div className="wide posting-actions">
-                        <button className="save-draft" type="button" disabled={loading} onClick={() => void saveAsDraft()}>
+                        <Button variant="ghost" className="save-draft" type="button" disabled={loading} onClick={() => saveAsDraft()}>
                           {loading ? t("draft.saving") : t("saveDraft")}
-                        </button>
-                        <button className="submit-listing" type="submit" disabled={loading}>
+                        </Button>
+                        <Button variant="primary" className="submit-listing" type="submit" disabled={loading}>
                           {loading ? t("submitting") : t("submit")}
-                        </button>
+                        </Button>
                       </div>
                       {draftStatus !== "idle" ? <small role="status">{t(`draft.${draftStatus}`)}</small> : null}
                       {message ? (
@@ -675,7 +677,7 @@ export default function PostAd() {
                             : ""}
                         </p>
                       ) : null}
-                    </form>
+                    </Form>
                   ) : null}
                 </>
               )}
